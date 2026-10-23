@@ -191,6 +191,10 @@ label.f>span{display:block;font-size:14px;font-weight:700;margin-bottom:6px}
 .check input[type=checkbox]{width:22px;height:22px;flex:0 0 auto;accent-color:var(--brand)}
 .check .grow{flex:1}
 .check input[type=number]{width:120px}
+.consent{display:flex;gap:10px;align-items:flex-start;text-align:left;font-size:14px;line-height:1.45;margin:12px 0}
+.consent input{width:22px;height:22px;margin-top:2px;flex:0 0 auto;accent-color:var(--brand)}
+.consent span{flex:1}
+.consent a{font-weight:700}
 .note{font-size:13px;color:var(--muted);background:var(--bg);border-radius:12px;padding:10px 12px;margin-top:14px}
 
 .toast{position:fixed;left:50%;bottom:calc(100px + var(--safe-b) + var(--kb));transform:translate(-50%,20px);background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:14px;font-weight:600;font-size:14px;z-index:60;opacity:0;transition:.25s;pointer-events:none;max-width:calc(100% - 32px);text-align:center}
@@ -348,7 +352,7 @@ ko:{
   reviewsCare:'돌봄 후기', reviewsOwner:'보호자 후기', noReviews:'아직 후기가 없어요', svcPrices:'서비스 · 가격',
   book:'예약 요청하기', bookTitle:'{name}님에게 예약 요청', service:'서비스', date:'날짜', whichPet:'어떤 아이인가요?',
   message:'메시지', msgPh:'아이의 성격, 주의사항 등을 알려주세요', total:'예상 금액', send:'요청 보내기',
-  needPet:'먼저 반려동물을 등록해 주세요', payNote:'🔒 결제는 예약 확정 후 앱 안에서 안전하게 진행돼요. 돌봄 완료 전까지 대금은 보관됩니다.',
+  needPet:'먼저 반려동물을 등록해 주세요', payNote:'결제는 앱에서 받지 않아요. 비용은 회원끼리 정하고, IMEX Global은 돈을 보관하지 않아요. 돌봄 약속은 두 회원 사이의 계약이에요.',
   requested:'요청됨', confirmed:'확정', done:'완료', declined:'거절됨',
   reqSent:'예약 요청을 보냈어요!', accepted:'{name}님이 예약을 수락했어요 🎉',
   completeReview:'완료하고 후기 쓰기', leaveReview:'후기 쓰기', reviewed:'후기 작성 완료',
@@ -374,12 +378,12 @@ ko:{
   thisIsYou:'다른 이웃에게 보이는 내 프로필이에요', from:'{name}님', bookWith:'{name}님과',
   justNow:'방금', minAgo:'{n}분 전', hrAgo:'{n}시간 전', dayAgo:'{n}일 전', perUnit:'/ {u}',
   writeTitle:'커뮤니티에 글쓰기', bookingFor:'{pet} · {svc}', priceLbl:'가격(원)',
-  startWalk:'▶ 산책 시작', startCare:'▶ 돌봄 시작', startTitle:'위치 공유를 시작할게요',
-  startBody:'시작하면 위치, 이동 경로, 시간이 보호자에게 실시간으로 공유돼요. 종료하면 위치 공유는 자동으로 꺼져요.',
-  startWhy:'보호자가 안심할 수 있고, 기록된 돌봄은 내 프로필의 신뢰도를 높여줘요.', startBtn:'시작하기',
+  startWalk:'▶ 산책 시작', startCare:'▶ 돌봄 시작', startTitle:'이 기기에서 위치를 사용할게요',
+  startBody:'이 버전에서는 위치와 경로가 이 기기의 화면에만 그려져요. IMEX Global이나 상대 회원에게 전송되지 않아요. 경로를 나누는 기능이 생기면 그때 다시 동의를 받아요.',
+  startWhy:'이 기기에 경로가 남아 돌봄 기록을 볼 수 있어요. 그 기록은 이 기기를 벗어나지 않아요.', startBtn:'시작하기',
   live:'진행 중', viewLive:'실시간 보기', viewReport:'📍 리포트 보기', walkTime:'시간', distance:'거리', pee:'소변', poo:'대변',
-  finish:'■ 돌봄 종료', finishWalk:'■ 산책 종료', willTrack:'📍 돌봄이 시작되면 실시간 위치를 볼 수 있어요',
-  privacyNote:'📍 위치는 돌봄 중에만 공유되고, 종료하면 자동으로 꺼져요.',
+  finish:'■ 돌봄 종료', finishWalk:'■ 산책 종료', willTrack:'📍 돌봄이 시작되면 이 기기에서 경로를 볼 수 있어요. 이 버전에서는 상대에게 전송되지 않아요',
+  privacyNote:'📍 이 버전에서 산책 위치는 이 기기에만 남아요. 서버나 상대 회원에게 보내지 않고, 돌봄을 시작하기 전에는 위치를 묻지 않아요.',
   simNote:'데모: 실제 위치를 쓸 수 없어 망원 한강공원 경로를 20배속으로 재생 중이에요.',
   gpsFallback:'위치를 사용할 수 없어 데모 경로로 재생할게요', walkStarted:'{name}님이 {pet} 돌봄을 시작했어요 🦮',
   walkDone:'돌봄 리포트가 도착했어요 📍', updatingLive:'실시간 업데이트 중', started:'시작', ended:'종료',
@@ -419,6 +423,24 @@ ko:{
   resetConfirmReal:'예시 데이터만 처음 상태로 돌려요. 계정, 프로필, 반려동물, 채팅은 그대로예요.',
   privacy:'개인정보처리방침', termsLink:'이용약관', support:'고객지원', legal:'안내',
   termsBefore:'계속하면 ', termsMid:'과 ', privacyLink:'개인정보처리방침', termsAfter:'에 동의하게 돼요.',
+  agreeAge:'만 14세 이상이며, ', agreeAfter:'에 동의합니다.',
+  agreeLocation:'위치정보 안내에 동의합니다. 이 버전에서 산책 위치는 이 기기에만 남습니다.',
+  locationTerms:'위치정보 안내', needConsent:'이용약관, 개인정보처리방침, 위치정보 안내에 모두 체크해 주세요.',
+  consentTitle:'약관 동의가 필요해요', consentBody:'계속하려면 아래 항목을 체크해 주세요. 체크하지 않으면 앱을 이용할 수 없어요.',
+  notParty:'돌봄 약속은 회원 사이의 계약이에요. IMEX Global은 계약 당사자가 아니고, 돌봄이의 고용주도 아니에요.',
+  careAck:'이 돌봄은 나와 상대 회원 사이의 약속임을 확인합니다. IMEX Global은 당사자도 고용주도 아니며, 부상·분실·재산 피해는 회원 사이에서 해결합니다.',
+  needCareAck:'돌봄이 회원 사이의 약속이라는 확인에 체크해 주세요.',
+  age19:'만 19세 이상이며, 돌봄을 제공할 수 있는 나이임을 확인합니다. 영업으로 동물을 맡아 키우는 경우 법령이 정한 등록을 스스로 갖춥니다. 앱은 그 등록을 확인하지 않습니다.',
+  needAge19:'돌봄 제공은 만 19세 이상만 등록할 수 있어요.',
+  report:'신고', block:'차단', unblock:'차단 해제', blockedList:'차단한 이웃',
+  reportTitle:'사용자 신고', reportWhy:'이유를 선택해 주세요', reportDetail:'자세한 내용 (선택)',
+  reportSent:'신고를 접수했어요. 24시간 안에 확인해요.',
+  reportSentNote:'IMEX Global은 신고를 24시간 안에 검토합니다. 약관을 위반한 콘텐츠는 삭제하고, 해당 계정을 정지할 수 있습니다.',
+  blockTitle:'이 회원을 차단할까요?', blockBody:'{name}님의 프로필, 글, 채팅이 숨겨집니다. 내 정보에서 차단을 해제할 수 있어요.',
+  blocked:'차단했어요', unblocked:'차단을 해제했어요', blockedContent:'차단한 회원의 콘텐츠는 볼 수 없어요.',
+  objectionableToast:'이 내용은 약관상 올릴 수 없어요.', alreadyBlocked:'이미 차단한 회원이에요.',
+  reasonHarassment:'괴롭힘·협박', reasonSexual:'성적 콘텐츠', reasonMinor:'미성년자 대상 성적 콘텐츠',
+  reasonAnimal:'동물 학대', reasonScam:'사기', reasonSpam:'스팸', reasonOther:'기타',
   deleteAccount:'계정 삭제', deleteTitle:'계정을 삭제할까요?',
   deleteBody:'프로필, 반려동물, 대화, 메시지가 삭제되고 되돌릴 수 없어요. 이 기기의 앱 데이터도 지워집니다.',
   deleteConfirm:'삭제', deleteFailed:'계정을 삭제하지 못했어요. 연결을 확인하고 다시 시도해 주세요.',
@@ -439,7 +461,7 @@ en:{
   reviewsCare:'Caregiver reviews', reviewsOwner:'Pet parent reviews', noReviews:'No reviews yet', svcPrices:'Services & prices',
   book:'Request booking', bookTitle:'Request {name}', service:'Service', date:'Date', whichPet:'Which pet?',
   message:'Message', msgPh:'Tell them about your pet’s personality and needs', total:'Estimated price', send:'Send request',
-  needPet:'Please add a pet first', payNote:'🔒 Payment happens in the app after the booking is confirmed, and is held until care is completed.',
+  needPet:'Please add a pet first', payNote:'The app does not take payment. Any fee is arranged between the two members. IMEX Global does not hold the money. The care arrangement is a contract between those two members.',
   requested:'Requested', confirmed:'Confirmed', done:'Completed', declined:'Declined',
   reqSent:'Request sent!', accepted:'{name} accepted your booking 🎉',
   completeReview:'Complete & review', leaveReview:'Leave a review', reviewed:'Reviewed',
@@ -465,12 +487,12 @@ en:{
   thisIsYou:'This is how neighbors see your profile', from:'{name}', bookWith:'with {name}',
   justNow:'just now', minAgo:'{n}m ago', hrAgo:'{n}h ago', dayAgo:'{n}d ago', perUnit:'/ {u}',
   writeTitle:'Write a post', bookingFor:'{pet} · {svc}', priceLbl:'Price (₩)',
-  startWalk:'▶ Start walk', startCare:'▶ Start service', startTitle:'Location sharing will turn on',
-  startBody:'Once you start, your location, route and time are shared live with the pet parent. Sharing turns off automatically when you finish.',
-  startWhy:'It gives parents peace of mind, and tracked care builds trust in your profile.', startBtn:'Start',
+  startWalk:'▶ Start walk', startCare:'▶ Start service', startTitle:'This device will use location',
+  startBody:'In this version the location and the route are drawn only on this device. They are not sent to IMEX Global or to the other member. A future feature that shares the route will ask again.',
+  startWhy:'The route stays on this device so you can look back at the care. It does not leave this device.', startBtn:'Start',
   live:'Live', viewLive:'Watch live', viewReport:'📍 View report', walkTime:'Time', distance:'Distance', pee:'Pee', poo:'Poop',
-  finish:'■ Finish service', finishWalk:'■ End walk', willTrack:'📍 You’ll see live location once care starts',
-  privacyNote:'📍 Location is shared only during care and turns off automatically at the end.',
+  finish:'■ Finish service', finishWalk:'■ End walk', willTrack:'📍 Once care starts you can see the route on this device. This version does not send it to the other member',
+  privacyNote:'📍 In this version walk location stays on this device. It is not sent to the server or the other member, and the app does not ask for location until care starts.',
   simNote:'Demo: real location is unavailable, so a Mangwon Hangang Park route is playing at 20× speed.',
   gpsFallback:'Location unavailable — playing a demo route', walkStarted:'{name} started caring for {pet} 🦮',
   walkDone:'Your care report is ready 📍', updatingLive:'Updating live', started:'Started', ended:'Ended',
@@ -510,6 +532,24 @@ en:{
   resetConfirmReal:'This restores example data only. Your account, profile, pets and chats stay.',
   privacy:'Privacy Policy', termsLink:'Terms', support:'Support', legal:'Info',
   termsBefore:'By continuing you agree to the ', termsMid:' and ', privacyLink:'Privacy Policy', termsAfter:'.',
+  agreeAge:'I am 14 or older and I agree to the ', agreeAfter:'.',
+  agreeLocation:'I agree to the location terms. In this version, walk location stays on this device.',
+  locationTerms:'Location terms', needConsent:'Please check the Terms, the Privacy Policy, and the location terms.',
+  consentTitle:'Please accept the terms', consentBody:'Check the items below to continue. The app stays closed until you do.',
+  notParty:'A care arrangement is a contract between members. IMEX Global is not a party to it and is not the caregiver’s employer.',
+  careAck:'I understand this care is only between me and the other member. IMEX Global is not a party and not an employer. Injury, loss, and property damage are resolved between the members.',
+  needCareAck:'Please check the box confirming that care is between members.',
+  age19:'I confirm I am 19 or older and old enough to offer care. If I board animals as a business, I hold any registration the law requires. The app does not check that registration.',
+  needAge19:'Only members who are 19 or older can list care.',
+  report:'Report', block:'Block', unblock:'Unblock', blockedList:'Blocked neighbors',
+  reportTitle:'Report a member', reportWhy:'Choose a reason', reportDetail:'Details (optional)',
+  reportSent:'Report received. We review it within 24 hours.',
+  reportSentNote:'IMEX Global reviews reports within 24 hours. Content that breaks the terms may be removed, and the account may be suspended.',
+  blockTitle:'Block this member?', blockBody:'{name}’s profile, posts, and chat will be hidden. You can unblock them from Me.',
+  blocked:'Blocked', unblocked:'Unblocked', blockedContent:'Content from a member you blocked is hidden.',
+  objectionableToast:'The terms do not allow this content.', alreadyBlocked:'You already blocked this member.',
+  reasonHarassment:'Harassment or threats', reasonSexual:'Sexual content', reasonMinor:'Sexual content involving a minor',
+  reasonAnimal:'Animal abuse', reasonScam:'Scam', reasonSpam:'Spam', reasonOther:'Other',
   deleteAccount:'Delete account', deleteTitle:'Delete your account?',
   deleteBody:'Your profile, pets, conversations and messages are deleted and cannot be restored. App data on this device is cleared too.',
   deleteConfirm:'Delete', deleteFailed:'Couldn’t delete the account. Check your connection and try again.',
@@ -734,6 +774,11 @@ function seed(){
        desc:{ko:'바다 보며 걷는 산책길. 아침이 한적해요.',en:'Ocean-view walking path, quiet in the mornings.'},
        ratings:[{authorId:'u6',stars:5}]},
     ],
+    blocks: [],
+    reports: [],
+    bookingAck: null,
+    caregiver19: false,
+    consents: [],
   };
 }
 function load(){
@@ -758,13 +803,133 @@ const user = id => db.users.find(u => u.id === id) || {...GHOST, id: id || ''};
 const me = () => user(db.me);
 const petsOf = id => db.pets.filter(p => p.ownerId === id);
 const reviewsOf = (id, kind) => db.reviews.filter(r => r.targetId === id && r.kind === kind).sort((a, b) => b.date.localeCompare(a.date));
-const providers = () => db.users.filter(u => safeServices(u).length && u.id !== db.me && !u.missing);
+const LEGAL = {terms:'2026-10-23', privacy:'2026-10-23', location:'2026-10-23'};
+const LEGAL_DEVICE = 'pn-legal';
+function legalStamp(){ return LEGAL.terms + '|' + LEGAL.privacy + '|' + LEGAL.location; }
+function deviceConsentOk(){ try { return localStorage.getItem(LEGAL_DEVICE) === legalStamp(); } catch(e){ return false; } }
+function markDeviceConsent(){ try { localStorage.setItem(LEGAL_DEVICE, legalStamp()); } catch(e){} }
+function markSessionConsent(){
+  try { sessionStorage.setItem('pn-consent', JSON.stringify({terms: LEGAL.terms, privacy: LEGAL.privacy, location: LEGAL.location, at: new Date().toISOString()})); } catch(e){}
+}
+function boxesChecked(){
+  const box = document.querySelector('[name=agreeTerms]');
+  const loc = document.querySelector('[name=agreeLocation]');
+  if (!box && !loc) return true;
+  if (!box.checked || !loc.checked){ toast(t('needConsent')); return false; }
+  markSessionConsent();
+  return true;
+}
+function consentFields(){
+  return `<label class="consent"><input type="checkbox" name="agreeTerms" required><span>${t('agreeAge')}<a href="terms.html">${t('termsLink')}</a>${t('termsMid')}<a href="privacy.html">${t('privacyLink')}</a>${t('agreeAfter')}</span></label>
+  <label class="consent"><input type="checkbox" name="agreeLocation" required><span>${t('agreeLocation')} <a href="terms.html#location">${t('locationTerms')}</a></span></label>`;
+}
+function isBlocked(id){ return Array.isArray(db.blocks) && db.blocks.includes(id); }
+const OBJECTIONABLE = [
+  /죽여\s*버리|죽여버릴|죽이고\s*싶|협박하/,
+  /성매매|조건만남|원조교제/,
+  /아동\s*성|미성년\s*성|초등학생.{0,12}(야한|섹스|음란)|child\s*porn|underage\s*sex|\bcsam\b/i,
+  /동물\s*학대|학대해서|torture\s+(the\s+)?(dog|cat|pet)/i,
+  /\b(i(?:'|’)ll|i will)\s+kill you|death threat/i,
+];
+function objectionable(text){ return OBJECTIONABLE.some(re => re.test(String(text || ''))); }
+function guardText(){
+  for (let i = 0; i < arguments.length; i++) if (objectionable(arguments[i])){ toast(t('objectionableToast')); return false; }
+  return true;
+}
+function ackField(){
+  if (db.bookingAck) return `<div class="note">${t('notParty')}</div>`;
+  return `<label class="consent"><input type="checkbox" name="agreeCare" required><span>${t('careAck')}</span></label>`;
+}
+async function requireAck(fd){
+  if (db.bookingAck) return true;
+  if (!fd.get('agreeCare')){ toast(t('needCareAck')); return false; }
+  return markAck();
+}
+async function markAck(){
+  const acknowledged_at = new Date().toISOString();
+  if (REAL){
+    const {error} = await sb.from('booking_acknowledgements').upsert({
+      user_id: db.me, terms_version: LEGAL.terms, acknowledged_at,
+    });
+    if (error){ console.error(error); toast(t('saveFailed')); return false; }
+  }
+  db.bookingAck = {terms_version: LEGAL.terms, acknowledged_at};
+  save();
+  return true;
+}
+async function recordConsent(extra){
+  const row = {
+    user_id: db.me,
+    terms_version: LEGAL.terms,
+    privacy_version: LEGAL.privacy,
+    location_terms_version: LEGAL.location,
+    age_14: true,
+    caregiver_age_19: !!(extra && extra.caregiver19) || !!db.caregiver19,
+  };
+  if (REAL){
+    const {error} = await sb.from('legal_consents').insert(row);
+    if (error){ console.error(error); toast(t('saveFailed')); return false; }
+  }
+  db.consents = db.consents || [];
+  db.consents.push(Object.assign({accepted_at: new Date().toISOString()}, row));
+  if (row.caregiver_age_19) db.caregiver19 = true;
+  markDeviceConsent();
+  save();
+  return true;
+}
+async function consentIsCurrent(){
+  const {data, error} = await sb.from('legal_consents')
+    .select('terms_version, privacy_version, location_terms_version')
+    .eq('user_id', db.me)
+    .order('accepted_at', {ascending: false})
+    .limit(1);
+  if (error){ console.error(error); toast(t('saveFailed')); return false; }
+  const row = data && data[0];
+  return !!(row && row.terms_version === LEGAL.terms && row.privacy_version === LEGAL.privacy && row.location_terms_version === LEGAL.location);
+}
+async function loadSafety(){
+  const [blocks, ack, age] = await Promise.all([
+    sb.from('user_blocks').select('blocked_id'),
+    sb.from('booking_acknowledgements').select('terms_version, acknowledged_at').eq('user_id', db.me).maybeSingle(),
+    sb.from('legal_consents').select('id').eq('user_id', db.me).eq('caregiver_age_19', true).limit(1),
+  ]);
+  if (blocks.error) console.error(blocks.error);
+  else {
+    const serverIds = (blocks.data || []).map(r => r.blocked_id);
+    const localOnly = (db.blocks || []).filter(id => !user(id).real && serverIds.indexOf(id) < 0);
+    db.blocks = serverIds.concat(localOnly);
+  }
+  if (ack.error) console.error(ack.error);
+  else if (ack.data) db.bookingAck = ack.data;
+  if (age.error) console.error(age.error);
+  else if (age.data && age.data.length) db.caregiver19 = true;
+}
+function safetyButtons(id, context, contextId){
+  if (!id || id === db.me || user(id).missing) return '';
+  const blockBtn = isBlocked(id)
+    ? `<button type="button" class="btn ghost sm" data-act="unblockUser" data-id="${esc(id)}">${t('unblock')}</button>`
+    : `<button type="button" class="btn ghost sm" data-act="blockUser" data-id="${esc(id)}">${t('block')}</button>`;
+  return `<div class="btn-row" style="margin-top:10px"><button type="button" class="btn ghost sm" data-act="reportUser" data-id="${esc(id)}" data-context="${esc(context)}" data-cid="${esc(contextId || '')}">${t('report')}</button>${blockBtn}</div>`;
+}
+function reportSheet(userId, context, contextId){
+  const reasons = ['Harassment','Sexual','Minor','Animal','Scam','Spam','Other'];
+  openSheet(`<h3>${t('reportTitle')}</h3>
+    <form data-form="report" data-id="${esc(userId || '')}" data-context="${esc(context)}" data-cid="${esc(contextId || '')}">
+      <div class="f"><span>${t('reportWhy')}</span></div>
+      <div class="opts">${reasons.map((r, i) => `<label class="opt"><input type="radio" name="reason" value="${r.toLowerCase()}" ${i ? '' : 'required'}><span>${t('reason' + r)}</span></label>`).join('')}</div>
+      <label class="f"><span>${t('reportDetail')}</span><textarea name="detail" maxlength="1000"></textarea></label>
+      <p class="note">${t('reportSentNote')}</p>
+      <button class="btn primary block" style="margin-top:14px">${t('report')}</button>
+    </form>`);
+}
+const providers = () => db.users.filter(u => safeServices(u).length && u.id !== db.me && !u.missing && !isBlocked(u.id));
 const minPrice = u => Math.min(...safeServices(u).map(s => +s.price));
 
 /* ---------- ui state ---------- */
 const ui = {tab:'home', stack:[], findMode:'people', svc:'all', dist:'all', sort:'rating', q:'', postCat:'all', postSort:'new', placeCat:'all', placeDist:'all'};
 function navState(){ return {tab: ui.tab, findMode: ui.findMode, stack: ui.stack.map(s => ({type: s.type, id: s.id}))}; }
 function go(type, id){
+  if ((type === 'chat' || type === 'user') && isBlocked(id)){ toast(t('blockedContent')); return; }
   if (type === 'chat' && (id === db.me || user(id).missing)) return;
   ui.stack.push({type, id});
   history.pushState(navState(), '');
@@ -823,7 +988,7 @@ function providerCard(u){
   return `<div class="card tap" data-act="open" data-type="user" data-id="${esc(u.id)}">
     <div class="person">${avatar(u)}
       <div class="info">
-        <div class="name">${esc(L(u.name))} ${u.verified ? `<span class="badge">✓ ${t('verified')}</span>` : ''} ${REAL && !u.real ? `<span class="pill gray">${t('example')}</span>` : ''}</div>
+        <div class="name">${esc(L(u.name))} ${REAL && !u.real ? `<span class="pill gray">${t('example')}</span>` : ''}</div>
         <div class="small muted">📍 ${esc(dist(u.district))} · ${ratingHTML(rs)}</div>
       </div>
       <div class="price">${price}${unit}</div>
@@ -908,7 +1073,7 @@ const opts = (obj, sel, label = v => v) => Object.keys(obj).map(k => `<option va
 function homeView(){
   const m = me(), myPets = petsOf(m.id);
   const upcoming = db.bookings.filter(b => (b.ownerId === m.id || b.providerId === m.id) && ['requested','confirmed'].includes(b.status));
-  const hot = [...db.posts].sort((a, b) => b.likes - a.likes).slice(0, 3);
+  const hot = [...db.posts].filter(p => !isBlocked(p.authorId)).sort((a, b) => b.likes - a.likes).slice(0, 3);
   const myOpen = db.requests.filter(r => r.ownerId === m.id && r.status === 'open');
   const realPool = REAL ? providers().filter(u => u.real) : providers();
   const pool = realPool.length ? realPool : providers();
@@ -917,6 +1082,7 @@ function homeView(){
   return `
   ${CONFIG_BROKEN ? `<div class="note">${t('configBroken')}</div>` : ''}
   ${REAL ? '' : `<div class="note">${t('demoBanner')}</div>`}
+  <div class="note">${t('notParty')}</div>
   <div class="hero"><h2>${t('hello', {name: esc(L(m.name))})}</h2><p>${t('helloSub')}</p></div>
   <button class="banner tap" data-act="postRequest"><span class="em">📣</span><span class="txt"><b>${t('bannerTitle')}</b><small>${t('bannerSub')}</small></span><span class="go">${t('bannerGo')}</span></button>
   ${myOpen.length ? `<div class="section-h"><h2>${t('myRequests')}</h2></div><div class="stack">${myOpen.map(requestCard).join('')}</div>` : ''}
@@ -974,7 +1140,7 @@ function findView(){
 }
 
 function communityView(){
-  let list = db.posts.filter(p => ui.postCat === 'all' || p.cat === ui.postCat);
+  let list = db.posts.filter(p => (ui.postCat === 'all' || p.cat === ui.postCat) && !isBlocked(p.authorId));
   list.sort(ui.postSort === 'new' ? (a, b) => b.date.localeCompare(a.date) : (a, b) => b.likes - a.likes);
   return `
   <p class="note">${t('localOnly')}</p>
@@ -1048,6 +1214,8 @@ function meView(){
     <div class="svc-line"><a class="text-link" href="terms.html">${t('termsLink')}</a></div>
     <div class="svc-line"><a class="text-link" href="support.html">${t('support')}</a></div>
   </div>
+  ${(db.blocks || []).length ? `<div class="section-h"><h2>${t('blockedList')}</h2></div>
+  <div class="card">${db.blocks.map(id => `<div class="svc-line"><span class="grow">${esc(L(user(id).name))}</span><button type="button" class="btn ghost sm" data-act="unblockUser" data-id="${esc(id)}">${t('unblock')}</button></div>`).join('')}</div>` : ''}
   ${REAL ? `
   <div class="section-h"><h2>${t('pushTitle')}</h2></div>
   ${ui.push === 'on' ? `<div class="card svc-line"><span class="grow">🔔 ${t('pushTitle')}</span><span class="pill green">${t('pushOnShort')}</span></div>` : pushCard()}
@@ -1064,7 +1232,7 @@ function userDetail(id){
   ${isMe ? `<div class="note" style="margin:0 0 10px">👀 ${t('thisIsYou')}</div>` : ''}
   <div class="card prof-head">
     ${avatar(u, 'lg')}
-    <h2>${esc(L(u.name))} ${u.verified ? `<span class="badge">✓ ${t('verified')}</span>` : ''}</h2>
+    <h2>${esc(L(u.name))}</h2>
     <div class="muted small">📍 ${esc(dist(u.district))}</div>
     <div class="scores">
       <div class="score"><b>${care.length ? '★ ' + avg(care).toFixed(1) : '–'}</b><span>${t('asCaregiver')} · ${t('reviewsN', {n: care.length})}</span></div>
@@ -1078,6 +1246,7 @@ function userDetail(id){
     <div class="stack">${pets.map(p => `<div class="card pet"><div class="em">${PET_EMOJI[p.species]}</div><div><b>${esc(L(p.name))}</b><div class="small muted">${esc(L(p.breed))} · ${t('yrs', {n: p.age})}</div></div></div>`).join('')}</div>` : ''}
   ${safeServices(u).length ? `<div class="section-h"><h2>${t('reviewsCare')}</h2></div><div class="card">${reviewList(care)}</div>` : ''}
   <div class="section-h"><h2>${t('reviewsOwner')}</h2></div><div class="card">${reviewList(own)}</div>
+  ${!isMe && !u.missing ? safetyButtons(u.id, 'profile', u.id) : ''}
   ${!isMe && !u.missing ? `<div class="sticky-cta btn-row"><button class="btn ghost" style="background:var(--card)" data-act="chatWith" data-id="${u.id}">${t('chatWith')}</button>
     ${safeServices(u).length && !u.real ? `<button class="btn primary" style="flex:2" data-act="book" data-id="${u.id}">${t('book')}</button>` : ''}</div>` : ''}`;
 }
@@ -1085,17 +1254,20 @@ function userDetail(id){
 function postDetail(id){
   const p = db.posts.find(x => x.id === id);
   if (!p || !POST_CATS[p.cat]) return empty('💬', t('noPosts'));
+  if (isBlocked(p.authorId)) return empty('🚫', t('blockedContent'));
   const a = user(p.authorId), c = POST_CATS[p.cat];
+  const comments = (p.comments || []).filter(cm => !isBlocked(cm.authorId));
   return `<div class="card">
     <span class="pill">${c.icon} ${c[lang]}</span>
     <h2 style="margin:10px 0 12px;font-size:20px">${esc(L(p.title))}</h2>
     <div class="person tap" data-act="open" data-type="user" data-id="${a.id}">${avatar(a, 'sm')}<div class="info small"><b>${esc(L(a.name))}</b> <span class="muted">· ${ago(p.date)}</span></div></div>
     <div class="post-body">${esc(L(p.body))}</div>
     <button class="like ${p.liked ? 'on' : ''}" data-act="like" data-id="${p.id}">${p.liked ? '🧡' : '🤍'} ${t('like')} ${p.likes}</button>
+    ${safetyButtons(a.id, 'post', p.id)}
   </div>
-  <div class="section-h"><h2>${t('comments', {n: (p.comments || []).length})}</h2></div>
+  <div class="section-h"><h2>${t('comments', {n: comments.length})}</h2></div>
   <div class="card">
-    ${(p.comments || []).length ? (p.comments || []).map(cm => { const ca = user(cm.authorId); return `<div class="comment">${avatar(ca, 'sm')}<div><b class="small">${esc(L(ca.name))}</b> <span class="small muted">· ${ago(cm.date)}</span><p>${esc(L(cm.text))}</p></div></div>`; }).join('') : `<div class="muted small">${t('noComments')}</div>`}
+    ${comments.length ? comments.map(cm => { const ca = user(cm.authorId); return `<div class="comment">${avatar(ca, 'sm')}<div><b class="small">${esc(L(ca.name))}</b> <span class="small muted">· ${ago(cm.date)}</span><p>${esc(L(cm.text))}</p></div></div>`; }).join('') : `<div class="muted small">${t('noComments')}</div>`}
     <form class="comment-box" data-form="comment" data-id="${p.id}"><input name="text" maxlength="2000" placeholder="${t('commentPh')}" aria-label="${t('commentPh')}" required autocomplete="off"><button class="btn primary" aria-label="${esc(t('sendMsg'))}">↑</button></form>
   </div>`;
 }
@@ -1113,6 +1285,7 @@ function placeDetail(id){
     <div style="margin-top:10px;font-size:20px">${ratingHTML(pl.ratings)}</div>
     <div class="small muted">${t('recBy', {n: ratings.length})}</div>
     <p style="margin:14px 0 0">“${esc(L(pl.desc))}”</p>
+    <div class="btn-row"><button type="button" class="btn ghost sm" data-act="reportUser" data-id="" data-context="place" data-cid="${esc(pl.id)}">${t('report')}</button></div>
   </div>
   <div class="section-h"><h2>${t('reviewsN', {n: rs.length})}</h2></div>
   <div class="card">${reviewList(rs)}</div>
@@ -1301,7 +1474,7 @@ function requestsView(){
   const newest = (a, b) => b.createdAt.localeCompare(a.createdAt);
   const mine = db.requests.filter(r => r.ownerId === db.me).sort(newest);
   const appliedTo = db.requests.filter(r => r.ownerId !== db.me && myApp(r)).sort(newest);
-  const open = db.requests.filter(r => r.ownerId !== db.me && r.status === 'open' && !myApp(r)
+  const open = db.requests.filter(r => r.ownerId !== db.me && r.status === 'open' && !myApp(r) && !isBlocked(r.ownerId)
     && (ui.svc === 'all' || r.service === ui.svc) && (ui.dist === 'all' || r.district === ui.dist))
     .sort((a, b) => a.date.localeCompare(b.date));
   return `${findTabs()}
@@ -1323,7 +1496,7 @@ function applicantCard(ap, r){
     : ap.status === 'hired' ? `<span class="btn sm" style="background:var(--green-soft);color:var(--green)">✓ ${t('hired')}</span>` : '';
   return `<div class="card">
     <div class="person tap" data-act="open" data-type="user" data-id="${p.id}">${avatar(p)}
-      <div class="info"><div class="name">${esc(L(p.name))} ${p.verified ? `<span class="badge">✓ ${t('verified')}</span>` : ''}</div>
+      <div class="info"><div class="name">${esc(L(p.name))}</div>
         <div class="small muted">📍 ${esc(dist(p.district))} · ${ratingHTML(reviewsOf(p.id, 'care'))}</div></div>
       <div class="price">${won(ap.price)}<small>${t('offered')}</small></div>
     </div>
@@ -1349,7 +1522,7 @@ function requestDetail(id){
     <div class="small muted">${esc(L(pet.breed))} · ${t('yrs', {n: pet.age})}</div>${L(pet.notes) ? `<div class="small">${esc(L(pet.notes))}</div>` : ''}</div></div>`;
   if (mine){
     const order = {hired: 0, applied: 1, declined: 2};
-    const list = [...apps].sort((x, y) => order[x.status] - order[y.status] || avg(reviewsOf(user(y.providerId).id, 'care')) - avg(reviewsOf(user(x.providerId).id, 'care')));
+    const list = [...apps].filter(ap => !isBlocked(ap.providerId)).sort((x, y) => order[x.status] - order[y.status] || avg(reviewsOf(user(y.providerId).id, 'care')) - avg(reviewsOf(user(x.providerId).id, 'care')));
     return `${summary}
     <div class="section-h"><h2>${r.status === 'hired' ? t('youHired') : t('applicantsN', {n: apps.length})}</h2></div>
     <div class="stack">${list.length ? list.filter(ap => r.status === 'open' || ap.status === 'hired').map(ap => applicantCard(ap, r)).join('') : `<div class="card">${empty('⏳', t('waitingApplicants'))}</div>`}</div>`;
@@ -1387,8 +1560,9 @@ function chatDetail(otherId){
   const ap = r && r.ownerId === db.me && r.status === 'open' && reqApps(r.id).find(a => a.providerId === otherId);
   return `<div class="card">
     <div class="person tap" data-act="open" data-type="user" data-id="${o.id}">${avatar(o, 'sm')}
-      <div class="info"><b>${esc(L(o.name))}</b> ${o.verified ? `<span class="badge">✓ ${t('verified')}</span>` : ''}
-        <div class="small muted">${o.services.length ? `${t('asCaregiver')} · ${ratingHTML(reviewsOf(o.id, 'care'))}` : `${t('asOwner')} · ${ratingHTML(reviewsOf(o.id, 'owner'))}`}</div></div><span class="muted">›</span></div>
+      <div class="info"><b>${esc(L(o.name))}</b>
+        <div class="small muted">${safeServices(o).length ? `${t('asCaregiver')} · ${ratingHTML(reviewsOf(o.id, 'care'))}` : `${t('asOwner')} · ${ratingHTML(reviewsOf(o.id, 'owner'))}`}</div></div><span class="muted">›</span></div>
+    ${safetyButtons(o.id, 'chat', otherId)}
     ${r ? `<div class="ctx"><span class="grow tap" data-act="open" data-type="request" data-id="${r.id}">${SERVICES[r.service].icon} ${svcName(r.service)} · ${fmtDay(r.date)} ${requestPill(r)}</span>
       ${ap ? `<button class="btn primary sm" data-act="hire" data-id="${ap.id}">${t('choose')} · ${won(ap.price)}</button>` : ''}</div>` : ''}
   </div>
@@ -1403,7 +1577,7 @@ function composer(otherId){
   </div>`;
 }
 function chatsDetail(){
-  const list = db.chats.filter(c => c.members.includes(db.me) && c.messages.length)
+  const list = db.chats.filter(c => c.members.includes(db.me) && c.messages.length && !isBlocked(c.members.find(id => id !== db.me)))
     .sort((a, b) => b.messages[b.messages.length - 1].date.localeCompare(a.messages[a.messages.length - 1].date));
   const push = REAL && ui.push !== 'on' ? `<div style="margin-bottom:12px">${pushCard()}</div>` : '';
   if (!list.length) return `${push}<div class="card">${empty('💬', t('noChats'))}</div>`;
@@ -1419,6 +1593,8 @@ function sendMessage(otherId, text){
   if (!text || text.length > 2000) return;
   const other = user(otherId);
   if (!other || other.missing || otherId === db.me) return;
+  if (isBlocked(otherId)) return toast(t('blockedContent'));
+  if (objectionable(text)) return toast(t('objectionableToast'));
   if (isReal(otherId)) return realSend(otherId, text);
   pushMsg(getChat(otherId, true), db.me, text); render(); botRespond(otherId);
 }
@@ -1484,6 +1660,7 @@ function requestSheet(){
     <label class="f"><span>${t('budget')}</span><input type="number" name="budget" id="reqBudget" inputmode="numeric" step="1000" min="0" placeholder="${t('budgetPh')}"></label>
     <div class="hint">${t('budgetHint')}</div>
     <label class="f"><span>${t('noteLbl')}</span><textarea name="note" id="reqNote" placeholder="${t('notePh')}"></textarea></label>
+    ${ackField()}
     <button class="btn primary block" style="margin-top:16px">${t('postReqBtn')}</button>
   </form>`);
 }
@@ -1496,6 +1673,7 @@ function applySheet(rid){
     <label class="f"><span>${t('yourPrice')}</span><input type="number" name="price" id="applyPrice" inputmode="numeric" step="1000" min="0" value="${mine ? mine.price : (r.budget || DEFAULT_PRICE[r.service])}" required></label>
     ${r.budget ? `<div class="hint">${t('budget')}: ${won(r.budget)}</div>` : ''}
     <label class="f"><span>${t('message')}</span><textarea name="msg" id="applyMsg" placeholder="${t('applyMsgPh')}"></textarea></label>
+    ${ackField()}
     <button class="btn primary block" style="margin-top:16px">🙋 ${t('apply')}</button>
   </form>`);
 }
@@ -1504,6 +1682,7 @@ function hireSheet(appId){
   openSheet(`<h3>${t('hireTitle', {name: esc(L(p.name))})}</h3>
   <p>${t('hireBody', {price: won(ap.price)})}</p>
   <div class="note">${t('payNote')}</div>
+  ${ackField()}
   <button class="btn primary block" style="margin-top:16px" data-act="confirmHire" data-id="${ap.id}">${t('choose')}</button>`);
 }
 
@@ -1583,6 +1762,9 @@ async function enterApp(){
     if (error) throw error;
     if (!prof){ auth.state = 'onboarding'; render(); return; }
     await loadReal();
+    await loadSafety();
+    if (!(await consentIsCurrent())){ auth.state = 'consent'; render(); return; }
+    markDeviceConsent();
     auth.state = 'ready'; render();
     resumeTrackers(); subscribeRealtime(); refreshPush(); openFromUrl(location.href);
   }catch(e){
@@ -1677,7 +1859,18 @@ function renderAuth(){
         <div class="f"><span>${t('iAm')}</span></div>
         <div class="opts">${radio('owner', t('roleOwner'), true)}${radio('care', t('roleCare'))}${radio('both', t('roleBoth'))}</div>
         <p class="hint">${t('bothHint')}</p>
+        ${consentFields()}
         <button class="btn primary block" style="margin-top:12px">${t('startApp')}</button>
+      </form></div>`;
+    decorateActions($('#app'));
+    return;
+  }
+  if (auth.state === 'consent'){
+    $('#app').innerHTML = `<div class="auth">${langBtn}
+      <h1 style="font-size:24px">${t('consentTitle')}</h1><p class="tagline">${t('consentBody')}</p>
+      <form data-form="reconsent">
+        ${consentFields()}
+        <button class="btn primary block">${t('startApp')}</button>
       </form></div>`;
     decorateActions($('#app'));
     return;
@@ -1694,13 +1887,14 @@ function renderAuth(){
       </form>
       <button class="btn ghost block" data-act="loginBack">${t('otherEmail')}</button>`
     : `
-      ${CFG.kakao ? `<button class="btn block kakao" data-act="loginKakao"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3C6.5 3 2 6.6 2 11c0 2.8 1.9 5.3 4.7 6.7L5.7 21l4-2.6c.7.1 1.5.2 2.3.2 5.5 0 10-3.6 10-8S17.5 3 12 3z"/></svg>${t('kakaoLogin')}</button>
-      <div class="or">${t('orEmail')}</div>` : ''}
       <form data-form="emailLogin">
+        ${deviceConsentOk() ? '' : consentFields()}
+        ${CFG.kakao ? `<button type="button" class="btn block kakao" data-act="loginKakao"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3C6.5 3 2 6.6 2 11c0 2.8 1.9 5.3 4.7 6.7L5.7 21l4-2.6c.7.1 1.5.2 2.3.2 5.5 0 10-3.6 10-8S17.5 3 12 3z"/></svg>${t('kakaoLogin')}</button>
+        <div class="or">${t('orEmail')}</div>` : ''}
         <input type="email" name="email" id="loginEmail" autocomplete="email" placeholder="${t('emailPh')}" aria-label="${t('emailPh')}" required>
         <button class="btn primary block">${t('sendCode')}</button>
       </form>`}
-    <p class="fine">${t('termsBefore')}<a href="terms.html">${t('termsLink')}</a>${t('termsMid')}<a href="privacy.html">${t('privacyLink')}</a>${t('termsAfter')}</p>
+    <p class="fine"><a href="terms.html">${t('termsLink')}</a> · <a href="privacy.html">${t('privacyLink')}</a> · <a href="terms.html#location">${t('locationTerms')}</a></p>
   </div>`;
   decorateActions($('#app'));
 }
@@ -1736,7 +1930,9 @@ async function realSend(otherId, text){
     if (error) throw error;
     Object.assign(m, {id: data.id, date: data.created_at, pending: false});
   }catch(e){
-    console.error(e); m.pending = false; m.failed = true; toast(t('sendFailed'));
+    console.error(e); m.pending = false; m.failed = true;
+    const msg = String(e.message || e.details || e);
+    toast(msg.toLowerCase().includes('blocked') ? t('blockedContent') : t('sendFailed'));
   }
   render();
 }
@@ -1942,6 +2138,7 @@ function bookingSheet(pid){
     <div class="svc-line" style="margin-top:12px"><span class="grow"><b>${t('total')}</b></span><b id="bookTotal" style="font-size:20px">${won(first.price)}</b></div>
     ${REAL && !p.real ? `<div class="note">${t('exampleBooking')}</div>` : ''}
     <div class="note">${t('payNote')}</div>
+    ${ackField()}
     <button class="btn primary block" style="margin-top:14px">${t('send')}</button>
   </form>`);
 }
@@ -1987,6 +2184,7 @@ function servicesSheet(){
       <span class="grow">${SERVICES[k].icon} ${svcName(k)}<br><span class="small muted">${t('perUnit', {u: L(SERVICES[k].unit)})}</span></span>
       <input type="number" name="price_${k}" step="1000" min="0" value="${s ? s.price : DEFAULT_PRICE[k]}" aria-label="${t('priceLbl')}">
     </label>`; }).join('')}
+    ${db.caregiver19 ? '' : `<label class="consent"><input type="checkbox" name="age19" required><span>${t('age19')}</span></label>`}
     <button class="btn primary block" style="margin-top:14px">${t('save')}</button>
   </form>`);
 }
@@ -2050,7 +2248,12 @@ const ACTIONS = {
   postRequest: requestSheet,
   apply: el => applySheet(el.dataset.id),
   hire: el => hireSheet(el.dataset.id),
-  confirmHire: el => { closeSheet(); hire(el.dataset.id); },
+  confirmHire: async el => {
+    const box = document.querySelector('#sheet [name=agreeCare]');
+    if (box && !box.checked) return toast(t('needCareAck'));
+    if (!db.bookingAck){ const ok = await markAck(); if (!ok) return; }
+    closeSheet(); hire(el.dataset.id);
+  },
   chatWith: el => go('chat', el.dataset.id),
   openChats: () => go('chats'),
   quick: el => sendMessage(ui.stack[ui.stack.length - 1].id, el.dataset.text),
@@ -2088,9 +2291,11 @@ const ACTIONS = {
   confirmReset: () => {
     Object.keys(trackers).forEach(stopTracker);
     // demo content starts over; real members, pets and chats are kept
-    const keep = {me: db.me, users: db.users.filter(u => u.real), pets: db.pets.filter(p => p.real), chats: db.chats.filter(c => c.real)};
+    const keep = {me: db.me, users: db.users.filter(u => u.real), pets: db.pets.filter(p => p.real), chats: db.chats.filter(c => c.real),
+      blocks: (db.blocks || []).slice(), reports: (db.reports || []).slice(), bookingAck: db.bookingAck, caregiver19: db.caregiver19, consents: (db.consents || []).slice()};
     db = seed();
-    if (REAL) Object.assign(db, {me: keep.me, users: db.users.concat(keep.users), pets: db.pets.concat(keep.pets), chats: db.chats.concat(keep.chats)});
+    if (REAL) Object.assign(db, {me: keep.me, users: db.users.concat(keep.users), pets: db.pets.concat(keep.pets), chats: db.chats.concat(keep.chats),
+      blocks: keep.blocks, reports: keep.reports, bookingAck: keep.bookingAck, caregiver19: keep.caregiver19, consents: keep.consents});
     ui.stack = []; ui.tab = 'home'; history.pushState(navState(), ''); closeSheet(); render();
   },
   retry: el => {
@@ -2114,8 +2319,46 @@ const ACTIONS = {
     }
   },
   loginKakao: async () => {
+    if (!boxesChecked()) return;
     const {error} = await sb.auth.signInWithOAuth({provider: 'kakao', options: {redirectTo: location.origin + location.pathname}});
     if (error) toast(t('authError', {msg: error.message}));
+  },
+  reportUser: el => reportSheet(el.dataset.id, el.dataset.context || 'profile', el.dataset.cid || ''),
+  blockUser: el => {
+    const id = el.dataset.id;
+    if (isBlocked(id)) return toast(t('alreadyBlocked'));
+    openSheet(`<h3>${t('blockTitle')}</h3><p>${t('blockBody', {name: esc(L(user(id).name))})}</p>
+      <div class="btn-row"><button type="button" class="btn ghost" data-act="closeSheet">${t('cancel')}</button><button type="button" class="btn primary" data-act="confirmBlock" data-id="${esc(id)}">${t('block')}</button></div>`);
+  },
+  confirmBlock: async el => {
+    const id = el.dataset.id;
+    if (!isBlocked(id)) db.blocks.push(id);
+    save();
+    if (REAL && user(id).real){
+      const {error} = await sb.from('user_blocks').insert({blocker_id: db.me, blocked_id: id});
+      if (error && error.code !== '23505'){
+        console.error(error);
+        db.blocks = db.blocks.filter(x => x !== id);
+        save();
+        return toast(t('saveFailed'));
+      }
+    }
+    closeSheet();
+    toast(t('blocked'));
+    const top = ui.stack[ui.stack.length - 1];
+    if (top && (top.type === 'user' || top.type === 'chat') && top.id === id) history.back();
+    else render();
+  },
+  unblockUser: async el => {
+    const id = el.dataset.id;
+    db.blocks = (db.blocks || []).filter(x => x !== id);
+    save();
+    if (REAL && user(id).real){
+      const {error} = await sb.from('user_blocks').delete().eq('blocker_id', db.me).eq('blocked_id', id);
+      if (error){ console.error(error); db.blocks.push(id); save(); return toast(t('saveFailed')); }
+    }
+    toast(t('unblocked'));
+    render();
   },
   loginBack: () => { auth.step = 'start'; render(); },
   enablePush,
@@ -2127,32 +2370,43 @@ function rateBooking(b, as){
 }
 
 const FORMS = {
-  booking(fd, f){
+  async booking(fd, f){
     const p = user(f.dataset.id), s = safeServices(p).find(x => x.type === fd.get('service'));
     if (!s) return;
-    const b = {id: uid(), ownerId: db.me, providerId: p.id, service: s.type, price: s.price, date: fd.get('date'), petId: fd.get('pet'), msg: fd.get('msg').trim(), status:'requested'};
+    const msg = fd.get('msg').trim();
+    if (isBlocked(p.id)) return toast(t('blockedContent'));
+    if (!guardText(msg)) return;
+    if (!(await requireAck(fd))) return;
+    const b = {id: uid(), ownerId: db.me, providerId: p.id, service: s.type, price: s.price, date: fd.get('date'), petId: fd.get('pet'), msg, status:'requested'};
     db.bookings.push(b); closeSheet(); toast(t('reqSent')); render();
-    // demo: the caregiver accepts shortly after
+    // demo: the caregiver accepts shortly after. Real members are not booked from this sheet.
+    if (REAL) return;
     setTimeout(() => {
       if (b.status !== 'requested') return;
       b.status = 'confirmed'; render(); toast(t('accepted', {name: L(p.name)}));
       if (TRACKED.has(b.service)) setTimeout(() => startDemoWalk(b.id), 4000);
     }, 2500);
   },
-  request(fd){
+  async request(fd){
+    const note = fd.get('note').trim();
+    if (!guardText(note)) return;
+    if (!(await requireAck(fd))) return;
     const r = {id: uid(), ownerId: db.me, service: fd.get('service'), date: fd.get('date'), time: fd.get('time'), petId: fd.get('pet'),
-      district: me().district, budget: +fd.get('budget') || null, note: fd.get('note').trim(), status: 'open', createdAt: new Date().toISOString()};
+      district: me().district, budget: +fd.get('budget') || null, note, status: 'open', createdAt: new Date().toISOString()};
     db.requests.push(r); closeSheet();
     Object.assign(ui, {tab: 'find', findMode: 'requests', stack: []});
     go('request', r.id); toast(t('reqPosted')); simulateApplicants(r);
   },
-  apply(fd, f){
+  async apply(fd, f){
     const r = db.requests.find(x => x.id === f.dataset.id), msg = fd.get('msg').trim();
+    if (!r || isBlocked(r.ownerId)) return toast(t('blockedContent'));
+    if (!guardText(msg)) return;
+    if (!(await requireAck(fd))) return;
     db.applications.push({id: uid(), requestId: r.id, providerId: db.me, price: +fd.get('price') || 0, msg, status: 'applied', date: new Date().toISOString()});
     if (msg) pushMsg(getChat(r.ownerId, true), db.me, msg);
     closeSheet(); toast(t('applySent')); render();
     // demo: the pet parent answers shortly after
-    setTimeout(() => { if (r.status === 'open'){ pushMsg(getChat(r.ownerId, true), r.ownerId, DEMO.ownerAsk); afterIncoming(r.ownerId); } }, 3500);
+    setTimeout(() => { if (!REAL && r.status === 'open'){ pushMsg(getChat(r.ownerId, true), r.ownerId, DEMO.ownerAsk); afterIncoming(r.ownerId); } }, 3500);
   },
   chat(fd, f){
     const text = fd.get('text').trim();
@@ -2161,19 +2415,24 @@ const FORMS = {
   },
   rateBooking(fd, f){
     const stars = +fd.get('stars'); if (!stars) return toast(t('pickStars'));
+    const text = fd.get('text').trim();
+    if (!guardText(text)) return;
     const b = db.bookings.find(x => x.id === f.dataset.id), asOwner = f.dataset.as === 'owner';
-    db.reviews.push({id: uid(), targetId: asOwner ? b.providerId : b.ownerId, authorId: db.me, kind: asOwner ? 'care' : 'owner', stars, text: fd.get('text').trim(), date: new Date().toISOString()});
+    db.reviews.push({id: uid(), targetId: asOwner ? b.providerId : b.ownerId, authorId: db.me, kind: asOwner ? 'care' : 'owner', stars, text, date: new Date().toISOString()});
     b[asOwner ? 'ownerReviewed' : 'providerReviewed'] = true;
     closeSheet(); toast(t('thanksReview')); render();
   },
   ratePlace(fd, f){
     const stars = +fd.get('stars'); if (!stars) return toast(t('pickStars'));
+    const text = fd.get('text').trim();
+    if (!guardText(text)) return;
     const pl = db.places.find(x => x.id === f.dataset.id);
-    pl.ratings.push({authorId: db.me, stars, text: fd.get('text').trim(), date: new Date().toISOString()});
+    pl.ratings.push({authorId: db.me, stars, text, date: new Date().toISOString()});
     closeSheet(); toast(t('thanksReview')); render();
   },
   async pet(fd, f){
     const data = {name: fd.get('name').trim(), species: fd.get('species'), breed: fd.get('breed').trim(), age: +fd.get('age') || 0, notes: fd.get('notes').trim()};
+    if (!guardText(data.name, data.breed, data.notes)) return;
     if (REAL){
       const q = f.dataset.id ? sb.from('pets').update(data).eq('id', f.dataset.id) : sb.from('pets').insert(data);
       const {data: row, error} = await q.select().single();
@@ -2189,6 +2448,7 @@ const FORMS = {
   },
   async profile(fd){
     const data = {name: fd.get('name').trim(), district: fd.get('district'), bio: fd.get('bio').trim(), avatar: fd.get('avatar') || me().avatar};
+    if (!guardText(data.name, data.bio)) return;
     if (REAL){
       const {error} = await sb.from('profiles').update(data).eq('id', db.me);
       if (error){ console.error(error); return toast(t('saveFailed')); }
@@ -2199,6 +2459,11 @@ const FORMS = {
   async services(fd){
     const list = Object.keys(SERVICES).filter(k => fd.get('on_' + k)).map(k => ({type: k, price: Math.max(0, +fd.get('price_' + k) || DEFAULT_PRICE[k])}));
     if (!list.length) return toast(t('pickService'));
+    if (!db.caregiver19){
+      if (!fd.get('age19')) return toast(t('needAge19'));
+      const ok = await recordConsent({caregiver19: true});
+      if (!ok) return;
+    }
     if (REAL){
       const {error} = await sb.from('profiles').update({services: list}).eq('id', db.me);
       if (error){ console.error(error); return toast(t('saveFailed')); }
@@ -2206,6 +2471,7 @@ const FORMS = {
     me().services = list; closeSheet(); toast(t('servicesSaved')); render(); simulateIncoming();
   },
   async emailLogin(fd){
+    if (!boxesChecked()) return;
     const email = fd.get('email').trim();
     const {error} = await sb.auth.signInWithOtp({email, options: {emailRedirectTo: location.origin + location.pathname}});
     if (error) return toast(t('authError', {msg: error.message}));
@@ -2217,27 +2483,60 @@ const FORMS = {
     auth.session = data.session; await enterApp();
   },
   async onboard(fd){
+    if (!fd.get('agreeTerms') || !fd.get('agreeLocation')) return toast(t('needConsent'));
     const row = {id: db.me, name: fd.get('name').trim(), district: fd.get('district'), avatar: fd.get('avatar') || '🙂'};
+    if (!guardText(row.name)) return;
     const {error} = await sb.from('profiles').insert(row);
     if (error){ console.error(error); return toast(t('saveFailed')); }
+    const ok = await recordConsent();
+    if (!ok) return;
     const role = fd.get('role');
     auth.afterOnboard = role;
     await enterApp();
     if (role === 'care') servicesSheet(); else petSheet();
   },
   post(fd){
-    db.posts.push({id: uid(), authorId: db.me, cat: fd.get('cat'), title: fd.get('title').trim(), body: fd.get('body').trim(), date: new Date().toISOString(), likes: 0, liked: false, comments: []});
+    const title = fd.get('title').trim(), body = fd.get('body').trim();
+    if (!guardText(title, body)) return;
+    db.posts.push({id: uid(), authorId: db.me, cat: fd.get('cat'), title, body, date: new Date().toISOString(), likes: 0, liked: false, comments: []});
     closeSheet(); toast(t('posted')); ui.postSort = 'new'; ui.postCat = 'all'; render();
   },
   place(fd){
     const stars = +fd.get('stars'); if (!stars) return toast(t('pickStars'));
-    db.places.push({id: uid(), cat: fd.get('cat'), district: fd.get('district'), name: fd.get('name').trim(), desc: fd.get('desc').trim(), ratings: [{authorId: db.me, stars, date: new Date().toISOString(), text:''}]});
+    const name = fd.get('name').trim(), desc = fd.get('desc').trim();
+    if (!guardText(name, desc)) return;
+    db.places.push({id: uid(), cat: fd.get('cat'), district: fd.get('district'), name, desc, ratings: [{authorId: db.me, stars, date: new Date().toISOString(), text:''}]});
     closeSheet(); toast(t('placeAdded')); ui.placeCat = 'all'; ui.placeDist = 'all'; render();
   },
   comment(fd, f){
     const text = fd.get('text').trim(); if (!text) return;
+    if (!guardText(text)) return;
     db.posts.find(p => p.id === f.dataset.id).comments.push({authorId: db.me, text, date: new Date().toISOString()});
     render();
+  },
+  async report(fd, f){
+    const reason = fd.get('reason');
+    if (!reason) return toast(t('reportWhy'));
+    const detail = String(fd.get('detail') || '').trim().slice(0, 1000);
+    if (!guardText(detail)) return;
+    const reported = f.dataset.id || '';
+    db.reports = db.reports || [];
+    db.reports.push({reported_user_id: reported, context: f.dataset.context, context_id: f.dataset.cid || '', reason, detail, created_at: new Date().toISOString()});
+    save();
+    if (REAL && reported && user(reported).real){
+      const {error} = await sb.from('user_reports').insert({
+        reporter_id: db.me, reported_user_id: reported, context: f.dataset.context, context_id: f.dataset.cid || '', reason, detail,
+      });
+      if (error){ console.error(error); return toast(t('saveFailed')); }
+    }
+    closeSheet(); toast(t('reportSent'));
+  },
+  async reconsent(fd){
+    if (!fd.get('agreeTerms') || !fd.get('agreeLocation')) return toast(t('needConsent'));
+    const ok = await recordConsent();
+    if (!ok) return;
+    auth.entering = false;
+    await enterApp();
   },
 };
 

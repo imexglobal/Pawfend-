@@ -8,12 +8,14 @@
   :root{--bg:#FFF8F1;--card:#fff;--ink:#2B2118;--muted:#5C5148;--line:#F0E4D7;--brand:#C4471A}
   @media (prefers-color-scheme:dark){:root{--bg:#17120F;--card:#241D18;--ink:#F5EDE6;--muted:#C4B4A6;--line:#3A3029;--brand:#FFB088}}
   *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;line-height:1.6}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;line-height:1.65}
   main{max-width:720px;margin:0 auto;padding:calc(20px + env(safe-area-inset-top)) 20px calc(32px + env(safe-area-inset-bottom))}
   a{color:var(--brand)}
   h1{font-size:28px;letter-spacing:-.02em;margin:8px 0}
   h2{font-size:18px;margin:28px 0 8px}
-  .en{margin-top:40px;padding-top:8px;border-top:1px solid var(--line)}
+  p,li{font-size:16px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px}
+  .en{margin-top:48px;padding-top:8px;border-top:1px solid var(--line)}
   .muted{color:var(--muted)}
 </style>
 </head>
@@ -21,41 +23,239 @@
 <main>
   <p><a href="index.html">← PetNeighbor</a></p>
   <h1>이용약관</h1>
-  <p class="muted">시행일 2026-10-23 · 게시자 IMEX Global · <a href="mailto:hellopawfend@gmail.com">hellopawfend@gmail.com</a></p>
-  <p>이 약관은 멍냥이웃 PetNeighbor을 쓰는 조건입니다. 공개 출시 전에 법률 검토를 받는 것을 권합니다. <a href="privacy.html">개인정보처리방침</a>이 개인정보 사항을 정합니다.</p>
-  <h2>서비스</h2>
-  <p>앱은 이웃 간 프로필, 반려동물 소개, 돌봄 가격, 채팅, 알림을 제공합니다. 커뮤니티, 장소, 돌봄 요청, 예약, 후기, 산책 기록은 이 버전에서 그 기기에만 저장되는 미리보기입니다. 결제는 제공하지 않습니다. “예시”로 표시된 사람은 실제 회원이 아닙니다.</p>
-  <h2>계정</h2>
-  <p>회원은 정확한 표시 이름을 쓰고, 본인 계정을 다른 사람에게 넘겨 문제가 생기지 않게 할 책임이 있습니다. 만 13세 미만은 가입할 수 없습니다. 계정은 앱의 내 정보 → 계정 → 계정 삭제에서 바로 지울 수 있습니다.</p>
-  <h2>이용자의 콘텐츠</h2>
-  <p>프로필, 반려동물 정보, 채팅, 기기에 남기는 글은 이용자가 작성합니다. 불법 행위, 협박, 스팸, 타인의 개인정보 유출, 동물을 해치는 내용에 앱을 쓰지 마세요. 운영자는 법령이 요구하거나 다른 회원을 보호해야 할 때 콘텐츠와 계정을 제거할 수 있습니다.</p>
-  <h2>위치</h2>
-  <p>동네는 이용자가 고릅니다. 돌봄을 시작한 뒤에만 기기가 위치를 읽고, 이 버전에서는 그 경로를 서버에 보내지 않습니다.</p>
-  <h2>보증</h2>
-  <p>돌봄은 회원 사이의 약속입니다. IMEX Global은 돌봄의 결과, 예시 데이터의 정확성, 중단 없는 운영을 보증하지 않습니다. 법이 허용하는 범위에서 앱은 있는 그대로 제공됩니다.</p>
-  <h2>변경</h2>
-  <p>약관이 바뀌면 이 페이지의 시행일을 바꿉니다. 계속 쓰면 변경에 동의한 것으로 봅니다.</p>
-  <h2>문의</h2>
-  <p>IMEX Global · <a href="mailto:hellopawfend@gmail.com">hellopawfend@gmail.com</a> · <a href="support.html">고객지원</a></p>
+  <p class="muted">시행일 2026-10-23 · 운영자 IMEX Global · 문의 <a href="mailto:hellopawfend@gmail.com">hellopawfend@gmail.com</a></p>
+  <div class="card">
+    <p>이 약관의 한국어본이 정본입니다. 영어본은 편의를 위한 번역이며, 한국어본과 다르면 한국어본이 우선합니다.</p>
+    <p><a href="privacy.html">개인정보처리방침</a>은 이 약관의 일부입니다. 위치정보에 관한 내용은 <a href="#location">제18조</a>에 있습니다.</p>
+  </div>
+
+  <h2>제1조 (목적과 당사자)</h2>
+  <p>이 약관은 IMEX Global(이하 “회사”)이 제공하는 멍냥이웃 PetNeighbor(이하 “서비스”)의 이용 조건을 정합니다. 서비스는 이웃 사이의 반려동물 돌봄을 소개하고, 프로필·채팅·커뮤니티 글을 주고받게 하는 소프트웨어입니다. 회사의 연락처는 hellopawfend@gmail.com 입니다.</p>
+
+  <h2>제2조 (정의)</h2>
+  <ul>
+    <li>“회원”은 만 14세 이상으로서 이 약관과 개인정보처리방침, 위치정보 안내에 동의하고 계정을 만든 사람입니다.</li>
+    <li>“보호자”는 반려동물의 소유자 또는 그 동물의 돌봄을 맡길 권한이 있는 회원입니다.</li>
+    <li>“돌봄 제공자”는 산책, 방문, 맡김, 미용, 교육, 이동 등 돌봄을 제공하겠다고 서비스에 적은 회원입니다.</li>
+    <li>“돌봄 약속”은 보호자와 돌봄 제공자가 서로 정한 돌봄의 내용, 시간, 장소, 보수에 관한 계약입니다. 회사는 그 계약의 당사자가 아닙니다.</li>
+    <li>“콘텐츠”는 회원이 서비스에 올리거나 보내는 이름, 소개, 반려동물 정보, 글, 댓글, 메시지, 후기, 장소 추천을 말합니다.</li>
+  </ul>
+
+  <h2>제3조 (약관의 게시와 설명)</h2>
+  <p>회사는 이 약관을 서비스 안과 이 페이지에 둡니다. 계정은 회원이 체크하지 않은 상태에서 이용약관, 개인정보처리방침, 위치정보 안내를 각각 확인하고 체크한 뒤에 만들어집니다. 체크하지 않으면 계정을 만들 수 없습니다. 중요한 내용, 즉 회사가 돌봄 약속의 당사자가 아니라는 점, 돌봄 제공자를 검증하지 않는다는 점, 위험의 인수, 책임의 한계는 가입 화면과 첫 예약 화면에서 따로 보여 줍니다.</p>
+
+  <h2>제4조 (약관의 변경)</h2>
+  <p>회사는 이 약관을 바꿀 수 있습니다. 바꾼 약관은 시행일, 바뀌기 전과 후의 차이, 회원이 동의하지 않을 때의 선택(계정 삭제)을 적어 이 페이지에 공지합니다. 회사에 이메일이 있는 회원에게는 그 주소로도 알립니다.</p>
+  <ul>
+    <li>회원에게 불리하지 않은 변경은 시행일로부터 7일 전에 공지합니다.</li>
+    <li>회원에게 불리한 변경, 책임 제한을 넓히는 변경, 새로운 의무를 더하는 변경은 시행일로부터 30일 전에 공지합니다.</li>
+  </ul>
+  <p>새 버전의 적용은 회원이 그 버전의 체크박스에 동의함으로써 이루어집니다. 회사는 회원이 아무 말도 하지 않았다는 이유만으로, 권리를 줄이거나 회사의 책임을 넓게 면제하는 변경에 동의한 것으로 보지 않습니다. 동의하지 않는 회원은 시행일 전에 계정을 삭제하고 서비스를 그만둘 수 있습니다.</p>
+
+  <h2>제5조 (중개 플랫폼이며, 계약의 당사자가 아님)</h2>
+  <p>회사는 회원들이 서로 찾고 대화하도록 소프트웨어를 제공할 뿐입니다. 돌봄 약속은 보호자와 돌봄 제공자 사이에서만 성립합니다. 회사는 그 약속의 당사자, 대리인, 중개인으로서의 매수인이나 매도인이 아닙니다.</p>
+  <p>이 버전의 서비스는 대금을 받지 않고, 대금을 보관하지 않으며, 에스크로를 제공하지 않습니다. 보수가 있으면 두 회원이 서비스 밖에서 정합니다. 회사는 그 돈의 지급, 환불, 예치에 관여하지 않습니다.</p>
+  <p>홈 화면과 예약 화면은 이 조항을 다시 보여 줍니다. 이 버전은 서비스 안에서 유료 소비자 거래를 체결하지 않습니다. 사업자인 돌봄 제공자의 상호, 주소, 전화번호, 통신판매업 신고번호를 거래 전에 보여주는 기능이 생기기 전에는, 그 거래를 앱 안에서 받지 않습니다.</p>
+
+  <h2>제6조 (돌봄 제공자는 독립된 개인이며, 회사의 직원이 아님)</h2>
+  <p>돌봄 제공자는 자신의 판단과 자신의 계산으로 돌봄을 제공합니다. 회사는 돌봄 제공자를 고용하지 않고, 지휘·감독하지 않으며, 임금을 주지 않고, 근로시간이나 가격을 정하지 않습니다. 서비스에 가격이 표시되더라도 그 가격은 돌봄 제공자가 적은 것입니다. 회사의 직원, 대리인, 파트너라는 표시는 어디에도 없습니다.</p>
+
+  <h2>제7조 (검증하지 않음)</h2>
+  <p>회사는 회원의 신원, 자격, 면허, 동물위탁관리업 등록, 보험 가입, 범죄경력, 건강, 돌봄 능력, 소개 글의 진실, 후기의 공정성을 확인하지 않으며, 확인했다는 보증을 하지 않습니다. “예시”로 표시된 프로필은 실제 회원이 아닙니다. 서비스는 신원 확인 배지를 제공하지 않습니다.</p>
+  <p>동물을 맡아 기르거나 훈련하거나 보호하는 일을 영업으로 하는 돌봄 제공자는, 동물보호법 등 적용되는 법령이 정한 등록과 시설 기준과 교육을 스스로 갖추어야 합니다. 회사는 그 등록 여부를 심사하지 않습니다.</p>
+
+  <h2>제8조 (연령과 계정)</h2>
+  <p>계정은 만 14세 이상만 만들 수 있습니다. 만 14세 미만은 법정대리인의 동의 절차가 이 서비스에 없으므로 가입할 수 없습니다. 회사는 생년월일을 수집하지 않습니다. 나이는 회원의 선언입니다.</p>
+  <p>유료이든 무상이든 돌봄을 제공하겠다고 서비스를 등록하는 회원은 만 19세 이상이어야 합니다. 민법상 성년이 아닌 사람의 계약은 본인 또는 법정대리인이 취소할 수 있습니다. 만 19세 미만은 돌봄을 제공하지 않아야 하고, 만 19세 미만인 회원의 돌봄 약속은 그 회원 또는 법정대리인이 취소할 수 있습니다.</p>
+  <p>회원은 계정 접근을 자신이 관리합니다. 표시 이름은 이웃에게 보이는 이름이며, 실명 확인을 의미하지 않습니다. 계정 삭제는 앱의 내 정보 → 계정 → 계정 삭제에서 할 수 있고, 로그인할 수 없으면 hellopawfend@gmail.com 으로 요청할 수 있습니다.</p>
+
+  <h2>제9조 (행위 규범과 무관용)</h2>
+  <p>회원은 법령, 이 약관, 다른 회원과 동물의 안전을 지키며 서비스를 이용합니다. 회사는 아래 행위에 대해 무관용으로 대응합니다. 해당 콘텐츠를 삭제하고, 계정을 정지하거나 해지할 수 있습니다.</p>
+  <ul>
+    <li>범죄, 사기, 협박, 스토킹, 괴롭힘, 차별, 타인의 개인정보를 동의 없이 올리는 행위</li>
+    <li>성적 콘텐츠, 성적 서비스의 제안, 동의 없는 성적 이미지</li>
+    <li>미성년자를 성적 대상으로 삼는 어떠한 콘텐츠와 행위</li>
+    <li>동물을 학대하거나 학대를 부추기는 콘텐츠와 행위</li>
+    <li>스팸, 반복적인 광고, 서비스의 운영을 방해하는 행위</li>
+    <li>회사나 다른 회원을 사칭하는 행위, 허위 신원, 허위의 자격·등록·보험 표시</li>
+  </ul>
+  <p>회원은 자신이 돌봄을 맡길 권한이 있는 동물만 요청하고, 그 동물의 건강과 성격과 위험(물림, 알러지, 도망)을 상대에게 알립니다. 돌봄 제공자는 자신이 감당할 수 있는 돌봄만 수락합니다.</p>
+
+  <h2>제10조 (콘텐츠에 대한 이용허락)</h2>
+  <p>콘텐츠의 권리는 회원에게 남습니다. 회원은 회사에게, 서비스를 운영하고 표시하고 백업하고 신고를 처리하고 법령을 지키기 위하여 필요한 범위에서, 비독점적이고 무상이며 재허락 가능한 이용을 허락합니다. 이 허락은 저작권의 양도가 아닙니다.</p>
+  <p>회원이 콘텐츠를 지우거나 계정을 삭제하면 회사는 서비스 화면에서 이를 내립니다. 신고의 처리나 법령상 의무 때문에 남긴 사본은 개인정보처리방침의 보관 기간이 끝나면 지웁니다.</p>
+
+  <h2>제11조 (신고, 차단, 삭제)</h2>
+  <p>회원은 프로필, 채팅, 커뮤니티 글에서 다른 회원을 신고하고 차단할 수 있습니다. 차단하면 그 회원의 프로필, 글, 채팅이 차단한 사람에게서 숨겨지고, 새로 메시지를 주고받지 못합니다. 차단은 내 정보에서 해제할 수 있습니다.</p>
+  <p>회사는 이용자 콘텐츠 신고를 접수한 때로부터 24시간 안에 검토합니다. 이 약관이나 법령을 위반한 콘텐츠는 삭제하고, 위반한 회원의 계정을 정지하거나 해지합니다. 이 약속은 앱 스토어의 이용자 콘텐츠 요건을 위한 것입니다. 서비스 자체에 대한 민원의 처리 기간은 제13조를 따릅니다.</p>
+  <p>기기에 설치된 간단한 금칙어 검사는 명백한 협박, 성적 서비스 제안, 미성년자 대상 성적 표현, 동물 학대를 올리기 전에 거절하기 위한 것입니다. 그 검사는 완전한 모니터링이 아니며, 회사가 모든 콘텐츠를 미리 본다는 뜻이 아닙니다.</p>
+
+  <h2>제12조 (이용 제한과 해지)</h2>
+  <p>회원은 언제든지 계정을 삭제하여 이용을 끝낼 수 있습니다. 회사는 회원이 이 약관이나 법령을 위반하거나, 다른 회원 또는 동물의 안전을 해치거나, 서비스의 운영을 방해하는 경우 콘텐츠를 삭제하고 계정을 일시 정지하거나 해지할 수 있습니다. 긴급한 위험이 있으면 사전 통지 없이 정지할 수 있고, 그 사실을 이메일 또는 앱으로 알립니다. 그 밖의 경우에는 이유를 알리고 소명할 기회를 줍니다. 다만 법령이 통지를 금지하거나, 통지가 다른 사람의 안전을 해치는 경우에는 그렇지 않습니다.</p>
+  <p>회사는 서비스를 변경하거나 중단할 수 있습니다. 상당한 기간의 중단이 예상되면 앱 또는 이메일로 미리 알리되, 보안, 장애, 법령상 조치처럼 미리 알리기 어려운 경우는 예외로 합니다.</p>
+
+  <h2>제13조 (회원 사이의 분쟁과 플랫폼 민원)</h2>
+  <p>돌봄의 품질, 동물의 부상·질병·탈출·분실, 물건의 훼손, 보수의 지급과 환불에 관한 분쟁은 그 돌봄 약속의 두 회원 사이의 분쟁입니다. 회사는 그 분쟁의 판정자가 아닙니다. 회사는 신고를 전달할 수 있으나, 어느 한쪽을 대신하여 합의하거나 배상하지 않습니다.</p>
+  <p>서비스 자체의 오류, 계정, 개인정보, 약관에 관한 민원은 hellopawfend@gmail.com 으로 받을 수 있습니다. 회사는 그 민원의 진행 상황을 3영업일 안에 알리고, 결과 또는 처리 계획을 10영업일 안에 알리기 위해 노력합니다. 이 기간은 플랫폼에 대한 민원에 적용되며, 회원 사이의 돌봄 분쟁을 회사가 판단하는 기간이 아닙니다.</p>
+
+  <h2>제14조 (위험의 인수)</h2>
+  <p>반려동물 돌봄에는 물림, 할큄, 부상, 질병, 탈출, 분실, 사망, 주거와 물건의 훼손, 회원 사이의 금전 분쟁이 따를 수 있습니다. 회원은 그 위험을 알고 자신의 판단으로 돌봄 약속을 합니다. 회사는 돌봄 장소에 있지 않고, 동물을 보관하지 않으며, 돌봄을 수행하지 않습니다.</p>
+  <p>이 조의 위험 인수는 회사의 고의 또는 중과실로 인한 책임을 없애지 않습니다.</p>
+
+  <h2>제15조 (보증의 부인)</h2>
+  <p>서비스는 있는 그대로, 이용 가능한 범위에서 제공됩니다. 회사는 서비스가 중단되지 않을 것, 오류가 없을 것, 특정 회원이나 동물이 안전할 것, 돌봄이 성공할 것, 예시 데이터가 사실일 것, 회원의 소개가 진실일 것을 보증하지 않습니다. 법이 특정 보증을 배제하지 못하게 하는 경우 그 보증은 배제되지 않습니다.</p>
+
+  <h2>제16조 (책임의 제한)</h2>
+  <p>회사의 고의 또는 중과실로 회원에게 손해가 생기면 회사는 그 손해를 배상합니다. 이 약관의 어떤 조항도 회사, 회사의 대리인 또는 피용자의 고의 또는 중과실로 인한 책임을 배제하거나 제한하지 않습니다.</p>
+  <p>다른 회원의 행위, 돌봄 약속의 이행 또는 불이행, 동물의 행동, 회원이 서비스 밖에서 주고받은 금전에 대하여 회사는 책임이 없습니다. 회사는 그 법률관계의 당사자가 아니기 때문입니다. 이 문장도 회사 자신의 고의 또는 중과실에는 적용하지 않습니다.</p>
+  <p>회사의 경과실로 인한 손해를 법이 면제하지 못하게 하는 경우, 회사는 통상손해 가운데 직접 손해만을 배상합니다. 그 한도는 그 회원이 손해 발생일 이전 12개월 동안 회사에 실제로 낸 수수료의 합계입니다. 그 기간에 낸 수수료가 없으면 한도는 금 10만 원입니다. 이 한도는 회사의 고의 또는 중과실에는 적용하지 않습니다. 한도를 둔 이유는, 회사가 돌봄 계약을 체결하지 않고 돌봄 대가를 수수하지 않으며 돌봄 제공자의 사용자가 아니라는 점에 있습니다. 이 한도가 약관의 규제에 관한 법률 제7조에 따라 무효이면 그 한도만 무효이고, 고의 또는 중과실에 대한 책임은 남습니다.</p>
+  <p>간접손해, 특별손해, 일실이익, 데이터의 손실은 회사의 고의 또는 중과실이 아닌 한 배상하지 않습니다.</p>
+
+  <h2>제17조 (회원의 배상)</h2>
+  <p>회원의 약관 위반, 법령 위반, 또는 다른 회원·반려동물·제3자에게 입힌 손해 때문에 회사를 상대로 청구나 행정 절차가 제기되면, 회원은 회사의 고의 또는 중과실로 인한 부분을 제외하고, 그 절차로 회사가 입은 손해와 합리적인 변호사 비용을 배상합니다. 이 조항은 회사의 고의 또는 중과실을 회원에게 떠넘기지 않습니다.</p>
+
+  <h2 id="location">제18조 (위치정보)</h2>
+  <p>회사의 위치정보 관련 연락처는 IMEX Global, hellopawfend@gmail.com 입니다.</p>
+  <p>이 버전에서 기기의 위치는 회원이 산책 또는 방문을 시작한 뒤에만 요청됩니다. 좌표와 경로는 그 기기의 화면에 그리기 위하여 쓰이며, 회사의 서버로 전송되지 않고 상대 회원에게도 전송되지 않습니다. 서버에 저장되는 “동네”는 회원이 목록에서 고른 지역의 이름이며, 위치정보가 아닙니다.</p>
+  <p>회원은 가입 시 이 조항에 별도로 동의합니다. 동의하지 않으면 계정을 만들 수 없습니다. 계정을 만든 뒤에도 휴대폰의 위치 권한은 산책 또는 방문을 시작할 때 따로 묻습니다. 그 권한을 거절하면 서비스의 나머지 기능은 사용할 수 있고, 그 기기에서는 실시간 위성 위치 대신 기기에만 있는 예시 경로가 재생될 수 있습니다. 회원은 휴대폰 설정에서 위치 권한을 언제든지 끌 수 있습니다.</p>
+  <p>회사는 이 버전에서 개인위치정보를 수집하지 않으므로, 개인위치정보의 보유 기간과 제3자 제공은 없습니다. 이용·제공 기록도 만들지 않습니다. 나중에 경로를 서버에 올리거나 상대 회원에게 보여주는 기능을 켜려면, 그 전에 새로운 동의를 받습니다. 위치정보법상 신고가 필요한 경우에는 그 신고를 마친 뒤에만 그 기능을 켭니다.</p>
+  <p>회원은 위치 권한을 거절할 권리, 동의를 철회할 권리(계정 삭제 또는 권한 끄기), 열람과 삭제를 요청할 권리를 가집니다. 이 버전에서 회사에 저장된 위치 좌표는 없으므로, 삭제 요청의 대상이 되는 서버 보관 위치정보는 없습니다.</p>
+
+  <h2>제19조 (개인정보)</h2>
+  <p>개인정보의 항목, 목적, 보관 기간, 처리 수탁자, 국외 이전, 권리 행사, 개인정보 보호책임자는 개인정보처리방침에 따릅니다.</p>
+
+  <h2>제20조 (준거법과 재판)</h2>
+  <p>이 약관은 대한민국 법령에 따릅니다. 회사와 회원 사이의 소송은 서울중앙지방법원을 관할로 합니다. 소비자 보호에 관한 강행 규정이 회원의 주소지 관할을 보장하면 그 법원을 따릅니다. 이 조항은 회원의 소를 제기할 권리를 빼앗거나 증명 책임을 회원에게 돌리지 않습니다.</p>
+
+  <h2>제21조 (분리 가능성)</h2>
+  <p>이 약관의 일부 조항이 무효이거나 집행할 수 없어도 나머지 조항은 유효합니다. 다만 남은 부분만으로는 계약의 목적을 이룰 수 없거나, 남은 부분이 어느 한쪽에 부당하게 불리하면 약관의 규제에 관한 법률이 정하는 바에 따릅니다. 무효인 조항은 법이 허용하는 범위에서 당사자의 뜻에 가장 가까운 유효한 내용으로 바꿉니다.</p>
+
+  <h2>제22조 (언어)</h2>
+  <p>약관은 한국어와 영어로 제공됩니다. 두 텍스트가 다르면 한국어본이 우선합니다.</p>
+
+  <h2>제23조 (문의)</h2>
+  <p>IMEX Global · <a href="mailto:hellopawfend@gmail.com">hellopawfend@gmail.com</a> · <a href="support.html">고객지원</a> · <a href="privacy.html">개인정보처리방침</a></p>
+
+  <h2>부칙</h2>
+  <p>이 약관은 2026년 10월 23일부터 시행합니다. 이 버전의 커뮤니티, 장소, 돌봄 요청, 예약, 후기, 산책 기록은 그 기기에만 저장되는 기능입니다. 계정, 프로필, 반려동물, 돌봄 서비스 목록, 채팅, 알림 토큰, 동의 기록, 차단, 신고가 서버에 저장될 수 있습니다. 결제 기능은 없습니다.</p>
 
   <div class="en" lang="en">
-    <h1>Terms of Use</h1>
-    <p class="muted">Effective 2026-10-23 · Publisher IMEX Global · <a href="mailto:hellopawfend@gmail.com">hellopawfend@gmail.com</a></p>
-    <p>These terms cover use of PetNeighbor. Have them reviewed by counsel before a public launch. The <a href="privacy.html">Privacy Policy</a> covers personal information.</p>
-    <h2>The service</h2>
-    <p>The app provides neighbor profiles, pet introductions, care prices, chat and notifications. Community, places, care requests, bookings, reviews and walk logs are on-device previews in this version. There are no payments. People marked “Example” are not real members.</p>
-    <h2>Accounts</h2>
-    <p>Use an accurate display name and keep your account from being misused. You may not sign up if you are under 13. Delete the account any time under Me → Account → Delete account.</p>
-    <h2>Your content</h2>
-    <p>You write your profile, pet details, chat and anything you keep on the device. Do not use the app for anything illegal, for threats, spam, exposing someone else’s personal information, or content that harms animals. The operator may remove content or an account when the law requires it or when that protects another member.</p>
-    <h2>Location</h2>
-    <p>You pick your neighborhood. The device reads location only after you start a care session, and this version does not upload that route.</p>
-    <h2>No warranty</h2>
-    <p>Care is an arrangement between members. IMEX Global does not warrant the outcome of care, the accuracy of example data, or uninterrupted operation. The app is provided as is, to the extent the law allows.</p>
-    <h2>Changes</h2>
-    <p>If these terms change, the effective date on this page changes. Continuing to use the app means you accept the update.</p>
-    <h2>Contact</h2>
-    <p>IMEX Global · <a href="mailto:hellopawfend@gmail.com">hellopawfend@gmail.com</a> · <a href="support.html">Support</a></p>
+    <h1>Terms of Service</h1>
+    <p class="muted">Effective 2026-10-23 · Operator IMEX Global · Contact <a href="mailto:hellopawfend@gmail.com">hellopawfend@gmail.com</a></p>
+    <div class="card">
+      <p>The Korean text is the governing text. This English text is a translation for convenience. If the two differ, the Korean text controls.</p>
+      <p>The <a href="privacy.html">Privacy Policy</a> is part of these terms. Location terms are in <a href="#location-en">section 18</a>.</p>
+    </div>
+
+    <h2>1. Purpose and parties</h2>
+    <p>These terms govern use of PetNeighbor (멍냥이웃), the software IMEX Global (“the company”) provides. The service introduces neighbors for pet care and lets them exchange profiles, messages, and community posts. The company does not itself provide the care. Contact: hellopawfend@gmail.com.</p>
+
+    <h2>2. Definitions</h2>
+    <ul>
+      <li>A “member” is a person aged 14 or older who accepts these terms, the privacy policy, and the location terms, and then creates an account.</li>
+      <li>A “pet parent” is the member who owns the animal or who has authority to arrange its care.</li>
+      <li>A “caregiver” is a member who lists care they offer, such as a walk, a drop-in, sitting, grooming, training, or transport.</li>
+      <li>A “care arrangement” is the contract between a pet parent and a caregiver on what care will be given, when, where, and for what fee. The company is not a party to that contract.</li>
+      <li>“Content” means names, bios, pet details, posts, comments, messages, reviews, and place recommendations that a member submits.</li>
+    </ul>
+
+    <h2>3. Where the terms are shown</h2>
+    <p>The terms are posted in the service and on this page. An account is created only after the person checks, from an unchecked state, the terms, the privacy policy, and the location terms. The points that matter most — the company is not a party, caregivers are not vetted, risk sits with the members, and liability is limited — are shown again on the sign-up screen and on the first booking screen.</p>
+
+    <h2>4. Changes</h2>
+    <p>The company may change these terms. The new text is posted here with the effective date, a comparison of what changed, and the choice to delete the account if the member does not agree. Members who have an email address are also notified there.</p>
+    <ul>
+      <li>A change that is not adverse is posted at least 7 days before it takes effect.</li>
+      <li>A change that is adverse, that widens a limit on liability, or that adds a new duty is posted at least 30 days before it takes effect.</li>
+    </ul>
+    <p>A new version applies when the member checks the box for that version. Silence alone is not acceptance of a change that reduces the member’s rights or expands a waiver of the company’s liability. A member who does not agree may delete the account and stop using the service before the effective date.</p>
+
+    <h2>5. A marketplace, not a party</h2>
+    <p>The company provides software that lets members find one another and talk. A care arrangement is formed only between the pet parent and the caregiver. The company is not a party to that arrangement, and it is not the buyer or the seller of the care.</p>
+    <p>This version of the service does not take payment, does not hold funds, and does not offer escrow. If money changes hands, the two members arrange it outside the service. The company does not pay, refund, or custody that money.</p>
+    <p>The home screen and the booking screen repeat this notice. This version does not conclude a paid consumer transaction inside the service. Until the service can show a business caregiver’s name, address, phone number, and mail-order report number before the transaction, it will not take that transaction in the app.</p>
+
+    <h2>6. Caregivers are independent, not employees</h2>
+    <p>A caregiver provides care on their own judgment and for their own account. The company does not hire caregivers, direct them, pay them wages, set their hours, or set their prices. A price shown in the service is a price the caregiver typed. Nothing in the service holds a caregiver out as an employee, agent, or partner of the company.</p>
+
+    <h2>7. No vetting</h2>
+    <p>The company does not verify a member’s identity, qualifications, licenses, animal-boarding registration, insurance, criminal record, health, skill, the truth of a bio, or the fairness of a review, and it does not promise that it has done so. Profiles marked as examples are not real members. The service does not offer an identity-verification badge.</p>
+    <p>A caregiver who, as a business, takes animals in to raise, train, or protect them must hold any registration, facility standard, and training that the Animal Protection Act or another applicable law requires. The company does not check that registration.</p>
+
+    <h2>8. Age and accounts</h2>
+    <p>Only a person aged 14 or older may create an account. The service has no guardian-consent flow, so a person under 14 may not sign up. The company does not collect a date of birth. Age is the member’s declaration.</p>
+    <p>A member who lists care, paid or unpaid, must be 19 or older. Under the Civil Act, a minor’s contract can be cancelled by the minor or their guardian. A person under 19 must not offer care, and a care arrangement made by a member under 19 may be cancelled by that member or their guardian.</p>
+    <p>The member keeps control of access to the account. A display name is the name neighbors see. It is not an identity check. The account can be deleted in the app at Me → Account → Delete account. If the member cannot sign in, they may email hellopawfend@gmail.com.</p>
+
+    <h2>9. Conduct and zero tolerance</h2>
+    <p>Members use the service in line with the law, these terms, and the safety of other members and animals. The company has zero tolerance for the conduct below. It may remove the content and suspend or close the account.</p>
+    <ul>
+      <li>Crime, fraud, threats, stalking, harassment, discrimination, or posting another person’s personal information without consent</li>
+      <li>Sexual content, offers of sexual services, or intimate images shared without consent</li>
+      <li>Any content or conduct that sexualizes a minor</li>
+      <li>Animal abuse, or content that encourages it</li>
+      <li>Spam, repeated advertising, or interference with the service</li>
+      <li>Impersonation, a false identity, or a false claim of a license, registration, or insurance</li>
+    </ul>
+    <p>A member requests care only for an animal they have authority over, and tells the other member about health, temperament, and risks such as biting, allergies, or escape. A caregiver accepts only care they can actually provide.</p>
+
+    <h2>10. License to content</h2>
+    <p>The member keeps the rights in their content. The member grants the company a non-exclusive, royalty-free, sublicensable license to host, display, back up, and moderate that content, and to use it as needed to operate the service and to meet a legal duty. This is not an assignment of copyright.</p>
+    <p>When the member deletes the content or the account, the company takes it off the service. A copy kept to handle a report or to meet a legal duty is deleted when the retention period in the privacy policy ends.</p>
+
+    <h2>11. Reports, blocks, and removal</h2>
+    <p>A member can report and block another member from a profile, a chat, or a community post. A block hides that member’s profile, posts, and chat from the person who blocked them, and stops new messages between them. The block can be lifted from Me.</p>
+    <p>The company reviews a user-content report within 24 hours of receiving it. Content that breaks these terms or the law is removed, and the account that provided it may be suspended or closed. That commitment is for the app stores’ user-content rules. Complaints about the platform itself follow the clocks in section 13.</p>
+    <p>A short on-device check refuses clear threats, offers of sexual services, sexual content involving a minor, and animal abuse before they are posted. That check is not full moderation, and it does not mean the company reads every item in advance.</p>
+
+    <h2>12. Suspension and ending use</h2>
+    <p>A member may stop using the service at any time by deleting the account. The company may remove content and may suspend or close an account when a member breaks these terms or the law, endangers another member or an animal, or interferes with the service. If the risk is urgent, the company may suspend first and then tell the member by email or in the app. Otherwise it states the reason and gives a chance to respond, unless the law forbids notice or notice would itself put someone at risk.</p>
+    <p>The company may change or stop the service. If a meaningful interruption is planned, it gives notice in the app or by email, except where security, an outage, or a legal order makes advance notice impractical.</p>
+
+    <h2>13. Disputes between members, and complaints about the platform</h2>
+    <p>Disputes about the quality of care, an animal’s injury, illness, escape, loss, or death, damage to property, or the payment or refund of a fee belong to the two members in that care arrangement. The company is not the judge of that dispute. It may pass a report along. It does not settle the dispute for either side and it does not pay that claim.</p>
+    <p>Complaints about the service itself, an account, personal information, or these terms may be sent to hellopawfend@gmail.com. The company aims to say how that complaint is progressing within 3 business days, and to give the result or a plan within 10 business days. Those clocks are for complaints about the platform. They are not a promise that the company will decide a care dispute.</p>
+
+    <h2>14. Assumption of risk</h2>
+    <p>Pet care can involve bites, scratches, injury, illness, escape, loss, death, damage to a home or to property, and money disputes between members. Members know that and enter a care arrangement on their own judgment. The company is not at the location, does not keep the animal, and does not perform the care.</p>
+    <p>This section does not remove the company’s liability for its own intent or gross negligence.</p>
+
+    <h2>15. No warranty</h2>
+    <p>The service is provided as available. The company does not warrant that the service will be uninterrupted or error-free, that a member or an animal will be safe, that care will succeed, that example data is true, or that a member’s bio is true. A warranty that the law does not allow to be disclaimed is not disclaimed.</p>
+
+    <h2>16. Limitation of liability</h2>
+    <p>If the company’s intent or gross negligence causes a member a loss, the company compensates that loss. No clause in these terms excludes or limits the liability of the company, its agents, or its employees for intent or gross negligence.</p>
+    <p>The company is not liable for another member’s conduct, for performance or non-performance of a care arrangement, for an animal’s behavior, or for money the members exchange outside the service, because the company is not a party to that relationship. That sentence does not apply to the company’s own intent or gross negligence.</p>
+    <p>Where the law does not allow the company to disclaim liability for ordinary negligence, the company compensates only direct, ordinary loss. The cap is the total fees that member actually paid the company in the 12 months before the loss. If they paid no fees in that period, the cap is KRW 100,000. The cap does not apply to the company’s intent or gross negligence. The reason for the cap is that the company does not enter the care contract, does not take the care fee, and is not the caregiver’s employer. If the cap is void under article 7 of the Act on the Regulation of Terms and Conditions, only the cap falls away. Liability for intent or gross negligence remains.</p>
+    <p>Indirect loss, consequential loss, lost profits, and loss of data are not compensated except in cases of the company’s intent or gross negligence.</p>
+
+    <h2>17. Member indemnity</h2>
+    <p>If a claim or an administrative proceeding is brought against the company because of the member’s breach of these terms, breach of law, or harm to another member, an animal, or a third party, the member compensates the company’s loss from that proceeding, including reasonable attorneys’ fees, except to the extent the loss was caused by the company’s intent or gross negligence. This section does not shift the company’s intent or gross negligence onto the member.</p>
+
+    <h2 id="location-en">18. Location</h2>
+    <p>The contact for location matters is IMEX Global, hellopawfend@gmail.com.</p>
+    <p>In this version the device’s location is requested only after the member starts a walk or a visit. Coordinates and the route are used to draw the path on that device. They are not sent to the company’s servers and they are not sent to the other member. The “neighborhood” stored on the server is a district name the member picks from a list. It is not location information.</p>
+    <p>The member accepts this section separately at sign-up. Without that acceptance an account cannot be created. After sign-up, the phone’s location permission is still requested separately when a walk or visit starts. If the member refuses that permission, the rest of the service still works, and that device may play an on-device example route instead of live satellite location. The member can turn the permission off in the phone’s settings at any time.</p>
+    <p>The company does not collect personal location information in this version, so it has no retention period for it and it does not provide it to any third party. It also does not create use or provision records. A later feature that uploads a route or shows it to the other member requires a new consent first. If the Location Information Act requires a filing, that feature is switched on only after the filing is complete.</p>
+    <p>The member may refuse the phone permission, withdraw consent by deleting the account or turning the permission off, and ask for access or deletion. There is no server-held location trail in this version for a deletion request to act on.</p>
+
+    <h2>19. Personal information</h2>
+    <p>The items, purposes, retention, processors, overseas transfers, rights, and the privacy officer are set out in the Privacy Policy.</p>
+
+    <h2>20. Law and courts</h2>
+    <p>These terms follow the laws of the Republic of Korea. A lawsuit between the company and a member is brought in the Seoul Central District Court, except where a mandatory consumer-protection rule gives the member the court for their own address. This section does not take away the right to sue and does not shift the burden of proof onto the member.</p>
+
+    <h2>21. Severability</h2>
+    <p>If a clause is invalid or cannot be enforced, the rest stays in effect, unless what remains cannot achieve the purpose of the contract or is unduly one-sided, in which case the Act on the Regulation of Terms and Conditions applies. An invalid clause is replaced, to the extent the law allows, with a valid clause that is as close as possible to what the parties intended.</p>
+
+    <h2>22. Language</h2>
+    <p>The terms are provided in Korean and English. If the two texts differ, the Korean text controls.</p>
+
+    <h2>23. Contact</h2>
+    <p>IMEX Global · <a href="mailto:hellopawfend@gmail.com">hellopawfend@gmail.com</a> · <a href="support.html">Support</a> · <a href="privacy.html">Privacy Policy</a></p>
+
+    <h2>Addendum</h2>
+    <p>These terms take effect on 23 October 2026. In this version, community posts, places, care requests, bookings, reviews, and walk logs stay on the device. Accounts, profiles, pets, caregiver service lists, chat, push tokens, consent records, blocks, and reports may be stored on the server. There is no payment feature.</p>
   </div>
 </main>
 </body>

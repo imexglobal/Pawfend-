@@ -9,7 +9,7 @@ The iOS team id `6388ACWLTQ` is already set on the Xcode target with automatic s
 
 ## What you have to create
 
-1. A **Supabase** project (free tier is enough to start). Steps are in `SETUP.md`. Run the current `supabase/schema.sql`. It is not the same file as the first import: pet notes are owner-only, push rows have a platform, and chat timestamps cannot be forged.
+1. A **Supabase** project (free tier is enough to start). Steps are in `SETUP.md`. Run the current `supabase/schema.sql`. It is not the same file as the first import: pet notes are owner-only, push rows have a platform, chat timestamps cannot be forged, and consent, block, and report tables are included. If the old schema is already applied, also run `supabase/legal.sql`.
 2. An **Apple Developer** membership for team `6388ACWLTQ`, so Xcode can sign and App Store Connect will accept the upload.
 3. A **Google Play Console** developer account (one-time registration fee). The debug APK in this repo is not what you upload.
 4. A new **VAPID** key pair. The public key in `config.js` has no private key here. See SETUP.md step 5.
@@ -183,8 +183,10 @@ pet,dog,cat,walk,sitter,neighbor,care,chat,반려동물,산책,펫시터
 - Medical/treatment: **None** (pet notes are not a medical service)
 - Unrestricted web access: **No**
 - User-generated content: **Yes** (chat). Messaging between users: **Yes**
-- Age assurance / parental controls: none built in. The terms say under 13 may not sign up.
+- Age assurance / parental controls: the in-app gate is a declaration of age 14 or older, which is stricter than this 12+ answer. Caregivers also declare that they are 19 or older. No birth date is collected.
 - Result to select: **12+**
+
+Build 1.0 (1) already in App Store Connect does not include the terms checkbox, the location checkbox, report and block, or the booking acknowledgement. Those are for the next binary. Have a Korean lawyer read `LEGAL_NOTES.md`, `terms.html`, and `privacy.html` before that upload. The notes are a draft, not a legal opinion.
 
 ### Apple privacy nutrition labels
 

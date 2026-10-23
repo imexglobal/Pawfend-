@@ -8,14 +8,16 @@
   :root{--bg:#FFF8F1;--card:#fff;--ink:#2B2118;--muted:#5C5148;--line:#F0E4D7;--brand:#C4471A}
   @media (prefers-color-scheme:dark){:root{--bg:#17120F;--card:#241D18;--ink:#F5EDE6;--muted:#C4B4A6;--line:#3A3029;--brand:#FFB088}}
   *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;line-height:1.6}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;line-height:1.65}
   main{max-width:720px;margin:0 auto;padding:calc(20px + env(safe-area-inset-top)) 20px calc(32px + env(safe-area-inset-bottom))}
   a{color:var(--brand)}
   h1{font-size:28px;letter-spacing:-.02em;margin:8px 0}
   h2{font-size:18px;margin:28px 0 8px}
   p,li{font-size:16px}
+  table{width:100%;border-collapse:collapse;font-size:15px;background:var(--card)}
+  th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
   .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px}
-  .en{margin-top:40px;padding-top:8px;border-top:1px solid var(--line)}
+  .en{margin-top:48px;padding-top:8px;border-top:1px solid var(--line)}
   .muted{color:var(--muted)}
 </style>
 </head>
@@ -23,90 +25,177 @@
 <main>
   <p><a href="index.html">← PetNeighbor</a></p>
   <h1>개인정보처리방침</h1>
-  <p class="muted">시행일 2026-10-23 · 게시자 IMEX Global · 문의 <a href="mailto:hellopawfend@gmail.com">hellopawfend@gmail.com</a></p>
-  <p>멍냥이웃 PetNeighbor(이하 “앱”)는 동네 이웃 사이의 반려동물 돌봄과 대화를 위한 앱입니다. 이 문서는 앱이 <strong>실제로</strong> 다루는 정보를 적습니다. 수집하지 않는 항목은 수집하지 않는다고 적습니다.</p>
-
-  <h2>계정을 만들기 전에</h2>
-  <p>Supabase 프로젝트가 연결되지 않은 동안 앱은 데모로 동작합니다. 프로필, 글, 예약, 채팅은 그 기기의 저장 공간에만 남고 IMEX Global 서버로 전송되지 않습니다. 지도 화면을 열면 기기에서 OpenStreetMap 타일을 받아 오고, 글꼴과 지도 라이브러리는 jsDelivr와 cdnjs에서 받아 옵니다.</p>
-
-  <h2>계정을 만든 뒤 서버에 저장되는 정보</h2>
-  <p>운영자가 Supabase를 연결하고 회원이 가입하면 아래만 서버(Supabase, 설정 안내의 권장 리전은 서울)에 저장됩니다.</p>
-  <ul>
-    <li><strong>계정.</strong> 이메일 로그인 시 이메일 주소와 로그인 코드 확인 기록. 카카오 로그인을 켠 경우, 회원이 카카오에서 동의한 범위의 카카오 회원 식별자, 닉네임, 프로필 사진 주소. 카카오 이메일은 카카오 앱이 비즈 앱이고 회원이 이메일에 동의한 경우에만 받습니다.</li>
-    <li><strong>프로필.</strong> 표시 이름, 이모지 아바타, 회원이 목록에서 고른 동네(GPS로 정하지 않음), 소개 글, 돌봄 서비스 종류와 가격.</li>
-    <li><strong>반려동물.</strong> 이름, 종류(강아지/고양이/기타), 품종, 나이, 특이사항(알러지, 성격). 특이사항은 보호자에게만 보입니다. 이름, 종류, 품종, 나이는 로그인한 다른 회원에게 보입니다.</li>
-    <li><strong>채팅.</strong> 메시지 내용, 보낸 사람, 시각. 그 대화의 두 사람만 읽을 수 있습니다.</li>
-    <li><strong>알림 등록.</strong> 웹 푸시 주소와 암호화 키, 또는 iOS/Android 푸시 토큰. 계정에 연결됩니다. 새 메시지의 앞부분(120자 이내)이 알림 문구로 Apple Push Notification service, Firebase Cloud Messaging, 또는 브라우저 푸시 서비스에 전달되어 기기에 표시됩니다.</li>
-    <li><strong>내부 식별자.</strong> 계정마다 무작위 UUID.</li>
-  </ul>
-
-  <h2>서버에 올리지 않는 정보 (이 버전)</h2>
-  <ul>
-    <li>커뮤니티 글과 댓글, 장소 추천과 평점, 돌봄 요청, 지원, 예약, 후기, 산책 경로는 이 기기 안에만 저장됩니다.</li>
-    <li>산책·방문 중 GPS 위치는 그 기기의 화면에 경로를 그리기 위해서만 쓰이며, 이 버전에서는 서버로 업로드하지 않습니다. 돌봄을 시작하기 전에는 위치를 묻지 않습니다.</li>
-    <li>언어 설정은 이 기기에만 저장됩니다.</li>
-    <li>연락처, 사진, 카메라, 마이크, 광고 식별자, 결제 카드는 수집하지 않습니다. 결제 기능은 없습니다.</li>
-    <li>다른 회사의 광고·추적 SDK를 넣지 않습니다. 앱 활동 데이터를 판매하지 않습니다.</li>
-  </ul>
-
-  <h2>처리 수탁자</h2>
+  <p class="muted">시행일 2026-10-23 · 개인정보처리자 IMEX Global · 개인정보 보호책임자 IMEX Global 대표 · <a href="mailto:hellopawfend@gmail.com">hellopawfend@gmail.com</a></p>
   <div class="card">
-    <ul>
-      <li>Supabase — 계정, 데이터베이스, 서버 함수. 프로젝트 리전은 운영자가 고릅니다.</li>
-      <li>Apple, Google — 앱 배포와 푸시 알림 전달.</li>
-      <li>OpenStreetMap 타일 서버 — 지도를 열 때 지도 이미지 요청.</li>
-      <li>jsDelivr, cdnjs — 글꼴, 지도 라이브러리, Supabase 라이브러리.</li>
-      <li>카카오 — 카카오 로그인을 켠 경우에만.</li>
-    </ul>
+    <p>한국어본이 정본입니다. 영어본과 다르면 한국어본이 우선합니다. 이 문서는 멍냥이웃 PetNeighbor이 이 버전에서 실제로 다루는 개인정보만 적습니다. 수집하지 않는 항목은 수집하지 않는다고 적습니다.</p>
   </div>
 
-  <h2>보관과 삭제</h2>
-  <p>서버에 있는 계정 정보는 회원이 삭제할 때까지 보관합니다. 앱의 <strong>내 정보 → 계정 → 계정 삭제</strong>를 누르면 계정이 바로 삭제되고, 프로필, 반려동물, 내가 참여한 대화와 메시지, 푸시 등록이 함께 지워집니다. 상대방과의 대화도 함께 삭제됩니다. 기기에만 있던 데이터도 그 기기에서 지웁니다. 로그인할 수 없으면 <a href="mailto:hellopawfend@gmail.com">hellopawfend@gmail.com</a>으로 계정 이메일을 보내 삭제를 요청할 수 있습니다.</p>
-  <p>로그아웃하거나 알림을 끄면 그 기기의 푸시 등록을 지웁니다. 푸시 서비스가 기기를 더 이상 유효하지 않다고 알려 주면 그 등록도 지웁니다.</p>
+  <h2>1. 처리하는 사람</h2>
+  <p>개인정보처리자는 IMEX Global입니다. 개인정보 보호책임자는 IMEX Global의 대표이며, 연락처는 hellopawfend@gmail.com 입니다. 서비스는 이웃 사이의 반려동물 돌봄 소개와 채팅을 위한 앱입니다. 회사는 돌봄 계약의 당사자가 아닙니다.</p>
 
-  <h2>아동</h2>
-  <p>이 앱은 13세 미만 아동을 대상으로 하지 않습니다. 거주 지역의 기준 연령에 미달하면 사용하지 말아 주세요.</p>
+  <h2>2. 계정을 만들기 전에</h2>
+  <p>Supabase 프로젝트가 연결되지 않은 동안 앱은 데모로 동작합니다. 프로필, 글, 예약, 채팅, 동의 체크는 그 기기의 저장 공간에만 남고 IMEX Global의 서버로 전송되지 않습니다. 지도 화면을 열면 기기에서 OpenStreetMap 타일을 받아 오고, 글꼴과 지도·계정 라이브러리는 jsDelivr와 cdnjs에서 받아 옵니다. 그 요청에는 기기의 IP 주소가 따라갑니다. 데모에서는 계정을 만들지 않습니다.</p>
 
-  <h2>위치정보</h2>
-  <p>서버에 저장되는 “동네”는 회원이 고른 지역 이름입니다. GPS 경로는 이 버전에서 기기 밖으로 나가지 않습니다. 이후 버전이 위치를 서버로 보내게 되면, 그 전에 위치정보법에 따른 위치기반서비스사업자 신고가 필요한지 확인해야 합니다.</p>
+  <h2>3. 수집하는 항목, 목적, 근거</h2>
+  <p>운영자가 Supabase를 연결하고 회원이 가입하면 아래 항목을 처리합니다. 법적 근거는 개인정보 보호법 제15조입니다. 서비스를 제공하기 위하여 필요한 항목은 회원과의 계약 이행(제15조 제1항 제4호)이고, 신고와 차단처럼 다른 회원의 안전을 위한 항목은 정당한 이익(제15조 제1항 제6호)입니다. 위치정보 약관에 대한 동의는 별도 체크(제15조 제1항 제1호)로 받지만, 이 버전에서 좌표 자체는 수집하지 않습니다.</p>
+  <table>
+    <thead><tr><th>항목</th><th>목적</th><th>보관</th></tr></thead>
+    <tbody>
+      <tr><td>이메일 주소, 로그인 코드가 확인되었다는 기록. 카카오 로그인을 켠 경우, 회원이 카카오에서 동의한 회원 식별자, 닉네임, 프로필 사진 주소. 카카오 이메일은 카카오 앱이 비즈 앱이고 회원이 이메일에 동의한 때만.</td><td>계정 만들기와 로그인</td><td>계정 삭제 시까지. 삭제와 함께 지움</td></tr>
+      <tr><td>표시 이름, 이모지 아바타, 회원이 목록에서 고른 동네 이름, 소개 글, 돌봄 서비스 종류와 가격</td><td>프로필을 다른 회원에게 보여 주기</td><td>계정 삭제 시까지</td></tr>
+      <tr><td>반려동물 이름, 종류, 품종, 나이. 특이사항(알러지, 성격)은 보호자에게만 보임</td><td>돌봄에 필요한 동물 정보를 보여 주기</td><td>계정 삭제 시까지. 보호자가 먼저 지울 수 있음</td></tr>
+      <tr><td>채팅 내용, 보낸 사람, 시각</td><td>두 회원 사이의 메시지</td><td>그 대화의 회원이 계정을 삭제할 때까지. 삭제는 상대방의 대화 사본도 함께 지움</td></tr>
+      <tr><td>웹 푸시 주소와 암호화 키, 또는 iOS·Android 푸시 토큰. 알림 문구로 메시지 앞부분 120자 이내</td><td>새 메시지 알림</td><td>회원이 로그아웃하거나 알림을 끄거나 계정을 삭제할 때까지. 회사는 전달 시도 외에 알림 본문을 따로 보관하지 않음</td></tr>
+      <tr><td>동의 기록: 약관·개인정보·위치정보 버전, 만 14세 선언, 만 19세 돌봄 선언, 시각. 첫 돌봄 확인의 약관 버전과 시각</td><td>무엇을 언제 동의했는지 보여 주기</td><td>계정 삭제 시 함께 지움</td></tr>
+      <tr><td>차단: 차단한 회원과 차단된 회원의 식별자, 시각</td><td>차단한 사람의 화면에서 상대를 숨기고 새 메시지를 막기</td><td>차단을 해제하거나 계정을 삭제할 때까지</td></tr>
+      <tr><td>신고: 신고한 회원, 신고된 회원, 화면 종류, 이유, 상세(1,000자 이내), 시각</td><td>약관 위반 검토와 스토어 정책상 신고 처리</td><td>신고일로부터 1년 이내. 자동 삭제 작업은 아직 없으므로 운영자가 기한 안에 지움</td></tr>
+      <tr><td>계정 UUID</td><td>위 항목을 같은 회원에게 연결</td><td>계정 삭제 시까지</td></tr>
+    </tbody>
+  </table>
+  <p>동네 이름은 GPS로 정하지 않습니다. 생년월일, 주민등록번호, 연락처 주소록, 사진 파일, 카메라, 마이크, 광고 식별자, 결제 카드는 수집하지 않습니다. 결제 기능은 없습니다. 다른 회사의 광고·추적 SDK를 넣지 않습니다. 개인정보를 팔지 않습니다.</p>
 
-  <h2>문의</h2>
-  <p>IMEX Global · <a href="mailto:hellopawfend@gmail.com">hellopawfend@gmail.com</a> · <a href="support.html">고객지원</a></p>
+  <h2>4. 이 버전에서 서버에 올리지 않는 정보</h2>
+  <ul>
+    <li>커뮤니티 글과 댓글, 장소 추천과 평점, 돌봄 요청, 지원, 예약, 후기, 산책 경로는 이 기기에만 저장됩니다. 앱을 지우거나 데모 데이터를 초기화하면 그 기기에서 사라집니다.</li>
+    <li>산책·방문 중 GPS 좌표는 그 기기의 화면에 경로를 그리기 위해서만 쓰입니다. 회사나 상대 회원에게 전송되지 않습니다. 돌봄을 시작하기 전에는 위치를 묻지 않습니다. 위치 권한을 거절해도 계정이 이미 있으면 나머지 기능은 사용할 수 있습니다.</li>
+    <li>언어 설정은 이 기기에만 저장됩니다.</li>
+  </ul>
+
+  <h2>5. 보관과 파기</h2>
+  <p>목적이 끝나면 지체 없이 파기합니다. 계정 정보는 회원이 삭제할 때까지 보관하고, 삭제하는 때 함께 파기합니다. 앱의 <strong>내 정보 → 계정 → 계정 삭제</strong>를 누르면 인증 계정과 함께 프로필, 반려동물, 참여 중인 대화와 메시지, 푸시 등록, 동의 기록, 차단, 그 회원이 신고한 글의 신고자 연결이 지워집니다. 상대방이 이 회원을 신고한 기록은 신고 처리가 끝나기 전까지 신고된 사람 칸만 비운 채 남을 수 있고, 신고일로부터 1년 안에 운영자가 삭제합니다. 로그인할 수 없으면 <a href="mailto:hellopawfend@gmail.com">hellopawfend@gmail.com</a>으로 계정 이메일을 보내 삭제를 요청할 수 있습니다.</p>
+  <p>전자 파일은 복구되지 않도록 삭제합니다. 종이에 출력한 개인정보는 없습니다.</p>
+
+  <h2>6. 제3자 제공과 처리 위탁</h2>
+  <p>회사는 개인정보를 팔지 않고, 광고 목적으로 제3자에게 주지 않습니다. 서비스를 운영하기 위하여 아래 업체에 처리를 맡깁니다. 회원 사이의 프로필·반려동물 공개 항목·채팅은 그 기능을 쓰는 다른 회원에게 보이는 것이며, 회사의 별도 판매가 아닙니다.</p>
+  <table>
+    <thead><tr><th>받는 곳</th><th>하는 일</th><th>맡기는 항목</th></tr></thead>
+    <tbody>
+      <tr><td>Supabase, Inc. (미국 법인). 데이터베이스 리전은 운영자가 프로젝트를 만들 때 고릅니다. 설정 안내는 서울을 권합니다. 실제 리전이 서울이라고 이 문서가 단정하지는 않습니다.</td><td>계정, 데이터베이스, 서버 함수</td><td>제3항의 서버 저장 항목</td></tr>
+      <tr><td>Apple Inc. (미국), Apple Push Notification service</td><td>iOS 푸시 전달</td><td>기기 토큰, 메시지 앞부분 120자 이내</td></tr>
+      <tr><td>Google (미국), Firebase Cloud Messaging</td><td>Android 푸시 전달</td><td>기기 토큰, 메시지 앞부분 120자 이내</td></tr>
+      <tr><td>OpenStreetMap 타일 서버</td><td>지도 이미지</td><td>지도를 연 기기의 IP 주소. 좌표를 일부러 보내지 않음</td></tr>
+      <tr><td>jsDelivr, cdnjs</td><td>글꼴, 지도 라이브러리, Supabase 라이브러리</td><td>라이브러리를 받을 때의 IP 주소</td></tr>
+      <tr><td>카카오 (카카오 로그인을 켠 경우에만)</td><td>로그인</td><td>회원이 카카오 동의 화면에서 허용한 항목</td></tr>
+    </tbody>
+  </table>
+
+  <h2>7. 국외 이전</h2>
+  <p>개인정보 보호법 제28조의8 제1항 제3호에 따라, 회원과의 계약(계정, 프로필, 채팅, 알림)을 이행하기 위하여 필요한 범위에서 국외 처리가 이루어질 수 있습니다. 같은 조항이 정한 고지 사항은 아래에 적습니다. 회원은 계정 삭제로 이 처리의 근거가 된 계약을 끝낼 수 있고, 그러면 서버 보관 항목은 제5항대로 지워집니다. 국외 이전을 거부하면서 계정만 유지하는 방법은 없습니다. 계정이 없으면 서버에 개인정보를 두지 않기 때문입니다.</p>
+  <ul>
+    <li><strong>이전되는 항목.</strong> 제3항의 서버 저장 항목. 푸시는 토큰과 메시지 앞부분 120자. 지도와 라이브러리는 IP 주소. 산책 GPS 좌표는 이전하지 않습니다.</li>
+    <li><strong>나라, 시기, 방법.</strong> 미국(Supabase, Inc., Apple, Google) 및 운영자가 고른 Supabase 리전. 카카오를 켜면 카카오의 처리 위치. 회원이 가입하거나 메시지를 보내거나 알림이 발생할 때, 암호화된 인터넷 연결(HTTPS)로 전송됩니다. 리전이 한국이면 데이터베이스의 저장 위치는 한국일 수 있으나, 미국 법인의 지원 접근은 여전히 국외 처리가 될 수 있습니다.</li>
+    <li><strong>받는 곳의 이름과 연락처.</strong> Supabase, Inc. — privacy@supabase.com, supabase.com. Apple — privacy.apple.com. Google — policies.google.com. 카카오 — privacy.kakao.com (로그인을 켠 경우).</li>
+    <li><strong>목적과 보관.</strong> 제3항과 제5항과 같습니다. 받는 곳은 회사의 지시에 따른 처리 범위에서만 이용합니다.</li>
+    <li><strong>거부 방법과 효과.</strong> 가입 전에 거부하려면 체크하지 않으면 됩니다. 계정이 만들어지지 않습니다. 가입 후에 거부하려면 계정을 삭제하면 됩니다. 삭제하면 서비스를 더 이용할 수 없고 서버의 계정 정보가 지워집니다.</li>
+  </ul>
+  <p>회사는 수탁자가 개인정보 보호법을 어기도록 하는 계약을 하지 않습니다.</p>
+
+  <h2>8. 위치</h2>
+  <p>위치정보의 이용 조건은 <a href="terms.html#location">이용약관 제18조</a>에 있습니다. 이 버전에서 회사는 개인위치정보를 서버에 저장하지 않습니다. 따라서 개인위치정보의 보유 기간, 제3자 제공, 이용·제공사실 확인자료는 없습니다. 휴대폰 위치 권한을 거절하면 실시간 GPS만 꺼지고 앱의 나머지 기능은 사용할 수 있습니다.</p>
+
+  <h2>9. 만 14세 미만</h2>
+  <p>이 앱은 만 14세 미만 아동의 개인정보를 수집하지 않습니다. 법정대리인 동의 절차가 없습니다. 만 14세 미만은 가입할 수 없습니다. 만 14세 미만의 정보가 올라온 사실을 알게 되면 그 계정을 삭제합니다.</p>
+
+  <h2>10. 회원의 권리</h2>
+  <p>회원은 자신의 개인정보에 대하여 열람, 정정, 삭제, 처리 정지, 동의 철회를 요청할 수 있습니다. 앱에서 프로필·반려동물·계정을 직접 고치거나 지울 수 있습니다. 그 밖의 요청은 hellopawfend@gmail.com 으로 합니다. 회사는 지체 없이 조치하고, 법령에 따라 거절해야 하는 경우에는 이유를 알립니다. 동의 기록은 계정과 함께 삭제됩니다. 신고 기록은 제5항의 기간 동안 처리 목적으로 남은 뒤 삭제됩니다.</p>
+  <p>권리 행사에 대한 회사의 응답에 불만이 있으면 개인정보보호위원회(privacy.go.kr, 국번 없이 1833-6972) 또는 개인정보 분쟁조정위원회(kopico.go.kr, 1833-6972)에 분쟁 조정이나 상담을 신청할 수 있습니다.</p>
+
+  <h2>11. 안전성 확보</h2>
+  <p>서버 데이터는 회원 본인과, 채팅의 경우 그 대화의 두 사람만 읽도록 데이터베이스 규칙으로 제한합니다. 전송 구간은 HTTPS를 사용합니다. 서비스 역할 비밀키와 푸시 비밀키는 앱에 넣지 않습니다. 접속 권한은 운영에 필요한 범위로 제한합니다.</p>
+
+  <h2>12. 방침의 변경</h2>
+  <p>이 방침이 바뀌면 이 페이지의 시행일과 버전을 바꿉니다. 회원에게 불리한 변경은 시행 30일 전에, 그 밖의 변경은 7일 전에 공지하고, 앱에서 새 버전에 대한 체크를 다시 받습니다. 침묵만으로 새로운 수집에 동의한 것으로 보지 않습니다.</p>
+
+  <h2>13. 문의</h2>
+  <p>개인정보 보호책임자: IMEX Global 대표 · <a href="mailto:hellopawfend@gmail.com">hellopawfend@gmail.com</a><br>
+  <a href="support.html">고객지원</a> · <a href="terms.html">이용약관</a></p>
 
   <div class="en" lang="en">
     <h1>Privacy Policy</h1>
-    <p class="muted">Effective 2026-10-23 · Publisher IMEX Global · Contact <a href="mailto:hellopawfend@gmail.com">hellopawfend@gmail.com</a></p>
-    <p>PetNeighbor is a neighborhood pet-care and chat app. This policy lists what this version of the app actually handles.</p>
-    <h2>Before an account exists</h2>
-    <p>Until a Supabase project is connected, the app is a demo. Profiles, posts, bookings and chats stay in storage on that device and are not sent to an IMEX Global server. Opening a map loads OpenStreetMap tiles. The font, map library and Supabase library load from jsDelivr and cdnjs.</p>
-    <h2>What is stored on the server after sign-up</h2>
+    <p class="muted">Effective 2026-10-23 · Controller IMEX Global · Privacy officer: the representative of IMEX Global · <a href="mailto:hellopawfend@gmail.com">hellopawfend@gmail.com</a></p>
+    <div class="card">
+      <p>The Korean text controls if this English text differs. This policy lists only what this version of PetNeighbor actually handles.</p>
+    </div>
+
+    <h2>1. Who handles personal information</h2>
+    <p>The controller is IMEX Global. The privacy officer is the representative of IMEX Global, at hellopawfend@gmail.com. The service introduces neighbors for pet care and provides chat. The company is not a party to the care arrangement.</p>
+
+    <h2>2. Before an account exists</h2>
+    <p>Until a Supabase project is connected, the app is a demo. Profiles, posts, bookings, chats, and consent ticks stay on that device and are not sent to an IMEX Global server. Opening a map loads OpenStreetMap tiles. Fonts and the map and account libraries load from jsDelivr and cdnjs. Those requests carry the device’s IP address. The demo does not create an account.</p>
+
+    <h2>3. Items, purposes, and grounds</h2>
+    <p>After the operator connects Supabase and a member signs up, the items below are processed. The grounds are article 15 of the Personal Information Protection Act: contract performance for what the service needs (article 15(1)(4)), and legitimate interests for reports and blocks that protect other members (article 15(1)(6)). The location-terms checkbox is a separate consent (article 15(1)(1)), but this version does not collect the coordinates themselves.</p>
+    <table>
+      <thead><tr><th>Item</th><th>Purpose</th><th>Retention</th></tr></thead>
+      <tbody>
+        <tr><td>Email address, and a record that a login code was checked. If Kakao login is on: the Kakao user id, nickname, and profile-photo URL the member allows at Kakao. A Kakao email only if that Kakao app is a business app and the member consents to email.</td><td>Create the account and sign in</td><td>Until the account is deleted, then deleted with it</td></tr>
+        <tr><td>Display name, emoji avatar, neighborhood name picked from a list, bio, caregiver services and prices</td><td>Show a profile to other members</td><td>Until the account is deleted</td></tr>
+        <tr><td>Pet name, species, breed, age. Notes such as allergies or personality are visible only to the owner</td><td>Show the animal information care needs</td><td>Until the account is deleted. The owner can delete a pet sooner</td></tr>
+        <tr><td>Message text, sender, time</td><td>Messages between two members</td><td>Until a member of that thread deletes their account. Deletion also removes the other person’s copy of that thread</td></tr>
+        <tr><td>Web-push endpoint and keys, or the iOS or Android push token. A preview of up to 120 characters</td><td>Notify the member of a new message</td><td>Until logout, until notifications are turned off, or until the account is deleted. The company does not keep the notification body beyond the delivery attempt</td></tr>
+        <tr><td>Consent record: versions of the terms, privacy policy, and location terms, the age-14 declaration, the age-19 caregiver declaration, and the time. The first-booking acknowledgement stores the terms version and the time</td><td>Show what was accepted, and when</td><td>Deleted with the account</td></tr>
+        <tr><td>Block: the two member ids and the time</td><td>Hide that member and stop new messages</td><td>Until the block is lifted or the account is deleted</td></tr>
+        <tr><td>Report: reporter, reported member, screen, reason, detail up to 1,000 characters, time</td><td>Review a terms violation and meet store reporting rules</td><td>Within 1 year of the report. There is no deletion job yet, so the operator deletes them by the deadline</td></tr>
+        <tr><td>Account UUID</td><td>Tie the items above to the same member</td><td>Until the account is deleted</td></tr>
+      </tbody>
+    </table>
+    <p>The neighborhood name is not taken from GPS. The app does not collect a date of birth, a resident registration number, contacts, photo files, camera, microphone, an advertising ID, or payment cards. There is no payment feature. There is no third-party advertising or tracking SDK. Personal information is not sold.</p>
+
+    <h2>4. Not uploaded in this version</h2>
     <ul>
-      <li><strong>Account.</strong> Email address when you use email login, plus the record that a login code was checked. If Kakao login is turned on: the Kakao user id, nickname and profile-photo URL you consent to at Kakao. A Kakao email is received only when that Kakao app is a business app and you consent to email.</li>
-      <li><strong>Profile.</strong> Display name, emoji avatar, the neighborhood you pick from a list (not from GPS), bio, and caregiver services with prices.</li>
-      <li><strong>Pets.</strong> Name, species (dog, cat or other), breed, age, and notes such as allergies or personality. Notes are visible only to you. Name, species, breed and age are visible to other signed-in members.</li>
-      <li><strong>Chat.</strong> Message text, sender and time, readable only by the two people in that conversation.</li>
-      <li><strong>Push registration.</strong> A web-push endpoint and its encryption keys, or the iOS or Android push token, linked to your account. A preview of a new message (up to 120 characters) is sent through Apple Push Notification service, Firebase Cloud Messaging, or the browser push service so your phone can show it.</li>
-      <li><strong>Identifier.</strong> A random account UUID.</li>
-    </ul>
-    <h2>Not uploaded in this version</h2>
-    <ul>
-      <li>Community posts and comments, place recommendations and ratings, care requests, applications, bookings, reviews and walk routes stay on the device.</li>
-      <li>GPS during a walk or visit is used only to draw the route on that device. It is not uploaded. The app does not ask for location until you start care.</li>
+      <li>Community posts and comments, place recommendations and ratings, care requests, applications, bookings, reviews, and walk routes stay on the device. They disappear from that device when the app is removed or demo data is reset.</li>
+      <li>GPS during a walk or visit is used only to draw the route on that device. It is not sent to the company or to the other member. The app does not ask for location until care starts. Refusing the phone permission leaves the rest of an existing account usable.</li>
       <li>Language choice stays on the device.</li>
-      <li>The app does not collect contacts, photos, camera, microphone, advertising ID or payment cards. There is no payment feature.</li>
-      <li>There is no third-party advertising or tracking SDK. Activity data is not sold.</li>
     </ul>
-    <h2>Processors</h2>
-    <p>Supabase (account, database, edge functions; the operator chooses the region). Apple and Google (distribution and push delivery). OpenStreetMap tile servers (map images). jsDelivr and cdnjs (font and libraries). Kakao, only if Kakao login is enabled.</p>
-    <h2>Retention and deletion</h2>
-    <p>Server data is kept until you delete the account. In the app, choose <strong>Me → Account → Delete account</strong>. That deletes the auth user and, with it, the profile, pets, conversations you were in (including the other person’s copy of that thread), messages and push registrations. Data that existed only on that device is cleared there too. If you cannot sign in, email <a href="mailto:hellopawfend@gmail.com">hellopawfend@gmail.com</a> from the account address and ask for deletion.</p>
-    <p>Logging out or turning notifications off removes that device’s push registration. Registrations are also removed when the push service says the device is gone.</p>
-    <h2>Children</h2>
-    <p>The app is not directed at children under 13. Do not use it if you are under the age required where you live.</p>
-    <h2>Location</h2>
-    <p>The neighborhood stored on the server is a name you pick. GPS tracks do not leave the device in this version. A later version that uploads location must first confirm whether Korea’s Location Information Act requires registration as a location-based service provider.</p>
-    <h2>Contact</h2>
-    <p>IMEX Global · <a href="mailto:hellopawfend@gmail.com">hellopawfend@gmail.com</a> · <a href="support.html">Support</a></p>
+
+    <h2>5. Retention and destruction</h2>
+    <p>When the purpose ends, the information is destroyed without delay. Account information is kept until the member deletes the account, and it is destroyed then. In the app, <strong>Me → Account → Delete account</strong> deletes the auth user and, with it, the profile, pets, conversations the member was in (including the other person’s copy of that thread), messages, push registrations, consent records, blocks, and the reporter link on reports that member filed. A report someone else filed about this member may remain, with the reported-person field cleared, until the operator deletes it within one year of the report. If the member cannot sign in, they can email <a href="mailto:hellopawfend@gmail.com">hellopawfend@gmail.com</a> from the account address and ask for deletion.</p>
+    <p>Electronic files are deleted so they are not restored. The company does not keep personal information on paper.</p>
+
+    <h2>6. Third parties and processors</h2>
+    <p>The company does not sell personal information and does not give it to a third party for advertising. The processors below run the service. A profile, the public pet fields, and a chat are visible to the other member who uses that feature. That is not a sale by the company.</p>
+    <table>
+      <thead><tr><th>Recipient</th><th>Role</th><th>Items</th></tr></thead>
+      <tbody>
+        <tr><td>Supabase, Inc. (a United States company). The operator chooses the database region when creating the project. The setup guide recommends Seoul. This policy does not assert that the live region is Seoul.</td><td>Account, database, edge functions</td><td>The server items in section 3</td></tr>
+        <tr><td>Apple Inc. (United States), Apple Push Notification service</td><td>iOS push delivery</td><td>Device token and up to 120 characters of a message</td></tr>
+        <tr><td>Google (United States), Firebase Cloud Messaging</td><td>Android push delivery</td><td>Device token and up to 120 characters of a message</td></tr>
+        <tr><td>OpenStreetMap tile servers</td><td>Map images</td><td>IP address when the map opens. Coordinates are not deliberately sent</td></tr>
+        <tr><td>jsDelivr, cdnjs</td><td>Font, map library, Supabase library</td><td>IP address when the library loads</td></tr>
+        <tr><td>Kakao, only if Kakao login is turned on</td><td>Sign-in</td><td>What the member allows on Kakao’s consent screen</td></tr>
+      </tbody>
+    </table>
+
+    <h2>7. Overseas transfer</h2>
+    <p>Under article 28-8(1)(3) of the Personal Information Protection Act, processing outside Korea may happen to the extent needed to perform the contract with the member (the account, profile, chat, and notifications). The notices that article requires are set out below. The member can end the contract that this processing relies on by deleting the account. The server items are then deleted as section 5 describes. There is no way to refuse the overseas transfer and keep the account, because without an account the company does not hold the member’s information on the server.</p>
+    <ul>
+      <li><strong>Items.</strong> The server items in section 3. Push uses a token and up to 120 characters. Maps and libraries use an IP address. Walk GPS coordinates are not transferred.</li>
+      <li><strong>Country, timing, and method.</strong> The United States (Supabase, Inc., Apple, Google) and the Supabase region the operator chose. Kakao’s processing location if Kakao login is on. Transfer happens over an encrypted connection (HTTPS) when the member signs up, sends a message, or a notification is produced. If the region is in Korea, the database may be stored in Korea, but support access by a United States company can still be overseas processing.</li>
+      <li><strong>Recipient name and contact.</strong> Supabase, Inc. — privacy@supabase.com, supabase.com. Apple — privacy.apple.com. Google — policies.google.com. Kakao — privacy.kakao.com, if login is on.</li>
+      <li><strong>Purpose and retention.</strong> The same as sections 3 and 5. The recipient uses the information only on the company’s instructions for that processing.</li>
+      <li><strong>How to refuse, and the effect.</strong> Before sign-up, leave the boxes unchecked. No account is created. After sign-up, delete the account. The service then stops and the server copy of the account is deleted.</li>
+    </ul>
+    <p>The company does not contract with a processor to violate the Personal Information Protection Act.</p>
+
+    <h2>8. Location</h2>
+    <p>Location terms are in <a href="terms.html#location">section 18 of the Terms</a>. In this version the company does not store personal location information on a server, so there is no retention period, no provision to a third party, and no use or provision record. Refusing the phone’s location permission turns off live GPS only. The rest of the app still works.</p>
+
+    <h2>9. Under 14</h2>
+    <p>The app does not collect personal information from a child under 14. There is no guardian-consent flow. A person under 14 may not sign up. If the company learns that information of a child under 14 has been submitted, it deletes that account.</p>
+
+    <h2>10. Member rights</h2>
+    <p>A member may ask for access, correction, deletion, suspension of processing, and withdrawal of consent. Profile, pets, and the account can be edited or deleted in the app. Other requests go to hellopawfend@gmail.com. The company acts without delay, and if the law requires a refusal it explains why. Consent records are deleted with the account. Report records remain for the period in section 5 and are then deleted.</p>
+    <p>If the member is not satisfied with the company’s response, they may contact the Personal Information Protection Commission (privacy.go.kr, 1833-6972) or the Personal Information Dispute Mediation Committee (kopico.go.kr, 1833-6972).</p>
+
+    <h2>11. Safeguards</h2>
+    <p>Database rules limit server data to the member, and a chat to the two people in it. Connections use HTTPS. The service-role secret and push secrets are not placed in the app. Access is limited to what operation needs.</p>
+
+    <h2>12. Changes to this policy</h2>
+    <p>When this policy changes, the effective date and the version on this page change. An adverse change is posted 30 days before it takes effect, and any other change 7 days before. The app asks for a new checkbox on the new version. Silence alone is not consent to a new collection.</p>
+
+    <h2>13. Contact</h2>
+    <p>Privacy officer: representative of IMEX Global · <a href="mailto:hellopawfend@gmail.com">hellopawfend@gmail.com</a><br>
+    <a href="support.html">Support</a> · <a href="terms.html">Terms</a></p>
   </div>
 </main>
 </body>

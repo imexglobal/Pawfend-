@@ -1,5 +1,5 @@
 // Service worker: offline shell, chat notifications, open the right chat on tap.
-const CACHE = 'petneighbor-v4';
+const CACHE = 'petneighbor-v5';
 const SHELL = [
   './',
   './index.html',

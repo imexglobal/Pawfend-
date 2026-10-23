@@ -34,6 +34,7 @@ Those move to the database in the next phase.
 
 1. Open **SQL Editor → New query**.
 2. Paste the whole of `supabase/schema.sql` and click **Run**. You should see "Success. No rows returned".
+3. If you already ran an older `schema.sql` before the legal tables existed, also paste `supabase/legal.sql` and run it. A brand-new database only needs `schema.sql`. That adds consent records, the first-booking acknowledgement, blocks, and reports.
 
 This creates the tables and the access rules. For example, only the two people in a chat can read it, and only you can edit your profile.
 
