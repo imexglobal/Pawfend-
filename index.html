@@ -1,0 +1,1931 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>멍냥이웃 PetNeighbor</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<!-- backend: real accounts, chat and notifications (left out of the demo artifact) -->
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#F26B3A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="멍냥이웃">
+<link rel="apple-touch-icon" href="icon-192.png">
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<!-- /backend -->
+<style>
+:root{
+  --bg:#FFF8F1; --card:#FFFFFF; --ink:#2B2118; --muted:#8A7B6E; --line:#F0E4D7;
+  --brand:#F26B3A; --brand-ink:#FFFFFF; --brand-soft:#FFE8DC;
+  --green:#23875A; --green-soft:#DDF4E8; --blue:#2F6FD6; --blue-soft:#E3EDFC;
+  --star:#F5A524; --danger:#D64545; --shadow:0 2px 12px rgba(90,45,10,.07);
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#17120F; --card:#241D18; --ink:#F5EDE6; --muted:#A99A8C; --line:#3A3029;
+    --brand:#FF875A; --brand-ink:#1A0E08; --brand-soft:#3E281D;
+    --green:#4CC38A; --green-soft:#1C3328; --blue:#7EA8F0; --blue-soft:#1D2A40;
+    --shadow:none;
+  }
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink)}
+body{font-family:Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-size:16px;line-height:1.5}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none;padding:0}
+#app{max-width:480px;margin:0 auto;min-height:100vh;padding-bottom:96px;position:relative}
+
+/* header */
+.top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:8px;padding:14px 16px;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(10px)}
+.top h1{font-size:20px;margin:0;flex:1;font-weight:800;letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.top .logo{color:var(--brand)}
+.icon-btn{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-size:20px}
+.icon-btn:active{background:var(--line)}
+.lang{border:1.5px solid var(--line);border-radius:999px;padding:6px 12px;font-size:13px;font-weight:700;background:var(--card)}
+
+main{padding:4px 16px 16px}
+.section-h{display:flex;align-items:baseline;justify-content:space-between;margin:26px 0 10px}
+.section-h h2{font-size:18px;margin:0;font-weight:800;letter-spacing:-.01em}
+.section-h button{color:var(--muted);font-size:14px;font-weight:600}
+.muted{color:var(--muted)}
+.small{font-size:13px}
+
+.card{background:var(--card);border-radius:18px;padding:16px;box-shadow:var(--shadow);border:1px solid var(--line)}
+.stack>*+*{margin-top:10px}
+.tap{cursor:pointer;transition:transform .1s}
+.tap:active{transform:scale(.985)}
+
+/* hero */
+.hero{background:var(--brand);color:var(--brand-ink);border-radius:22px;padding:20px;margin-top:6px}
+.hero h2{margin:0;font-size:22px;letter-spacing:-.02em}
+.hero p{margin:4px 0 0;opacity:.9}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;text-align:left;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:2px;min-height:112px}
+.tile .em{font-size:30px;line-height:1;margin-bottom:8px}
+.tile b{font-size:16px}
+.tile span{font-size:13px;color:var(--muted)}
+
+.svc-row{display:flex;gap:10px;overflow-x:auto;padding:2px 2px 6px;margin:0 -16px;padding-left:16px;padding-right:16px;scrollbar-width:none}
+.svc-row::-webkit-scrollbar{display:none}
+.svc{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:6px;width:72px;font-size:13px;font-weight:600}
+.svc .em{width:58px;height:58px;border-radius:18px;background:var(--card);border:1px solid var(--line);display:grid;place-items:center;font-size:26px}
+
+/* chips & fields */
+.chips{display:flex;gap:8px;overflow-x:auto;margin:0 -16px;padding:2px 16px 4px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:0 0 auto;padding:8px 14px;border-radius:999px;background:var(--card);border:1.5px solid var(--line);font-size:14px;font-weight:600;white-space:nowrap}
+.chip.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.filters{display:flex;gap:8px;margin-top:10px}
+.filters select{flex:1}
+.search{width:100%;padding:13px 16px 13px 44px;border-radius:14px;border:1.5px solid var(--line);background:var(--card) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' fill='none' stroke='%238A7B6E' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='9' cy='9' r='6'/%3E%3Cpath d='m14 14 4 4'/%3E%3C/svg%3E") no-repeat 14px center;margin-bottom:12px}
+input,select,textarea{width:100%;padding:12px 14px;border-radius:12px;border:1.5px solid var(--line);background:var(--card);outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--brand)}
+textarea{min-height:96px;resize:vertical}
+label.f{display:block;margin-top:14px}
+label.f>span{display:block;font-size:14px;font-weight:700;margin-bottom:6px}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:12px 18px;border-radius:14px;font-weight:700;font-size:15px;background:var(--line)}
+.btn.primary{background:var(--brand);color:var(--brand-ink)}
+.btn.green{background:var(--green);color:#fff}
+.btn.ghost{background:transparent;border:1.5px solid var(--line)}
+.btn.block{width:100%;padding:15px}
+.btn.sm{padding:8px 12px;font-size:14px;border-radius:10px}
+.btn:disabled{opacity:.45}
+.btn-row{display:flex;gap:8px;margin-top:12px}
+.btn-row .btn{flex:1}
+
+/* people */
+.avatar{flex:0 0 auto;width:52px;height:52px;border-radius:50%;display:grid;place-items:center;font-size:26px}
+.avatar.lg{width:84px;height:84px;font-size:44px}
+.avatar.sm{width:32px;height:32px;font-size:17px}
+.person{display:flex;gap:12px;align-items:center}
+.person .info{flex:1;min-width:0}
+.person .name{font-weight:800;font-size:16px;display:flex;align-items:center;gap:6px}
+.badge{display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:700;color:var(--green);background:var(--green-soft);padding:2px 7px;border-radius:999px}
+.rating{display:inline-flex;align-items:center;gap:4px;font-size:14px;font-weight:700}
+.rating .s{color:var(--star)}
+.rating .c{color:var(--muted);font-weight:500}
+.price{font-weight:800;text-align:right;white-space:nowrap}
+.price small{display:block;color:var(--muted);font-weight:500;font-size:12px}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.tag{font-size:12px;padding:4px 9px;border-radius:8px;background:var(--bg);border:1px solid var(--line)}
+.pill{display:inline-block;font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px;background:var(--brand-soft);color:var(--brand)}
+.pill.green{background:var(--green-soft);color:var(--green)}
+.pill.blue{background:var(--blue-soft);color:var(--blue)}
+.pill.gray{background:var(--line);color:var(--muted)}
+
+/* profile */
+.prof-head{text-align:center;padding:24px 16px}
+.prof-head .avatar{margin:0 auto 10px}
+.prof-head h2{margin:0;font-size:22px;display:flex;align-items:center;justify-content:center;gap:6px}
+.scores{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.score{background:var(--bg);border-radius:14px;padding:12px}
+.score b{font-size:22px;display:block}
+.score span{font-size:12px;color:var(--muted)}
+.svc-line{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--line)}
+.svc-line:first-child{border-top:0}
+.svc-line .em{font-size:24px}
+.svc-line .grow{flex:1}
+.pet{display:flex;gap:12px;align-items:center}
+.pet .em{width:52px;height:52px;border-radius:16px;background:var(--brand-soft);display:grid;place-items:center;font-size:28px;flex:0 0 auto}
+.review{padding:12px 0;border-top:1px solid var(--line)}
+.review:first-child{border-top:0;padding-top:0}
+.review p{margin:6px 0 0}
+.sticky-cta{position:sticky;bottom:84px;margin-top:18px;z-index:5}
+
+/* posts */
+.post h3{margin:6px 0 4px;font-size:16px;letter-spacing:-.01em}
+.post p{margin:0;color:var(--muted);font-size:14px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.meta{display:flex;gap:12px;align-items:center;margin-top:10px;font-size:13px;color:var(--muted)}
+.meta .sp{flex:1}
+.post-body{white-space:pre-wrap;margin:12px 0}
+.like{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:999px;border:1.5px solid var(--line);font-weight:700;font-size:14px}
+.like.on{border-color:var(--brand);color:var(--brand);background:var(--brand-soft)}
+.comment{display:flex;gap:10px;padding:12px 0;border-top:1px solid var(--line)}
+.comment p{margin:2px 0 0;font-size:15px}
+.comment-box{display:flex;gap:8px;margin-top:12px}
+.comment-box input{flex:1}
+
+.fab{position:fixed;right:max(16px,calc(50% - 224px));bottom:96px;z-index:15;background:var(--brand);color:var(--brand-ink);border-radius:999px;padding:14px 20px;font-weight:800;box-shadow:0 6px 20px rgba(242,107,58,.35)}
+
+.empty{text-align:center;padding:28px 16px;color:var(--muted)}
+.empty .em{font-size:36px;display:block;margin-bottom:6px}
+
+/* tab bar */
+.tabbar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;z-index:30;display:grid;grid-template-columns:repeat(5,1fr);background:var(--card);border-top:1px solid var(--line);padding:6px 4px calc(8px + env(safe-area-inset-bottom))}
+.tab{display:flex;flex-direction:column;align-items:center;gap:1px;font-size:11px;font-weight:600;color:var(--muted);padding:4px 0}
+.tab .em{font-size:22px;filter:grayscale(1);opacity:.6}
+.tab.on{color:var(--ink)}
+.tab.on .em{filter:none;opacity:1}
+
+/* sheet */
+.backdrop{position:fixed;inset:0;background:rgba(20,10,5,.45);z-index:40;opacity:0;pointer-events:none;transition:opacity .2s}
+.backdrop.open{opacity:1;pointer-events:auto}
+.sheet{position:fixed;left:50%;bottom:0;transform:translate(-50%,105%);width:100%;max-width:480px;max-height:90vh;overflow-y:auto;z-index:50;background:var(--card);border-radius:24px 24px 0 0;padding:10px 20px calc(24px + env(safe-area-inset-bottom));transition:transform .25s ease}
+.sheet.open{transform:translate(-50%,0)}
+.sheet .grab{width:40px;height:5px;border-radius:9px;background:var(--line);margin:0 auto 14px}
+.sheet h3{margin:0 0 4px;font-size:20px}
+.stars-in{display:flex;gap:6px;margin-top:6px}
+.stars-in button{font-size:34px;line-height:1;color:var(--line)}
+.stars-in button.on{color:var(--star)}
+.check{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--line)}
+.check input[type=checkbox]{width:22px;height:22px;flex:0 0 auto;accent-color:var(--brand)}
+.check .grow{flex:1}
+.check input[type=number]{width:120px}
+.note{font-size:13px;color:var(--muted);background:var(--bg);border-radius:12px;padding:10px 12px;margin-top:14px}
+
+.toast{position:fixed;left:50%;bottom:100px;transform:translate(-50%,20px);background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:14px;font-weight:600;font-size:14px;z-index:60;opacity:0;transition:.25s;pointer-events:none;max-width:calc(100% - 32px);text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* live care tracking */
+.walkmap{position:relative;z-index:0;height:300px;border-radius:18px;overflow:hidden;margin-top:10px;border:1px solid var(--line);background:var(--line)}
+.walk-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+.walk-stats div{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 4px;text-align:center}
+.walk-stats b{display:block;font-size:18px;font-variant-numeric:tabular-nums}
+.walk-stats span{font-size:12px;color:var(--muted)}
+.live-pill{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:800;color:#fff;background:var(--danger);padding:3px 9px;border-radius:999px;white-space:nowrap}
+.live-pill i{width:7px;height:7px;border-radius:50%;background:#fff;animation:blink 1.2s infinite}
+@keyframes blink{50%{opacity:.2}}
+.live-line{display:flex;align-items:center;gap:8px;margin-top:10px;font-weight:700;font-variant-numeric:tabular-nums}
+.mk{font-size:20px;line-height:24px;text-align:center}
+
+/* care requests */
+.seg{display:grid;grid-template-columns:1fr 1fr;background:var(--line);border-radius:14px;padding:4px;margin-bottom:12px}
+.seg button{padding:10px;border-radius:11px;font-weight:700;font-size:15px;color:var(--muted)}
+.seg button.on{background:var(--card);color:var(--ink);box-shadow:var(--shadow)}
+.banner{display:flex;align-items:center;gap:12px;width:100%;margin-top:10px;background:var(--green-soft);border-radius:18px;padding:14px 16px;text-align:left}
+.banner .em{font-size:30px}
+.banner .txt{flex:1;min-width:0}
+.banner b{display:block}
+.banner small{display:block;font-size:13px;color:var(--muted)}
+.banner .go{font-weight:800;color:var(--green);white-space:nowrap}
+.row-between{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.req-when{font-weight:800;font-size:17px;margin:8px 0 2px}
+.count{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:var(--brand);color:var(--brand-ink);font-size:12px;font-weight:800}
+.icon-btn{position:relative}
+.icon-btn .count{position:absolute;top:0;right:-2px}
+div.f{margin-top:14px}
+div.f>span{display:block;font-size:14px;font-weight:700;margin-bottom:6px}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opts.grid{display:grid;grid-template-columns:repeat(3,1fr)}
+.opt{position:relative}
+.opt input{position:absolute;opacity:0;pointer-events:none}
+.opt span{display:flex;align-items:center;justify-content:center;gap:6px;height:100%;padding:10px 12px;border-radius:12px;border:1.5px solid var(--line);background:var(--card);font-weight:600;font-size:14px;cursor:pointer;text-align:center}
+.opts.grid .opt span{flex-direction:column;gap:2px;padding:12px 4px;font-size:13px}
+.opts.grid .opt span i{font-style:normal;font-size:24px}
+.opt input:checked+span{border-color:var(--brand);background:var(--brand-soft);color:var(--brand)}
+.opt input:focus-visible+span{outline:2px solid var(--brand);outline-offset:2px}
+.hint{font-size:13px;color:var(--muted);margin-top:6px}
+
+/* chat */
+.msgs{display:flex;flex-direction:column;gap:8px;margin-top:14px;padding-bottom:110px}
+.msg{max-width:78%;padding:10px 14px;border-radius:18px;font-size:15px;line-height:1.45;white-space:pre-wrap;overflow-wrap:anywhere}
+.msg.them{align-self:flex-start;background:var(--card);border:1px solid var(--line);border-bottom-left-radius:6px}
+.msg.mine{align-self:flex-end;background:var(--brand);color:var(--brand-ink);border-bottom-right-radius:6px}
+.msg time{display:block;font-size:11px;opacity:.65;margin-top:2px}
+.msg.sys{align-self:center;max-width:90%;background:var(--green-soft);color:var(--green);font-size:13px;font-weight:700;border-radius:999px;padding:6px 14px;text-align:center}
+.composer{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;z-index:30;background:var(--card);border-top:1px solid var(--line);padding:8px 12px calc(10px + env(safe-area-inset-bottom))}
+.composer form{display:flex;gap:8px}
+.composer input{flex:1;border-radius:999px}
+.composer .btn{border-radius:999px;padding:0 18px}
+.quick{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;scrollbar-width:none}
+.quick::-webkit-scrollbar{display:none}
+.quick button{flex:0 0 auto;font-size:13px;padding:6px 12px;border-radius:999px;border:1.5px solid var(--line);background:var(--bg)}
+.chat-row{display:flex;gap:12px;align-items:center}
+.chat-row .info{flex:1;min-width:0}
+.chat-row .last{font-size:14px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ctx{display:flex;align-items:center;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line);font-size:14px}
+.ctx .grow{flex:1;min-width:0}
+.msg.pending{opacity:.6}
+.msg.failed{background:var(--danger);color:#fff}
+
+/* login */
+.auth{min-height:100vh;display:flex;flex-direction:column;justify-content:center;gap:12px;padding:32px 24px calc(32px + env(safe-area-inset-bottom))}
+.auth .logo-mark{width:84px;height:84px;border-radius:26px;background:var(--brand);display:grid;place-items:center;font-size:44px;margin:0 auto 4px}
+.auth h1{margin:0;text-align:center;font-size:30px;letter-spacing:-.02em}
+.auth .tagline{margin:0 0 18px;text-align:center;color:var(--muted)}
+.auth form{display:flex;flex-direction:column;gap:10px}
+.btn.kakao{background:#FEE500;color:#191600}
+.or{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:13px;margin:6px 0}
+.or::before,.or::after{content:"";flex:1;height:1px;background:var(--line)}
+.code-in{text-align:center;font-size:24px;letter-spacing:.4em;font-variant-numeric:tabular-nums}
+.auth .fine{text-align:center;font-size:12px;color:var(--muted);margin:6px 0 0}
+.auth .top-lang{position:absolute;top:calc(14px + env(safe-area-inset-top,0px));right:16px}
+.push-card{display:flex;gap:12px;align-items:flex-start}
+.push-card .em{font-size:28px}
+.push-card .grow{flex:1;min-width:0}
+.push-card p{margin:2px 0 10px;font-size:14px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div class="backdrop" id="backdrop" data-act="closeSheet"></div>
+<div class="sheet" id="sheet"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ---------- constants ---------- */
+const SERVICES = {
+  walk:     {icon:'🦮', ko:'산책',        en:'Dog walking',      unit:{ko:'30분',en:'30 min'}},
+  dropin:   {icon:'🏠', ko:'방문 돌봄',   en:'Drop-in visit',    unit:{ko:'1회',en:'visit'}},
+  sitting:  {icon:'🛏️', ko:'펫시팅(1박)', en:'Overnight sitting',unit:{ko:'1박',en:'night'}},
+  grooming: {icon:'✂️', ko:'미용',        en:'Grooming',         unit:{ko:'1회',en:'session'}},
+  training: {icon:'🎓', ko:'훈련',        en:'Training',         unit:{ko:'1시간',en:'hour'}},
+  taxi:     {icon:'🚕', ko:'펫택시',      en:'Pet taxi',         unit:{ko:'1회',en:'ride'}},
+};
+const DISTRICTS = {
+  '강남구':'Gangnam','마포구':'Mapo','송파구':'Songpa','용산구':'Yongsan',
+  '성동구':'Seongdong','서초구':'Seocho','분당':'Bundang','해운대':'Haeundae',
+};
+const POST_CATS = {
+  health:  {icon:'🩺', ko:'건강',      en:'Health'},
+  training:{icon:'🎾', ko:'훈련·행동', en:'Behavior'},
+  food:    {icon:'🍖', ko:'사료·간식', en:'Food'},
+  adopt:   {icon:'💛', ko:'입양·봉사', en:'Adoption'},
+  free:    {icon:'💬', ko:'자유',      en:'Chat'},
+};
+const PLACE_CATS = {
+  vet:  {icon:'🏥', ko:'동물병원',    en:'Vets'},
+  cafe: {icon:'☕', ko:'애견카페',    en:'Pet cafés'},
+  park: {icon:'🌳', ko:'산책로·공원', en:'Parks'},
+  food: {icon:'🍽️', ko:'동반 식당',   en:'Pet-friendly dining'},
+  shop: {icon:'🛍️', ko:'용품·간식',   en:'Pet shops'},
+};
+const PET_EMOJI = {dog:'🐶', cat:'🐱', other:'🐰'};
+const TIME_SLOTS = {
+  morning:  {ko:'아침 8–11시',  en:'Morning 8–11'},
+  afternoon:{ko:'오후 12–17시', en:'Afternoon 12–5'},
+  evening:  {ko:'저녁 18–21시', en:'Evening 6–9'},
+  flex:     {ko:'시간 협의',    en:'Flexible'},
+};
+// Demo only: what the simulated neighbors say
+const DEMO = {
+  apply: [
+    {ko:'안녕하세요! 그날 시간 괜찮아요. {pet}의 성격을 미리 알려주시면 더 잘 돌볼게요 😊', en:'Hi! I’m free that day. Tell me about {pet}’s personality and I’ll take great care of them 😊'},
+    {ko:'근처에 살아서 바로 갈 수 있어요. 돌봄 중에 사진과 경로를 공유해 드려요!', en:'I live close by and can be there quickly. I’ll share photos and the route during care!'},
+    {ko:'{pet} 같은 아이를 많이 돌봐봤어요. 궁금한 점은 채팅 주세요!', en:'I’ve cared for lots of pets like {pet}. Message me with any questions!'},
+  ],
+  replies: [
+    {ko:'네, 가능해요! 다른 궁금한 점 있으세요?', en:'Yes, that works! Anything else you’d like to know?'},
+    {ko:'물론이죠 🙂 돌봄 중에 사진 자주 보내드릴게요.', en:'Of course 🙂 I’ll send photos often during care.'},
+    {ko:'좋아요! 선택해 주시면 바로 일정 잡을게요.', en:'Great! Choose me and I’ll lock in the time.'},
+  ],
+  ownerAsk:   {ko:'지원 감사해요! 시간 맞춰서 와주실 수 있을까요?', en:'Thanks for applying! Can you make that time?'},
+  ownerHires: {ko:'좋아요! 예약 확정할게요 🎉', en:'Perfect! Booking you now 🎉'},
+};
+
+const T = {
+ko:{
+  appName:'멍냥이웃', tabHome:'홈', tabFind:'돌봄 찾기', tabCommunity:'커뮤니티', tabPlaces:'추천 장소', tabMe:'내 정보',
+  hello:'안녕하세요, {name}님 👋', helloSub:'오늘 우리 아이에게 필요한 건 뭔가요?',
+  qaFind:'돌봄이 찾기', qaFindSub:'산책 · 펫시팅 · 미용', qaAsk:'질문하기', qaAskSub:'경험 많은 보호자에게',
+  qaPlaces:'추천 장소', qaPlacesSub:'병원 · 카페 · 산책로', qaPets:'우리 아이', qaPetsSub:'{n}마리 등록됨',
+  services:'서비스', upcoming:'다가오는 예약', topNear:'{d} 인기 돌봄이', popularPosts:'커뮤니티 인기글', seeAll:'전체보기',
+  searchPh:'이름이나 소개로 검색', all:'전체', allAreas:'전체 지역',
+  sortRating:'평점 높은순', sortPrice:'가격 낮은순', sortReviews:'후기 많은순',
+  priceFrom:'{p}부터', noResults:'조건에 맞는 돌봄이가 없어요', verified:'인증',
+  reviewsN:'후기 {n}', asCaregiver:'돌봄이 평점', asOwner:'보호자 평점', about:'소개', pets:'반려동물',
+  reviewsCare:'돌봄 후기', reviewsOwner:'보호자 후기', noReviews:'아직 후기가 없어요', svcPrices:'서비스 · 가격',
+  book:'예약 요청하기', bookTitle:'{name}님에게 예약 요청', service:'서비스', date:'날짜', whichPet:'어떤 아이인가요?',
+  message:'메시지', msgPh:'아이의 성격, 주의사항 등을 알려주세요', total:'예상 금액', send:'요청 보내기',
+  needPet:'먼저 반려동물을 등록해 주세요', payNote:'🔒 결제는 예약 확정 후 앱 안에서 안전하게 진행돼요. 돌봄 완료 전까지 대금은 보관됩니다.',
+  requested:'요청됨', confirmed:'확정', done:'완료', declined:'거절됨',
+  reqSent:'예약 요청을 보냈어요!', accepted:'{name}님이 예약을 수락했어요 🎉',
+  completeReview:'완료하고 후기 쓰기', leaveReview:'후기 쓰기', reviewed:'후기 작성 완료',
+  rateTitle:'{name}님은 어땠나요?', rateOwnerTitle:'보호자 {name}님은 어땠나요?', reviewPh:'다른 이웃에게 도움이 될 후기를 남겨주세요',
+  submit:'등록하기', thanksReview:'후기 감사합니다!', pickStars:'별점을 선택해 주세요',
+  write:'✏️ 글쓰기', newest:'최신순', popular:'인기순', category:'카테고리', title:'제목', titlePh:'궁금한 점을 한 줄로',
+  body:'내용', bodyPh:'궁금한 점이나 나누고 싶은 이야기를 적어주세요', post:'게시하기', posted:'글이 등록되었어요',
+  comments:'댓글 {n}', commentPh:'따뜻한 댓글을 남겨주세요', noComments:'첫 댓글을 남겨보세요', like:'좋아요',
+  addPlace:'＋ 장소 추천', placeName:'장소 이름', area:'지역', desc:'추천 이유', descPh:'어떤 점이 좋았나요?',
+  yourRating:'내 평점', rateThis:'평가하기', placeAdded:'추천 감사합니다!', noPlaces:'아직 추천된 장소가 없어요',
+  recBy:'{n}명이 평가했어요',
+  editProfile:'프로필 수정', viewPublic:'내 공개 프로필 보기', myPets:'우리 아이들', addPet:'＋ 반려동물 추가',
+  petName:'이름', species:'종류', dog:'강아지', cat:'고양이', other:'기타', breed:'품종', age:'나이',
+  notes:'특이사항', notesPh:'알러지, 성격, 좋아하는 것 등', save:'저장하기', saved:'저장했어요',
+  myBookings:'내 예약', noBookings:'아직 예약이 없어요', noPets:'등록된 반려동물이 없어요',
+  caregiver:'돌봄이 활동', becomeTitle:'이웃의 반려동물을 돌봐주세요',
+  becomeSub:'원하는 서비스와 가격을 정하고, 동네 이웃의 아이들을 돌보며 수익을 만들어 보세요.',
+  becomeBtn:'돌봄이 시작하기', editServices:'서비스 · 가격 수정', requestsForMe:'받은 예약 요청', noRequests:'아직 받은 요청이 없어요',
+  accept:'수락', decline:'거절', markDone:'돌봄 완료', rateOwner:'보호자 평가하기',
+  servicesSaved:'서비스가 저장되었어요', newRequest:'{name}님이 예약을 요청했어요 🔔', pickService:'서비스를 하나 이상 선택해 주세요',
+  settings:'설정', language:'언어 / Language', reset:'데모 데이터 초기화', resetConfirm:'모든 데이터를 처음 상태로 되돌릴까요?',
+  name:'이름', district:'동네', bio:'소개', bioPh:'나와 우리 아이를 소개해 주세요', yrs:'{n}살',
+  thisIsYou:'다른 이웃에게 보이는 내 프로필이에요', from:'{name}님', bookWith:'{name}님과',
+  justNow:'방금', minAgo:'{n}분 전', hrAgo:'{n}시간 전', dayAgo:'{n}일 전', perUnit:'/ {u}',
+  writeTitle:'커뮤니티에 글쓰기', bookingFor:'{pet} · {svc}', priceLbl:'가격(원)',
+  startWalk:'▶ 산책 시작', startCare:'▶ 돌봄 시작', startTitle:'위치 공유를 시작할게요',
+  startBody:'시작하면 위치, 이동 경로, 시간이 보호자에게 실시간으로 공유돼요. 종료하면 위치 공유는 자동으로 꺼져요.',
+  startWhy:'보호자가 안심할 수 있고, 기록된 돌봄은 내 프로필의 신뢰도를 높여줘요.', startBtn:'시작하기',
+  live:'진행 중', viewLive:'실시간 보기', viewReport:'📍 리포트 보기', walkTime:'시간', distance:'거리', pee:'소변', poo:'대변',
+  finish:'■ 돌봄 종료', finishWalk:'■ 산책 종료', willTrack:'📍 돌봄이 시작되면 실시간 위치를 볼 수 있어요',
+  privacyNote:'📍 위치는 돌봄 중에만 공유되고, 종료하면 자동으로 꺼져요.',
+  simNote:'데모: 실제 위치를 쓸 수 없어 망원 한강공원 경로를 20배속으로 재생 중이에요.',
+  gpsFallback:'위치를 사용할 수 없어 데모 경로로 재생할게요', walkStarted:'{name}님이 {pet} 돌봄을 시작했어요 🦮',
+  walkDone:'돌봄 리포트가 도착했어요 📍', updatingLive:'실시간 업데이트 중', started:'시작', ended:'종료',
+  waitingGps:'GPS 신호를 찾는 중…', logged:'기록했어요',
+  modePeople:'👤 돌봄이 찾기', modeRequests:'📣 돌봄 요청', postRequest:'＋ 요청 올리기', postRequestTitle:'돌봄 요청 올리기',
+  bannerTitle:'날짜만 정하면 돌봄이가 먼저 지원해요', bannerSub:'요청을 올리고 지원자 중에서 골라보세요', bannerGo:'요청하기 ›',
+  myRequests:'내 요청', youApplied:'내가 지원한 요청', openRequests:'이웃의 돌봄 요청', noOpenRequests:'지금은 열린 요청이 없어요',
+  applicantsN:'지원자 {n}명', budget:'예산', budgetHint:'비워두면 돌봄이가 가격을 제안해요', budgetPh:'예: 15000', negotiable:'가격 제안받기',
+  whatService:'어떤 돌봄이 필요한가요?', when:'언제요?', noteLbl:'전달할 내용 (선택)', notePh:'아이 성격, 주의사항, 대략적인 위치 등',
+  postReqBtn:'요청 올리기', reqPosted:'요청을 올렸어요! 곧 지원자가 생길 거예요', newApplicant:'{name}님이 지원했어요 🙋',
+  open:'모집 중', hired:'확정', closed:'마감', applied:'지원함', notSelected:'미선택',
+  apply:'지원하기', applyTitle:'{name}님의 요청에 지원', yourPrice:'제안 가격 (원)', applyMsgPh:'간단한 인사와 가능한 시간을 알려주세요',
+  applySent:'지원했어요! 보호자의 답을 기다려 주세요', needCaregiver:'지원하려면 먼저 돌봄이 서비스를 등록해 주세요',
+  chat:'💬 채팅', chatWith:'💬 채팅하기', choose:'선택하기', hireTitle:'{name}님을 선택할까요?',
+  hireBody:'{price}에 예약이 확정되고, 다른 지원자에게는 마감 안내가 가요.', hiredToast:'{name}님과 예약이 확정되었어요 🎉',
+  youHired:'선택한 돌봄이', waitingApplicants:'곧 돌봄이들이 지원할 거예요', aboutPet:'반려동물 정보', postedBy:'요청한 보호자', offered:'제안 가격',
+  messages:'메시지', noChats:'아직 대화가 없어요', msgPh:'메시지 입력', sayHi:'먼저 인사를 건네보세요 👋', newMessage:'{name}님의 새 메시지 💬',
+  quick1:'안녕하세요! 👋', quick2:'가능한 시간 알려주세요', quick3:'돌봄 중 사진 보내주실 수 있나요?',
+  sysHired:'예약 확정 · {svc} {date}', youLabel:'나',
+  example:'예시', authTag:'동네 이웃과 함께하는 반려동물 돌봄', kakaoLogin:'카카오로 시작하기', orEmail:'또는 이메일로 시작하기',
+  emailPh:'이메일 주소', sendCode:'로그인 코드 받기', codeSent:'{email}로 6자리 코드를 보냈어요. 메일함을 확인해 주세요.', codePh:'6자리 코드',
+  verify:'로그인', otherEmail:'다른 이메일 사용', terms:'계속하면 이용약관과 개인정보처리방침에 동의하게 돼요.', loading:'불러오는 중…',
+  authError:'로그인하지 못했어요: {msg}', codeError:'코드가 맞지 않거나 만료됐어요. 다시 확인해 주세요.',
+  welcome:'반가워요! 프로필을 만들어 주세요', welcomeSub:'이웃에게 보이는 이름과 동네예요.', iAm:'어떻게 이용하실 건가요?',
+  roleOwner:'🐶 보호자', roleCare:'🤝 돌봄이', roleBoth:'둘 다', startApp:'시작하기',
+  saveFailed:'저장하지 못했어요. 인터넷 연결을 확인하고 다시 시도해 주세요.', sendFailed:'메시지를 보내지 못했어요. 다시 시도해 주세요.',
+  pushTitle:'새 메시지 알림', pushOffBody:'이웃이 메시지를 보내면 휴대폰으로 알려드려요.', pushEnable:'🔔 알림 켜기', pushOn:'알림이 켜졌어요 🔔', pushOnShort:'켜짐',
+  pushDenied:'알림이 차단되어 있어요. 휴대폰 설정 → 알림에서 허용해 주세요.',
+  pushInstall:'iPhone은 홈 화면에 추가한 앱에서만 알림을 받을 수 있어요. Safari 공유 버튼 → "홈 화면에 추가"를 누른 뒤, 홈 화면 아이콘으로 열어 주세요.',
+  pushUnsupported:'이 브라우저에서는 알림을 받을 수 없어요.', pushFailed:'알림을 켜지 못했어요. 잠시 후 다시 시도해 주세요.',
+  account:'계정', logout:'로그아웃', cancel:'취소',
+},
+en:{
+  appName:'PetNeighbor', tabHome:'Home', tabFind:'Find care', tabCommunity:'Community', tabPlaces:'Places', tabMe:'Me',
+  hello:'Hi, {name} 👋', helloSub:'What does your pet need today?',
+  qaFind:'Find a caregiver', qaFindSub:'Walks · sitting · grooming', qaAsk:'Ask a question', qaAskSub:'Advice from other owners',
+  qaPlaces:'Places', qaPlacesSub:'Vets · cafés · trails', qaPets:'My pets', qaPetsSub:'{n} registered',
+  services:'Services', upcoming:'Upcoming bookings', topNear:'Top caregivers in {d}', popularPosts:'Popular in community', seeAll:'See all',
+  searchPh:'Search by name or bio', all:'All', allAreas:'All areas',
+  sortRating:'Top rated', sortPrice:'Lowest price', sortReviews:'Most reviews',
+  priceFrom:'from {p}', noResults:'No caregivers match those filters', verified:'Verified',
+  reviewsN:'{n} reviews', asCaregiver:'As caregiver', asOwner:'As pet parent', about:'About', pets:'Pets',
+  reviewsCare:'Caregiver reviews', reviewsOwner:'Pet parent reviews', noReviews:'No reviews yet', svcPrices:'Services & prices',
+  book:'Request booking', bookTitle:'Request {name}', service:'Service', date:'Date', whichPet:'Which pet?',
+  message:'Message', msgPh:'Tell them about your pet’s personality and needs', total:'Estimated price', send:'Send request',
+  needPet:'Please add a pet first', payNote:'🔒 Payment happens in the app after the booking is confirmed, and is held until care is completed.',
+  requested:'Requested', confirmed:'Confirmed', done:'Completed', declined:'Declined',
+  reqSent:'Request sent!', accepted:'{name} accepted your booking 🎉',
+  completeReview:'Complete & review', leaveReview:'Leave a review', reviewed:'Reviewed',
+  rateTitle:'How was {name}?', rateOwnerTitle:'How was pet parent {name}?', reviewPh:'Share details that help other neighbors',
+  submit:'Submit', thanksReview:'Thanks for your review!', pickStars:'Please pick a star rating',
+  write:'✏️ Write', newest:'Newest', popular:'Popular', category:'Category', title:'Title', titlePh:'Your question in one line',
+  body:'Details', bodyPh:'Ask a question or share a story', post:'Post', posted:'Posted!',
+  comments:'{n} comments', commentPh:'Write a kind comment', noComments:'Be the first to comment', like:'Like',
+  addPlace:'＋ Recommend', placeName:'Place name', area:'Area', desc:'Why you recommend it', descPh:'What did you like?',
+  yourRating:'Your rating', rateThis:'Rate this place', placeAdded:'Thanks for the recommendation!', noPlaces:'No places yet',
+  recBy:'Rated by {n} neighbors',
+  editProfile:'Edit profile', viewPublic:'View my public profile', myPets:'My pets', addPet:'＋ Add a pet',
+  petName:'Name', species:'Type', dog:'Dog', cat:'Cat', other:'Other', breed:'Breed', age:'Age',
+  notes:'Notes', notesPh:'Allergies, personality, favorite things', save:'Save', saved:'Saved',
+  myBookings:'My bookings', noBookings:'No bookings yet', noPets:'No pets yet',
+  caregiver:'Caregiving', becomeTitle:'Care for your neighbors’ pets',
+  becomeSub:'Pick the services you offer, set your prices, and earn by caring for pets in your neighborhood.',
+  becomeBtn:'Become a caregiver', editServices:'Edit services & prices', requestsForMe:'Requests for you', noRequests:'No requests yet',
+  accept:'Accept', decline:'Decline', markDone:'Mark completed', rateOwner:'Rate pet parent',
+  servicesSaved:'Services saved', newRequest:'New booking request from {name} 🔔', pickService:'Pick at least one service',
+  settings:'Settings', language:'Language / 언어', reset:'Reset demo data', resetConfirm:'Reset all data to the demo state?',
+  name:'Name', district:'Neighborhood', bio:'Bio', bioPh:'Introduce yourself and your pets', yrs:'{n} yr',
+  thisIsYou:'This is how neighbors see your profile', from:'{name}', bookWith:'with {name}',
+  justNow:'just now', minAgo:'{n}m ago', hrAgo:'{n}h ago', dayAgo:'{n}d ago', perUnit:'/ {u}',
+  writeTitle:'Write a post', bookingFor:'{pet} · {svc}', priceLbl:'Price (₩)',
+  startWalk:'▶ Start walk', startCare:'▶ Start service', startTitle:'Location sharing will turn on',
+  startBody:'Once you start, your location, route and time are shared live with the pet parent. Sharing turns off automatically when you finish.',
+  startWhy:'It gives parents peace of mind, and tracked care builds trust in your profile.', startBtn:'Start',
+  live:'Live', viewLive:'Watch live', viewReport:'📍 View report', walkTime:'Time', distance:'Distance', pee:'Pee', poo:'Poop',
+  finish:'■ Finish service', finishWalk:'■ End walk', willTrack:'📍 You’ll see live location once care starts',
+  privacyNote:'📍 Location is shared only during care and turns off automatically at the end.',
+  simNote:'Demo: real location is unavailable, so a Mangwon Hangang Park route is playing at 20× speed.',
+  gpsFallback:'Location unavailable — playing a demo route', walkStarted:'{name} started caring for {pet} 🦮',
+  walkDone:'Your care report is ready 📍', updatingLive:'Updating live', started:'Started', ended:'Ended',
+  waitingGps:'Finding GPS signal…', logged:'Logged',
+  modePeople:'👤 Caregivers', modeRequests:'📣 Requests', postRequest:'＋ Post a request', postRequestTitle:'Post a care request',
+  bannerTitle:'Pick a date and caregivers apply to you', bannerSub:'Post a request, then choose from applicants', bannerGo:'Post ›',
+  myRequests:'My requests', youApplied:'Requests I applied to', openRequests:'Neighbors needing care', noOpenRequests:'No open requests right now',
+  applicantsN:'{n} applicants', budget:'Budget', budgetHint:'Leave empty and caregivers will suggest a price', budgetPh:'e.g. 15000', negotiable:'Open to offers',
+  whatService:'What do you need?', when:'When?', noteLbl:'Anything to know? (optional)', notePh:'Personality, special needs, rough location',
+  postReqBtn:'Post request', reqPosted:'Request posted! Applicants will show up soon', newApplicant:'{name} applied 🙋',
+  open:'Open', hired:'Booked', closed:'Closed', applied:'Applied', notSelected:'Not selected',
+  apply:'Apply', applyTitle:'Apply to {name}’s request', yourPrice:'Your price (₩)', applyMsgPh:'Say hi and mention when you’re free',
+  applySent:'Applied! Wait for the pet parent to reply', needCaregiver:'Set up your caregiver services before applying',
+  chat:'💬 Chat', chatWith:'💬 Message', choose:'Choose', hireTitle:'Choose {name}?',
+  hireBody:'The booking is confirmed at {price}, and the other applicants are told the spot is filled.', hiredToast:'Booked with {name} 🎉',
+  youHired:'Your caregiver', waitingApplicants:'Caregivers will start applying soon', aboutPet:'About the pet', postedBy:'Posted by', offered:'offer',
+  messages:'Messages', noChats:'No conversations yet', msgPh:'Write a message', sayHi:'Start by saying hi 👋', newMessage:'New message from {name} 💬',
+  quick1:'Hi there! 👋', quick2:'When are you free?', quick3:'Could you send photos during care?',
+  sysHired:'Booking confirmed · {svc} {date}', youLabel:'You',
+  example:'Example', authTag:'Pet care with your neighbors', kakaoLogin:'Continue with Kakao', orEmail:'or continue with email',
+  emailPh:'Email address', sendCode:'Send login code', codeSent:'We sent a 6-digit code to {email}. Check your inbox.', codePh:'6-digit code',
+  verify:'Log in', otherEmail:'Use a different email', terms:'By continuing you agree to the Terms and Privacy Policy.', loading:'Loading…',
+  authError:'Couldn’t log in: {msg}', codeError:'That code is wrong or has expired. Check it and try again.',
+  welcome:'Welcome! Set up your profile', welcomeSub:'This is the name and neighborhood neighbors will see.', iAm:'How will you use the app?',
+  roleOwner:'🐶 Pet parent', roleCare:'🤝 Caregiver', roleBoth:'Both', startApp:'Get started',
+  saveFailed:'Couldn’t save. Check your connection and try again.', sendFailed:'Message not sent. Try again.',
+  pushTitle:'Message notifications', pushOffBody:'Get a notification on your phone when a neighbor messages you.', pushEnable:'🔔 Turn on', pushOn:'Notifications are on 🔔', pushOnShort:'On',
+  pushDenied:'Notifications are blocked. Allow them in your phone’s Settings → Notifications.',
+  pushInstall:'On iPhone, notifications only work in the Home Screen app. In Safari tap Share → "Add to Home Screen", then open the app from its icon.',
+  pushUnsupported:'This browser can’t receive notifications.', pushFailed:'Couldn’t turn on notifications. Try again in a moment.',
+  account:'Account', logout:'Log out', cancel:'Cancel',
+},
+};
+
+/* ---------- helpers ---------- */
+const CFG = window.PN_CONFIG || {};
+// Real mode needs a configured Supabase project; otherwise the app runs as a local demo.
+const REAL = !!(CFG.supabaseUrl && CFG.supabaseAnonKey && window.supabase);
+const sb = REAL ? window.supabase.createClient(CFG.supabaseUrl, CFG.supabaseAnonKey) : null;
+let lang = 'ko';
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const L = v => (v && typeof v === 'object') ? (v[lang] ?? v.ko) : (v ?? '');
+const t = (k, vars={}) => (T[lang][k] ?? k).replace(/\{(\w+)\}/g, (_, x) => vars[x] ?? '');
+const won = n => '₩' + Number(n).toLocaleString('ko-KR');
+const dist = d => lang === 'en' ? (DISTRICTS[d] || d) : d;
+const svcName = k => SERVICES[k][lang];
+const uid = () => Math.random().toString(36).slice(2, 9);
+const avg = rs => rs.length ? rs.reduce((a, r) => a + r.stars, 0) / rs.length : 0;
+function ago(iso){
+  const m = Math.max(0, (Date.now() - new Date(iso)) / 6e4);
+  if (m < 1) return t('justNow');
+  if (m < 60) return t('minAgo', {n: Math.floor(m)});
+  if (m < 1440) return t('hrAgo', {n: Math.floor(m / 60)});
+  return t('dayAgo', {n: Math.floor(m / 1440)});
+}
+function fmtDay(ymd){
+  const d = new Date(ymd + 'T00:00');
+  return d.toLocaleDateString(lang === 'ko' ? 'ko-KR' : 'en-US', {month:'short', day:'numeric', weekday:'short'});
+}
+const COLORS = ['#FFE1D2','#DDF0E4','#E2E9FB','#FBE6F1','#FFF1C9','#E6E0FA'];
+function avatar(u, size=''){
+  const c = COLORS[[...u.id].reduce((a, ch) => a + ch.charCodeAt(0), 0) % COLORS.length];
+  return `<div class="avatar ${size}" style="background:${c}">${u.avatar}</div>`;
+}
+function ratingHTML(rs){
+  if (!rs.length) return `<span class="rating"><span class="c">${t('noReviews')}</span></span>`;
+  return `<span class="rating"><span class="s">★</span>${avg(rs).toFixed(1)} <span class="c">(${rs.length})</span></span>`;
+}
+const starStr = n => '★'.repeat(n) + '☆'.repeat(5 - n);
+
+/* ---------- route geometry ---------- */
+function haversine([a1, o1], [a2, o2]){
+  const R = 6371e3, r = x => x * Math.PI / 180, dA = r(a2 - a1), dO = r(o2 - o1);
+  const h = Math.sin(dA / 2) ** 2 + Math.cos(r(a1)) * Math.cos(r(a2)) * Math.sin(dO / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(h));
+}
+const WALK_SPEED = 1.3, SIM_SPEED = 20; // m/s; demo walks play at 20x
+// A loop through Mangwon-dong to the Han River, one point per simulated tick
+function demoRoute(){
+  if (demoRoute.cache) return demoRoute.cache;
+  const wp = [[37.5572,126.9030],[37.5552,126.9012],[37.5539,126.8995],[37.5557,126.8960],[37.5572,126.8925],[37.5582,126.8945],[37.5574,126.8985],[37.5572,126.9030]];
+  const step = WALK_SPEED * SIM_SPEED, out = [];
+  for (let i = 0; i < wp.length - 1; i++){
+    const n = Math.max(1, Math.round(haversine(wp[i], wp[i + 1]) / step));
+    for (let k = 0; k < n; k++){
+      const f = k / n, j = Math.sin(out.length * 1.7) * 0.00004;
+      out.push([wp[i][0] + (wp[i + 1][0] - wp[i][0]) * f + j, wp[i][1] + (wp[i + 1][1] - wp[i][1]) * f - j]);
+    }
+  }
+  out.push(wp[wp.length - 1]);
+  return demoRoute.cache = out;
+}
+const routeLength = pts => pts.reduce((sum, p, i) => i ? sum + haversine(pts[i - 1], p) : 0, 0);
+
+/* ---------- data ---------- */
+const KEY = 'petneighbor-v3';
+function seed(){
+  const now = Date.now();
+  const d = n => new Date(now - n * 864e5).toISOString();
+  const h = n => new Date(now - n * 36e5).toISOString();
+  const ahead = n => new Date(now + n * 864e5).toISOString().slice(0, 10);
+  return {
+    me:'u0',
+    users:[
+      {id:'u0', name:{ko:'지우',en:'Jiwoo'}, avatar:'🙂', district:'마포구', verified:false, services:[],
+       bio:{ko:'망원동에 사는 콩이 보호자예요. 주말마다 한강 산책해요!', en:'Kongi’s human in Mangwon. We walk along the Han River every weekend!'}},
+      {id:'u1', name:{ko:'박서연',en:'Seoyeon Park'}, avatar:'👩🏻', district:'마포구', verified:true,
+       services:[{type:'walk',price:15000},{type:'dropin',price:20000},{type:'sitting',price:45000}],
+       bio:{ko:'동물병원 간호사 5년 경력. 마당 있는 집에서 한 번에 한 아이만 맡아요.', en:'Vet nurse for 5 years. I have a house with a yard and care for one pet at a time.'}},
+      {id:'u2', name:{ko:'이민준',en:'Minjun Lee'}, avatar:'🧑🏻', district:'강남구', verified:true,
+       services:[{type:'training',price:50000},{type:'walk',price:18000}],
+       bio:{ko:'반려견 행동교정 훈련사 자격 보유. 짖음, 분리불안, 산책 매너 교육해요.', en:'Certified dog behavior trainer. Barking, separation anxiety and leash manners.'}},
+      {id:'u3', name:{ko:'최하은',en:'Haeun Choi'}, avatar:'👩🏻‍🦱', district:'송파구', verified:true,
+       services:[{type:'grooming',price:40000},{type:'dropin',price:18000}],
+       bio:{ko:'고양이 전문 방문 미용사예요. 낯선 곳을 싫어하는 아이도 집에서 편하게!', en:'Mobile cat groomer. Great for cats who hate leaving home.'}},
+      {id:'u4', name:{ko:'정도윤',en:'Doyun Jung'}, avatar:'👨🏻', district:'용산구', verified:false,
+       services:[{type:'taxi',price:25000},{type:'sitting',price:50000}],
+       bio:{ko:'대형견도 OK! 넓은 SUV로 병원·미용실·공항까지 안전하게 모셔다 드려요.', en:'Big dogs welcome! Safe rides in a roomy SUV to vets, groomers, even the airport.'}},
+      {id:'u5', name:{ko:'강수아',en:'Sua Kang'}, avatar:'👧🏻', district:'성동구', verified:true,
+       services:[{type:'walk',price:14000},{type:'dropin',price:17000}],
+       bio:{ko:'서울숲 근처 수의대생이에요. 강아지 둘, 고양이 하나 키워요.', en:'Vet student near Seoul Forest. I have two dogs and a cat of my own.'}},
+      {id:'u6', name:{ko:'윤태호',en:'Taeho Yoon'}, avatar:'🧔🏻', district:'해운대', verified:true,
+       services:[{type:'sitting',price:40000},{type:'walk',price:13000}],
+       bio:{ko:'해운대 바닷가 산책 전문! 재택근무라 하루 종일 함께 있어요.', en:'Beach walks in Haeundae! I work from home so your pet is never alone.'}},
+      {id:'u7', name:{ko:'한예린',en:'Yerin Han'}, avatar:'👩🏻‍🦰', district:'마포구', verified:false, services:[],
+       bio:{ko:'시바견 보리랑 살아요. 산책 메이트 구해요!', en:'Living with Bori the Shiba. Always looking for walk buddies!'}},
+      {id:'u8', name:{ko:'오준서',en:'Junseo Oh'}, avatar:'👨🏻‍💼', district:'서초구', verified:false, services:[],
+       bio:{ko:'코숏 나비 집사입니다.', en:'Cat dad to Nabi, a Korean shorthair.'}},
+    ],
+    pets:[
+      {id:'pt0', ownerId:'u0', name:{ko:'콩이',en:'Kongi'}, species:'dog', breed:{ko:'말티푸',en:'Maltipoo'}, age:3, notes:{ko:'닭고기 알러지가 있어요. 공놀이를 제일 좋아해요.',en:'Allergic to chicken. Loves playing fetch.'}},
+      {id:'pt1', ownerId:'u7', name:{ko:'보리',en:'Bori'}, species:'dog', breed:{ko:'시바견',en:'Shiba Inu'}, age:4, notes:{ko:'다른 강아지에게 조금 예민해요.',en:'A little shy with other dogs.'}},
+      {id:'pt2', ownerId:'u8', name:{ko:'나비',en:'Nabi'}, species:'cat', breed:{ko:'코리안숏헤어',en:'Korean shorthair'}, age:6, notes:''},
+      {id:'pt3', ownerId:'u5', name:{ko:'두부',en:'Dubu'}, species:'dog', breed:{ko:'진돗개 믹스',en:'Jindo mix'}, age:2, notes:''},
+      {id:'pt4', ownerId:'u1', name:{ko:'모카',en:'Mocha'}, species:'dog', breed:{ko:'푸들',en:'Poodle'}, age:8, notes:''},
+    ],
+    reviews:[
+      {id:'r1', targetId:'u1', authorId:'u0', kind:'care', stars:5, date:d(9), text:{ko:'콩이 산책 후 사진과 메모까지 꼼꼼히 보내주셨어요. 또 부탁드릴게요!',en:'Sent photos and notes after every walk. Will book again!'}},
+      {id:'r2', targetId:'u1', authorId:'u7', kind:'care', stars:5, date:d(20), text:{ko:'보리가 낯을 가리는데 천천히 친해지게 해주셨어요.',en:'Bori is shy but she gave him time to warm up.'}},
+      {id:'r3', targetId:'u1', authorId:'u8', kind:'care', stars:4, date:d(41), text:{ko:'친절하시고 시간 약속 잘 지키세요.',en:'Kind and always on time.'}},
+      {id:'r4', targetId:'u2', authorId:'u7', kind:'care', stars:5, date:d(5), text:{ko:'3회 수업 만에 엘리베이터 짖음이 거의 사라졌어요!',en:'Elevator barking almost gone after 3 sessions!'}},
+      {id:'r5', targetId:'u2', authorId:'u0', kind:'care', stars:4, date:d(60), text:{ko:'설명이 이해하기 쉬웠어요.',en:'Explanations were easy to follow.'}},
+      {id:'r6', targetId:'u3', authorId:'u8', kind:'care', stars:5, date:d(14), text:{ko:'나비가 미용 중에 한 번도 하악질 안 했어요. 신기해요.',en:'Nabi didn’t hiss once during grooming. Amazing.'}},
+      {id:'r7', targetId:'u4', authorId:'u7', kind:'care', stars:4, date:d(30), text:{ko:'차가 깨끗하고 운전이 부드러워요.',en:'Clean car and a smooth ride.'}},
+      {id:'r8', targetId:'u5', authorId:'u0', kind:'care', stars:5, date:d(3), text:{ko:'수의대생이라 그런지 건강 체크까지 해주셨어요.',en:'Being a vet student, she even did a quick health check.'}},
+      {id:'r9', targetId:'u5', authorId:'u7', kind:'care', stars:5, date:d(11), text:{ko:'믿고 맡길 수 있는 분이에요.',en:'Someone you can truly trust.'}},
+      {id:'r10', targetId:'u6', authorId:'u8', kind:'care', stars:5, date:d(16), text:{ko:'바다 산책 사진이 너무 예뻤어요 🌊',en:'The beach walk photos were adorable 🌊'}},
+      {id:'r11', targetId:'u0', authorId:'u1', kind:'owner', stars:5, date:d(9), text:{ko:'콩이 정보를 자세히 알려주셔서 돌보기 편했어요. 최고의 보호자님!',en:'Gave detailed info about Kongi, which made care easy. A great pet parent!'}},
+      {id:'r12', targetId:'u7', authorId:'u1', kind:'owner', stars:5, date:d(20), text:{ko:'준비물을 꼼꼼히 챙겨주셨어요.',en:'Had everything ready for us.'}},
+    ],
+    bookings:[
+      {id:'b1', ownerId:'u0', providerId:'u1', service:'walk', price:15000, date:d(10).slice(0,10), petId:'pt0', msg:'', status:'done', ownerReviewed:true, providerReviewed:true,
+       walk:(() => { const pts = demoRoute(), start = now - 10 * 864e5; return {startedAt:start, endedAt:start + pts.length * SIM_SPEED * 1000, points:pts, distance:routeLength(pts), marks:[{type:'pee', at:pts[25]}, {type:'poo', at:pts[60]}]}; })()},
+    ],
+    requests:[
+      {id:'rq1', ownerId:'u7', service:'walk', date:ahead(2), time:'evening', petId:'pt1', district:'마포구', budget:15000, status:'open', createdAt:h(3),
+       note:{ko:'야근이 있어서 저녁 산책 부탁드려요. 보리는 다른 강아지에게 조금 예민해요.', en:'I’m working late, so Bori needs an evening walk. He’s a bit shy with other dogs.'}},
+      {id:'rq2', ownerId:'u8', service:'dropin', date:ahead(5), time:'flex', petId:'pt2', district:'서초구', budget:null, status:'open', createdAt:h(20),
+       note:{ko:'2박 3일 출장 동안 하루 한 번 밥이랑 화장실 챙겨주실 분 찾아요.', en:'Away for 3 days. Need someone to feed Nabi and clean the litter box once a day.'}},
+    ],
+    applications:[
+      {id:'ap1', requestId:'rq1', providerId:'u5', price:14000, status:'applied', date:h(2),
+       msg:{ko:'서울숲 근처지만 마포도 자주 가요! 예민한 아이는 천천히 다가갈게요.', en:'I’m near Seoul Forest but often in Mapo! I’ll go slowly with a shy dog.'}},
+      {id:'ap2', requestId:'rq2', providerId:'u3', price:18000, status:'applied', date:h(18),
+       msg:{ko:'고양이 전문이에요. 화장실 청소와 놀이까지 해드려요.', en:'Cats are my specialty. I’ll clean the litter box and play with Nabi too.'}},
+    ],
+    chats:[
+      {id:'c1', members:['u0','u1'], read:{u0: now - 9 * 864e5 + 6e4}, messages:[
+        {from:'u1', date:d(10), text:{ko:'콩이 산책 잘 마쳤어요! 리포트 확인해 보세요 🐾', en:'Kongi’s walk went great! Check out the report 🐾'}},
+        {from:'u0', date:d(10), text:{ko:'감사해요! 다음에도 부탁드릴게요 😊', en:'Thank you! I’ll book you again 😊'}},
+        {from:'u1', date:d(9), text:{ko:'언제든지요! 콩이 너무 귀여워요 💛', en:'Anytime! Kongi is adorable 💛'}},
+      ]},
+    ],
+    posts:[
+      {id:'p1', authorId:'u7', cat:'health', date:h(5), likes:14, liked:false,
+       title:{ko:'강아지가 산책할 때 풀을 자꾸 먹어요, 괜찮을까요?',en:'My dog keeps eating grass on walks — should I worry?'},
+       body:{ko:'요즘 보리가 산책만 나가면 풀을 뜯어 먹어요. 가끔 토하기도 하는데 병원에 가봐야 할까요?',en:'Lately Bori eats grass on every walk, and sometimes throws up afterwards. Should I take him to the vet?'},
+       comments:[
+         {authorId:'u5', date:h(4), text:{ko:'가끔은 흔한 행동이지만 구토가 반복되면 진료 받아보세요. 제초제 뿌린 풀은 특히 조심하세요!',en:'Occasional grass eating is common, but see a vet if vomiting repeats. Watch out for grass treated with weed killer!'}},
+         {authorId:'u1', date:h(3), text:{ko:'식이섬유가 부족할 때도 그래요. 사료 성분도 한 번 확인해 보세요.',en:'It can also mean a lack of fiber. Worth checking the food ingredients.'}},
+       ]},
+      {id:'p2', authorId:'u8', cat:'training', date:d(1), likes:9, liked:false,
+       title:{ko:'고양이가 소파를 계속 긁어요 😭',en:'My cat keeps scratching the sofa 😭'},
+       body:{ko:'스크래쳐를 여러 개 사줬는데도 소파만 긁어요. 다들 어떻게 해결하셨나요?',en:'I bought several scratchers but she only goes for the sofa. How did you all solve this?'},
+       comments:[
+         {authorId:'u3', date:h(20), text:{ko:'소파 바로 옆에 세로형 스크래쳐를 두고 캣닢을 뿌려보세요. 위치가 제일 중요해요.',en:'Put a vertical scratcher right next to the sofa and add catnip. Placement matters most.'}},
+       ]},
+      {id:'p3', authorId:'u1', cat:'food', date:d(2), likes:21, liked:false,
+       title:{ko:'노령견(8살) 사료 바꿀 때 팁 공유해요',en:'Tips for switching food for a senior dog (8 yrs)'},
+       body:{ko:'모카가 8살이 되어 시니어 사료로 바꿨어요. 7~10일에 걸쳐 조금씩 섞어주면 배탈이 거의 안 나요.\n\n1~3일: 기존 75% + 새 사료 25%\n4~6일: 50/50\n7~9일: 25/75\n10일~: 새 사료 100%',en:'Mocha turned 8 so we switched to senior food. Mixing gradually over 7–10 days avoids upset tummies.\n\nDays 1–3: 75% old + 25% new\nDays 4–6: 50/50\nDays 7–9: 25/75\nDay 10+: 100% new'},
+       comments:[
+         {authorId:'u0', date:d(1), text:{ko:'정리 감사해요! 저장해둘게요.',en:'Thanks for the summary! Saving this.'}},
+       ]},
+      {id:'p4', authorId:'u4', cat:'adopt', date:d(3), likes:33, liked:false,
+       title:{ko:'이번 주말 유기견 보호소 봉사 같이 가실 분 🐾',en:'Anyone joining a shelter volunteer day this weekend? 🐾'},
+       body:{ko:'토요일 오전에 보호소 산책 봉사 가요. 차량 2자리 남았어요. 댓글 주세요!',en:'Going to walk shelter dogs Saturday morning. 2 seats left in my car — comment below!'},
+       comments:[]},
+      {id:'p5', authorId:'u5', cat:'free', date:d(4), likes:27, liked:false,
+       title:{ko:'한강공원 반려견 산책 매너 정리',en:'Han River park etiquette for dog owners'},
+       body:{ko:'✔️ 목줄은 항상 착용 (길이 2m 이내 권장)\n✔️ 배변봉투 꼭 챙기기\n✔️ 맹견은 입마개 필수\n✔️ 자전거 도로는 피해서 걷기\n\n모두가 즐거운 공원 만들어요!',en:'✔️ Always use a leash (2m or shorter recommended)\n✔️ Bring poop bags\n✔️ Muzzles required for designated breeds\n✔️ Stay off the bike lanes\n\nLet’s keep the park fun for everyone!'},
+       comments:[
+         {authorId:'u7', date:d(3), text:{ko:'공유 감사해요 👍',en:'Thanks for sharing 👍'}},
+       ]},
+    ],
+    places:[
+      {id:'pl1', cat:'vet', district:'마포구', name:{ko:'마포 24시 동물메디컬센터',en:'Mapo 24h Animal Medical Center'},
+       desc:{ko:'새벽에도 진료 가능하고 설명이 자세해요.',en:'Open all night, and the vets explain things clearly.'},
+       ratings:[{authorId:'u0',stars:5},{authorId:'u7',stars:5},{authorId:'u1',stars:4}]},
+      {id:'pl2', cat:'vet', district:'강남구', name:{ko:'냥심 고양이 전문 병원',en:'Nyangsim Cat Clinic'},
+       desc:{ko:'고양이만 진료해서 대기실이 조용해요.',en:'Cats only, so the waiting room is calm.'},
+       ratings:[{authorId:'u8',stars:5},{authorId:'u3',stars:5}]},
+      {id:'pl3', cat:'park', district:'마포구', name:{ko:'망원 한강공원',en:'Mangwon Hangang Park'},
+       desc:{ko:'잔디가 넓고 노을이 예뻐요. 저녁 산책 강추!',en:'Wide lawns and beautiful sunsets. Perfect for evening walks!'},
+       ratings:[{authorId:'u0',stars:5},{authorId:'u7',stars:4},{authorId:'u1',stars:5},{authorId:'u5',stars:5}]},
+      {id:'pl4', cat:'park', district:'송파구', name:{ko:'올림픽공원 산책로',en:'Olympic Park trails'},
+       desc:{ko:'코스가 길고 그늘이 많아 여름에도 좋아요.',en:'Long routes with lots of shade, great even in summer.'},
+       ratings:[{authorId:'u3',stars:5},{authorId:'u2',stars:4}]},
+      {id:'pl5', cat:'cafe', district:'성동구', name:{ko:'성수 멍멍라운지',en:'Seongsu Mungmung Lounge'},
+       desc:{ko:'소형견·대형견 공간이 분리되어 있어요.',en:'Separate areas for small and large dogs.'},
+       ratings:[{authorId:'u5',stars:4},{authorId:'u0',stars:4}]},
+      {id:'pl6', cat:'food', district:'용산구', name:{ko:'해방촌 브런치 보리네',en:'Borine Brunch, Haebangchon'},
+       desc:{ko:'강아지 메뉴가 따로 있고 테라스가 넓어요.',en:'Has a dog menu and a big terrace.'},
+       ratings:[{authorId:'u4',stars:5},{authorId:'u7',stars:4}]},
+      {id:'pl7', cat:'shop', district:'성동구', name:{ko:'서울숲 수제간식 공방',en:'Seoul Forest Handmade Treats'},
+       desc:{ko:'첨가물 없는 수제 간식. 알러지 있는 아이도 OK.',en:'Additive-free treats, good for pets with allergies.'},
+       ratings:[{authorId:'u0',stars:5}]},
+      {id:'pl8', cat:'park', district:'해운대', name:{ko:'해운대 달맞이길',en:'Haeundae Dalmaji-gil'},
+       desc:{ko:'바다 보며 걷는 산책길. 아침이 한적해요.',en:'Ocean-view walking path, quiet in the mornings.'},
+       ratings:[{authorId:'u6',stars:5}]},
+    ],
+  };
+}
+function load(){
+  try{
+    const s = JSON.parse(localStorage.getItem(KEY));
+    if (s && s.db){ lang = s.lang || 'ko'; return s.db; }
+  }catch(e){}
+  return null;
+}
+let db = load() || seed();
+// Real members, pets and chats live in Supabase, so only the demo content is cached here.
+function save(){
+  const local = {...db, me: REAL ? 'u0' : db.me, users: db.users.filter(u => !u.real), pets: db.pets.filter(p => !p.real), chats: db.chats.filter(c => !c.real)};
+  try{ localStorage.setItem(KEY, JSON.stringify({db: local, lang})); }catch(e){}
+}
+
+const me = () => user(db.me);
+const user = id => db.users.find(u => u.id === id);
+const petsOf = id => db.pets.filter(p => p.ownerId === id);
+const reviewsOf = (id, kind) => db.reviews.filter(r => r.targetId === id && r.kind === kind).sort((a, b) => b.date.localeCompare(a.date));
+const providers = () => db.users.filter(u => u.services.length && u.id !== db.me);
+const minPrice = u => Math.min(...u.services.map(s => s.price));
+
+/* ---------- ui state ---------- */
+const ui = {tab:'home', stack:[], findMode:'people', svc:'all', dist:'all', sort:'rating', q:'', postCat:'all', postSort:'new', placeCat:'all', placeDist:'all'};
+function go(type, id){ ui.stack.push({type, id}); render(); if (type !== 'chat') scrollTo(0, 0); }
+function back(){ ui.stack.pop(); render(); }
+function tab(name){ ui.tab = name; ui.stack = []; render(); scrollTo(0, 0); }
+
+let toastTimer;
+function toast(msg){
+  const el = $('#toast'); el.textContent = msg; el.classList.add('show');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => el.classList.remove('show'), 2400);
+}
+function openSheet(html){
+  $('#sheet').innerHTML = `<div class="grab"></div>${html}`;
+  $('#sheet').classList.add('open'); $('#backdrop').classList.add('open');
+}
+function closeSheet(){ $('#sheet').classList.remove('open'); $('#backdrop').classList.remove('open'); }
+
+/* ---------- components ---------- */
+function providerCard(u){
+  const rs = reviewsOf(u.id, 'care');
+  const shown = ui.svc !== 'all' && u.services.find(s => s.type === ui.svc);
+  const price = shown ? won(shown.price) : t('priceFrom', {p: won(minPrice(u))});
+  const unit = shown ? `<small>${t('perUnit', {u: L(SERVICES[shown.type].unit)})}</small>` : '';
+  return `<div class="card tap" data-act="open" data-type="user" data-id="${u.id}">
+    <div class="person">${avatar(u)}
+      <div class="info">
+        <div class="name">${esc(L(u.name))} ${u.verified ? `<span class="badge">✓ ${t('verified')}</span>` : ''} ${REAL && !u.real ? `<span class="pill gray">${t('example')}</span>` : ''}</div>
+        <div class="small muted">📍 ${esc(dist(u.district))} · ${ratingHTML(rs)}</div>
+      </div>
+      <div class="price">${price}${unit}</div>
+    </div>
+    <div class="tags">${u.services.map(s => `<span class="tag">${SERVICES[s.type].icon} ${svcName(s.type)}</span>`).join('')}</div>
+  </div>`;
+}
+function postCard(p){
+  const a = user(p.authorId), c = POST_CATS[p.cat];
+  return `<div class="card post tap" data-act="open" data-type="post" data-id="${p.id}">
+    <span class="pill">${c.icon} ${c[lang]}</span>
+    <h3>${esc(L(p.title))}</h3>
+    <p>${esc(L(p.body))}</p>
+    <div class="meta"><span>${esc(L(a.name))} · ${ago(p.date)}</span><span class="sp"></span>
+      <span>${p.liked ? '🧡' : '🤍'} ${p.likes}</span><span>💬 ${p.comments.length}</span></div>
+  </div>`;
+}
+function placeCard(pl){
+  const c = PLACE_CATS[pl.cat];
+  return `<div class="card tap" data-act="open" data-type="place" data-id="${pl.id}">
+    <div class="person">
+      <div class="avatar" style="background:var(--brand-soft);border-radius:16px">${c.icon}</div>
+      <div class="info">
+        <div class="name">${esc(L(pl.name))}</div>
+        <div class="small muted">${c[lang]} · 📍 ${esc(dist(pl.district))}</div>
+        <div>${ratingHTML(pl.ratings)}</div>
+      </div>
+    </div>
+    <p class="small muted" style="margin:10px 0 0">“${esc(L(pl.desc))}”</p>
+  </div>`;
+}
+const STATUS_PILL = {requested:'blue', confirmed:'green', done:'gray', declined:'gray'};
+function bookingCard(b, asProvider){
+  const other = user(asProvider ? b.ownerId : b.providerId), pet = db.pets.find(p => p.id === b.petId);
+  let action = '';
+  if (asProvider){
+    if (b.status === 'requested') action = `<div class="btn-row"><button class="btn ghost sm" data-act="decline" data-id="${b.id}">${t('decline')}</button><button class="btn green sm" data-act="accept" data-id="${b.id}">${t('accept')}</button></div>`;
+    else if (b.status === 'confirmed' && TRACKED.has(b.service)) action = b.walk ? ''
+      : `<div class="btn-row"><button class="btn green sm" data-act="startCare" data-id="${b.id}">${t(b.service === 'walk' ? 'startWalk' : 'startCare')}</button></div>`;
+    else if (b.status === 'confirmed') action = `<div class="btn-row"><button class="btn primary sm" data-act="providerDone" data-id="${b.id}">${t('markDone')}</button></div>`;
+    else if (b.status === 'done' && !b.providerReviewed) action = `<div class="btn-row"><button class="btn primary sm" data-act="rateBooking" data-id="${b.id}" data-as="provider">⭐ ${t('rateOwner')}</button></div>`;
+  } else {
+    if (b.status === 'confirmed' && TRACKED.has(b.service)) action = b.walk ? '' : `<p class="small muted" style="margin:10px 0 0">${t('willTrack')}</p>`;
+    else if (b.status === 'confirmed') action = `<div class="btn-row"><button class="btn primary sm" data-act="ownerDone" data-id="${b.id}">${t('completeReview')}</button></div>`;
+    else if (b.status === 'done' && !b.ownerReviewed) action = `<div class="btn-row"><button class="btn primary sm" data-act="rateBooking" data-id="${b.id}" data-as="owner">⭐ ${t('leaveReview')}</button></div>`;
+  }
+  if (b.walk && !b.walk.endedAt) action = `<div class="live-line"><span class="live-pill"><i></i>${t('live')}</span><span data-live="${b.id}" style="flex:1">${walkSummary(b.walk)}</span>
+    <button class="btn ghost sm" data-act="viewWalk" data-id="${b.id}">${t('viewLive')}</button></div>` + action;
+  else if (b.walk) action = `<div class="btn-row"><button class="btn ghost sm" data-act="viewWalk" data-id="${b.id}">${t('viewReport')} · ${walkSummary(b.walk)}</button></div>` + action;
+  const doneTag = (asProvider ? b.providerReviewed : b.ownerReviewed) && b.status === 'done' ? ` · ✓ ${t('reviewed')}` : '';
+  return `<div class="card">
+    <div class="person">
+      <div class="tap" data-act="open" data-type="user" data-id="${other.id}">${avatar(other)}</div>
+      <div class="info">
+        <div class="name">${esc(L(other.name))}</div>
+        <div class="small muted">${SERVICES[b.service].icon} ${t('bookingFor', {pet: esc(L(pet?.name)), svc: svcName(b.service)})}</div>
+        <div class="small muted">📅 ${fmtDay(b.date)}${b.time ? ' · ' + L(TIME_SLOTS[b.time]) : ''} · ${won(b.price)}${doneTag}</div>
+      </div>
+      <span class="pill ${STATUS_PILL[b.status]}">${t(b.status)}</span>
+    </div>
+    ${L(b.msg) ? `<p class="small" style="margin:10px 0 0">💬 ${esc(L(b.msg))}</p>` : ''}
+    ${action}
+  </div>`;
+}
+const empty = (icon, msg) => `<div class="empty"><span class="em">${icon}</span>${msg}</div>`;
+function reviewList(rs){
+  if (!rs.length) return empty('📝', t('noReviews'));
+  return rs.map(r => { const a = user(r.authorId); return `<div class="review">
+    <div class="person">${avatar(a, 'sm')}<div class="info"><b class="small">${esc(L(a.name))}</b> <span class="small muted">· ${ago(r.date)}</span></div><span class="rating"><span class="s">${starStr(r.stars)}</span></span></div>
+    ${L(r.text) ? `<p>${esc(L(r.text))}</p>` : ''}
+  </div>`; }).join('');
+}
+function starInput(){
+  return `<input type="hidden" name="stars" value="0"><div class="stars-in">${[1,2,3,4,5].map(n => `<button type="button" data-act="star" data-v="${n}" aria-label="${n}">★</button>`).join('')}</div>`;
+}
+const opts = (obj, sel, label = v => v) => Object.keys(obj).map(k => `<option value="${k}" ${k === sel ? 'selected' : ''}>${esc(label(k))}</option>`).join('');
+
+/* ---------- screens ---------- */
+function homeView(){
+  const m = me(), myPets = petsOf(m.id);
+  const upcoming = db.bookings.filter(b => (b.ownerId === m.id || b.providerId === m.id) && ['requested','confirmed'].includes(b.status));
+  const local = providers().filter(u => u.district === m.district);
+  const top = (local.length ? local : providers()).sort((a, b) => avg(reviewsOf(b.id,'care')) - avg(reviewsOf(a.id,'care'))).slice(0, 3);
+  const hot = [...db.posts].sort((a, b) => b.likes - a.likes).slice(0, 3);
+  const myOpen = db.requests.filter(r => r.ownerId === m.id && r.status === 'open');
+  return `
+  <div class="hero"><h2>${t('hello', {name: esc(L(m.name))})}</h2><p>${t('helloSub')}</p></div>
+  <button class="banner tap" data-act="postRequest"><span class="em">📣</span><span class="txt"><b>${t('bannerTitle')}</b><small>${t('bannerSub')}</small></span><span class="go">${t('bannerGo')}</span></button>
+  ${myOpen.length ? `<div class="section-h"><h2>${t('myRequests')}</h2></div><div class="stack">${myOpen.map(requestCard).join('')}</div>` : ''}
+  <div class="tiles">
+    <button class="tile tap" data-act="tab" data-tab="find"><span class="em">🐕</span><b>${t('qaFind')}</b><span>${t('qaFindSub')}</span></button>
+    <button class="tile tap" data-act="askNow"><span class="em">🙋</span><b>${t('qaAsk')}</b><span>${t('qaAskSub')}</span></button>
+    <button class="tile tap" data-act="tab" data-tab="places"><span class="em">📍</span><b>${t('qaPlaces')}</b><span>${t('qaPlacesSub')}</span></button>
+    <button class="tile tap" data-act="tab" data-tab="me"><span class="em">${myPets[0] ? PET_EMOJI[myPets[0].species] : '🐾'}</span><b>${t('qaPets')}</b><span>${t('qaPetsSub', {n: myPets.length})}</span></button>
+  </div>
+  <div class="section-h"><h2>${t('services')}</h2></div>
+  <div class="svc-row">${Object.keys(SERVICES).map(k => `<button class="svc tap" data-act="findSvc" data-svc="${k}"><span class="em">${SERVICES[k].icon}</span>${svcName(k)}</button>`).join('')}</div>
+  ${upcoming.length ? `<div class="section-h"><h2>${t('upcoming')}</h2></div><div class="stack">${upcoming.map(b => bookingCard(b, b.providerId === m.id)).join('')}</div>` : ''}
+  <div class="section-h"><h2>${t('topNear', {d: esc(dist(m.district))})}</h2><button data-act="tab" data-tab="find">${t('seeAll')} ›</button></div>
+  <div class="stack">${top.map(providerCard).join('')}</div>
+  <div class="section-h"><h2>${t('popularPosts')}</h2><button data-act="tab" data-tab="community">${t('seeAll')} ›</button></div>
+  <div class="stack">${hot.map(postCard).join('')}</div>`;
+}
+
+function findResults(){
+  const q = ui.q.trim().toLowerCase();
+  let list = providers().filter(u =>
+    (ui.svc === 'all' || u.services.some(s => s.type === ui.svc)) &&
+    (ui.dist === 'all' || u.district === ui.dist) &&
+    (!q || [u.name.ko, u.name.en, L(u.bio)].join(' ').toLowerCase().includes(q)));
+  const priceOf = u => ui.svc === 'all' ? minPrice(u) : u.services.find(s => s.type === ui.svc).price;
+  const sorters = {
+    rating:  (a, b) => avg(reviewsOf(b.id,'care')) - avg(reviewsOf(a.id,'care')),
+    price:   (a, b) => priceOf(a) - priceOf(b),
+    reviews: (a, b) => reviewsOf(b.id,'care').length - reviewsOf(a.id,'care').length,
+  };
+  list.sort(sorters[ui.sort]);
+  return list.length ? list.map(providerCard).join('') : empty('🔍', t('noResults'));
+}
+const findTabs = () => `<div class="seg">
+  <button class="${ui.findMode === 'people' ? 'on' : ''}" data-act="findMode" data-mode="people">${t('modePeople')}</button>
+  <button class="${ui.findMode === 'requests' ? 'on' : ''}" data-act="findMode" data-mode="requests">${t('modeRequests')}</button>
+</div>`;
+function findView(){
+  if (ui.findMode === 'requests') return requestsView();
+  return `${findTabs()}
+  <input class="search" id="findSearch" type="search" placeholder="${t('searchPh')}" value="${esc(ui.q)}" data-input="q">
+  <div class="chips">
+    <button class="chip ${ui.svc === 'all' ? 'on' : ''}" data-act="setSvc" data-svc="all">${t('all')}</button>
+    ${Object.keys(SERVICES).map(k => `<button class="chip ${ui.svc === k ? 'on' : ''}" data-act="setSvc" data-svc="${k}">${SERVICES[k].icon} ${svcName(k)}</button>`).join('')}
+  </div>
+  <div class="filters">
+    <select data-change="dist"><option value="all">📍 ${t('allAreas')}</option>${opts(DISTRICTS, ui.dist, dist)}</select>
+    <select data-change="sort">${opts({rating:1, price:1, reviews:1}, ui.sort, k => t('sort' + k[0].toUpperCase() + k.slice(1)))}</select>
+  </div>
+  <div class="stack" id="results" style="margin-top:14px">${findResults()}</div>`;
+}
+
+function communityView(){
+  let list = db.posts.filter(p => ui.postCat === 'all' || p.cat === ui.postCat);
+  list.sort(ui.postSort === 'new' ? (a, b) => b.date.localeCompare(a.date) : (a, b) => b.likes - a.likes);
+  return `
+  <div class="chips">
+    <button class="chip ${ui.postCat === 'all' ? 'on' : ''}" data-act="setPostCat" data-cat="all">${t('all')}</button>
+    ${Object.keys(POST_CATS).map(k => `<button class="chip ${ui.postCat === k ? 'on' : ''}" data-act="setPostCat" data-cat="${k}">${POST_CATS[k].icon} ${POST_CATS[k][lang]}</button>`).join('')}
+  </div>
+  <div class="filters"><select data-change="postSort">${opts({new:1, pop:1}, ui.postSort, k => t(k === 'new' ? 'newest' : 'popular'))}</select></div>
+  <div class="stack" style="margin-top:14px">${list.length ? list.map(postCard).join('') : empty('💬', t('noComments'))}</div>
+  <button class="fab" data-act="writePost">${t('write')}</button>`;
+}
+
+function placesView(){
+  const list = db.places
+    .filter(p => (ui.placeCat === 'all' || p.cat === ui.placeCat) && (ui.placeDist === 'all' || p.district === ui.placeDist))
+    .sort((a, b) => (avg(b.ratings) * Math.log2(b.ratings.length + 1)) - (avg(a.ratings) * Math.log2(a.ratings.length + 1)));
+  return `
+  <div class="chips">
+    <button class="chip ${ui.placeCat === 'all' ? 'on' : ''}" data-act="setPlaceCat" data-cat="all">${t('all')}</button>
+    ${Object.keys(PLACE_CATS).map(k => `<button class="chip ${ui.placeCat === k ? 'on' : ''}" data-act="setPlaceCat" data-cat="${k}">${PLACE_CATS[k].icon} ${PLACE_CATS[k][lang]}</button>`).join('')}
+  </div>
+  <div class="filters"><select data-change="placeDist"><option value="all">📍 ${t('allAreas')}</option>${opts(DISTRICTS, ui.placeDist, dist)}</select></div>
+  <div class="stack" style="margin-top:14px">${list.length ? list.map(placeCard).join('') : empty('📍', t('noPlaces'))}</div>
+  <button class="fab" data-act="addPlace">${t('addPlace')}</button>`;
+}
+
+function meView(){
+  const m = me(), myPets = petsOf(m.id);
+  const mine = db.bookings.filter(b => b.ownerId === m.id).reverse();
+  const forMe = db.bookings.filter(b => b.providerId === m.id).reverse();
+  return `
+  <div class="card prof-head">
+    ${avatar(m, 'lg')}
+    <h2>${esc(L(m.name))}</h2>
+    <div class="muted small">📍 ${esc(dist(m.district))}</div>
+    <div class="scores">
+      <div class="score"><b>${reviewsOf(m.id,'owner').length ? '★ ' + avg(reviewsOf(m.id,'owner')).toFixed(1) : '–'}</b><span>${t('asOwner')}</span></div>
+      <div class="score"><b>${reviewsOf(m.id,'care').length ? '★ ' + avg(reviewsOf(m.id,'care')).toFixed(1) : '–'}</b><span>${t('asCaregiver')}</span></div>
+    </div>
+    <div class="btn-row"><button class="btn ghost" data-act="editProfile">${t('editProfile')}</button><button class="btn ghost" data-act="open" data-type="user" data-id="${m.id}">${t('viewPublic')}</button></div>
+  </div>
+
+  <div class="section-h"><h2>${t('myPets')}</h2><button data-act="addPet">${t('addPet')}</button></div>
+  <div class="stack">${myPets.length ? myPets.map(p => `<div class="card pet tap" data-act="editPet" data-id="${p.id}">
+      <div class="em">${PET_EMOJI[p.species]}</div>
+      <div><b>${esc(L(p.name))}</b><div class="small muted">${esc(L(p.breed))} · ${t('yrs', {n: p.age})}</div>${L(p.notes) ? `<div class="small">${esc(L(p.notes))}</div>` : ''}</div>
+    </div>`).join('') : `<div class="card">${empty('🐾', t('noPets'))}</div>`}</div>
+
+  <div class="section-h"><h2>${t('myBookings')}</h2></div>
+  <div class="stack">${mine.length ? mine.map(b => bookingCard(b, false)).join('') : `<div class="card">${empty('📅', t('noBookings'))}</div>`}</div>
+
+  <div class="section-h"><h2>${t('caregiver')}</h2>${m.services.length ? `<button data-act="editServices">${t('editServices')}</button>` : ''}</div>
+  ${m.services.length ? `
+    <div class="card">${m.services.map(s => `<div class="svc-line"><span class="em">${SERVICES[s.type].icon}</span><span class="grow">${svcName(s.type)}</span><b>${won(s.price)}</b><span class="small muted">${t('perUnit', {u: L(SERVICES[s.type].unit)})}</span></div>`).join('')}</div>
+    <div class="section-h"><h2>${t('requestsForMe')}</h2></div>
+    <div class="stack">${forMe.length ? forMe.map(b => bookingCard(b, true)).join('') : `<div class="card">${empty('🔔', t('noRequests'))}</div>`}</div>`
+  : `<div class="card" style="text-align:center"><div style="font-size:40px">🤝</div><h3 style="margin:6px 0">${t('becomeTitle')}</h3><p class="muted small" style="margin:0 0 14px">${t('becomeSub')}</p><button class="btn primary block" data-act="editServices">${t('becomeBtn')}</button></div>`}
+
+  <div class="section-h"><h2>${t('settings')}</h2></div>
+  <div class="card">
+    <div class="svc-line"><span class="grow">${t('language')}</span><button class="lang" data-act="lang">${lang === 'ko' ? 'English' : '한국어'}</button></div>
+    <div class="svc-line"><span class="grow">${t('reset')}</span><button class="btn ghost sm" data-act="reset">↺</button></div>
+  </div>
+  ${REAL ? `
+  <div class="section-h"><h2>${t('pushTitle')}</h2></div>
+  ${ui.push === 'on' ? `<div class="card svc-line"><span class="grow">🔔 ${t('pushTitle')}</span><span class="pill green">${t('pushOnShort')}</span></div>` : pushCard()}
+  <div class="section-h"><h2>${t('account')}</h2></div>
+  <div class="card svc-line"><span class="grow small">${esc(auth.session?.user?.email || '')}</span><button class="btn ghost sm" data-act="logout">${t('logout')}</button></div>` : ''}`;
+}
+
+function userDetail(id){
+  const u = user(id), isMe = id === db.me, care = reviewsOf(id, 'care'), own = reviewsOf(id, 'owner'), pets = petsOf(id);
+  return `
+  ${isMe ? `<div class="note" style="margin:0 0 10px">👀 ${t('thisIsYou')}</div>` : ''}
+  <div class="card prof-head">
+    ${avatar(u, 'lg')}
+    <h2>${esc(L(u.name))} ${u.verified ? `<span class="badge">✓ ${t('verified')}</span>` : ''}</h2>
+    <div class="muted small">📍 ${esc(dist(u.district))}</div>
+    <div class="scores">
+      <div class="score"><b>${care.length ? '★ ' + avg(care).toFixed(1) : '–'}</b><span>${t('asCaregiver')} · ${t('reviewsN', {n: care.length})}</span></div>
+      <div class="score"><b>${own.length ? '★ ' + avg(own).toFixed(1) : '–'}</b><span>${t('asOwner')} · ${t('reviewsN', {n: own.length})}</span></div>
+    </div>
+  </div>
+  ${L(u.bio) ? `<div class="section-h"><h2>${t('about')}</h2></div><div class="card">${esc(L(u.bio))}</div>` : ''}
+  ${u.services.length ? `<div class="section-h"><h2>${t('svcPrices')}</h2></div>
+    <div class="card">${u.services.map(s => `<div class="svc-line"><span class="em">${SERVICES[s.type].icon}</span><span class="grow">${svcName(s.type)}</span><b>${won(s.price)}</b><span class="small muted">${t('perUnit', {u: L(SERVICES[s.type].unit)})}</span></div>`).join('')}</div>` : ''}
+  ${pets.length ? `<div class="section-h"><h2>${t('pets')}</h2></div>
+    <div class="stack">${pets.map(p => `<div class="card pet"><div class="em">${PET_EMOJI[p.species]}</div><div><b>${esc(L(p.name))}</b><div class="small muted">${esc(L(p.breed))} · ${t('yrs', {n: p.age})}</div></div></div>`).join('')}</div>` : ''}
+  ${u.services.length ? `<div class="section-h"><h2>${t('reviewsCare')}</h2></div><div class="card">${reviewList(care)}</div>` : ''}
+  <div class="section-h"><h2>${t('reviewsOwner')}</h2></div><div class="card">${reviewList(own)}</div>
+  ${!isMe ? `<div class="sticky-cta btn-row"><button class="btn ghost" style="background:var(--card)" data-act="chatWith" data-id="${u.id}">${t('chatWith')}</button>
+    ${u.services.length && !u.real ? `<button class="btn primary" style="flex:2" data-act="book" data-id="${u.id}">${t('book')}</button>` : ''}</div>` : ''}`;
+}
+
+function postDetail(id){
+  const p = db.posts.find(x => x.id === id), a = user(p.authorId), c = POST_CATS[p.cat];
+  return `<div class="card">
+    <span class="pill">${c.icon} ${c[lang]}</span>
+    <h2 style="margin:10px 0 12px;font-size:20px">${esc(L(p.title))}</h2>
+    <div class="person tap" data-act="open" data-type="user" data-id="${a.id}">${avatar(a, 'sm')}<div class="info small"><b>${esc(L(a.name))}</b> <span class="muted">· ${ago(p.date)}</span></div></div>
+    <div class="post-body">${esc(L(p.body))}</div>
+    <button class="like ${p.liked ? 'on' : ''}" data-act="like" data-id="${p.id}">${p.liked ? '🧡' : '🤍'} ${t('like')} ${p.likes}</button>
+  </div>
+  <div class="section-h"><h2>${t('comments', {n: p.comments.length})}</h2></div>
+  <div class="card">
+    ${p.comments.length ? p.comments.map(cm => { const ca = user(cm.authorId); return `<div class="comment">${avatar(ca, 'sm')}<div><b class="small">${esc(L(ca.name))}</b> <span class="small muted">· ${ago(cm.date)}</span><p>${esc(L(cm.text))}</p></div></div>`; }).join('') : `<div class="muted small">${t('noComments')}</div>`}
+    <form class="comment-box" data-form="comment" data-id="${p.id}"><input name="text" placeholder="${t('commentPh')}" required autocomplete="off"><button class="btn primary">↑</button></form>
+  </div>`;
+}
+
+function placeDetail(id){
+  const pl = db.places.find(x => x.id === id), c = PLACE_CATS[pl.cat];
+  const rs = pl.ratings.map((r, i) => ({...r, id: i, date: r.date || new Date(Date.now() - (i + 2) * 864e5).toISOString()})).reverse();
+  return `<div class="card" style="text-align:center">
+    <div style="font-size:48px">${c.icon}</div>
+    <h2 style="margin:6px 0 2px;font-size:20px">${esc(L(pl.name))}</h2>
+    <div class="small muted">${c[lang]} · 📍 ${esc(dist(pl.district))}</div>
+    <div style="margin-top:10px;font-size:20px">${ratingHTML(pl.ratings)}</div>
+    <div class="small muted">${t('recBy', {n: pl.ratings.length})}</div>
+    <p style="margin:14px 0 0">“${esc(L(pl.desc))}”</p>
+  </div>
+  <div class="section-h"><h2>${t('reviewsN', {n: rs.length})}</h2></div>
+  <div class="card">${reviewList(rs)}</div>
+  <div class="sticky-cta"><button class="btn primary block" data-act="ratePlace" data-id="${pl.id}">⭐ ${t('rateThis')}</button></div>`;
+}
+
+function walkDetail(id){
+  const b = booking(id), w = b.walk, prov = user(b.providerId), pet = db.pets.find(p => p.id === b.petId);
+  const isProvider = b.providerId === db.me, live = !w.endedAt;
+  const clock = ms => new Date(ms).toLocaleTimeString(lang === 'ko' ? 'ko-KR' : 'en-US', {hour:'2-digit', minute:'2-digit'});
+  return `<div class="card">
+    <div class="person">${avatar(prov)}
+      <div class="info"><div class="name">${esc(L(prov.name))}</div>
+        <div class="small muted">${SERVICES[b.service].icon} ${t('bookingFor', {pet: esc(L(pet?.name)), svc: svcName(b.service)})}</div>
+        <div class="small muted">${t('started')} ${clock(w.startedAt)}${w.endedAt ? ` · ${t('ended')} ${clock(w.endedAt)}` : ''}</div></div>
+      ${live ? `<span class="live-pill"><i></i>${t('live')}</span>` : `<span class="pill gray">${t('done')}</span>`}
+    </div>
+  </div>
+  <div id="walkmap" class="walkmap"></div>
+  ${live && !w.points.length ? `<p class="small muted" data-stat="gps">${t('waitingGps')}</p>` : ''}
+  <div class="walk-stats">
+    <div><b data-stat="time">${fmtDur(elapsed(w))}</b><span>⏱ ${t('walkTime')}</span></div>
+    <div><b data-stat="dist">${km(w.distance)}</b><span>📏 ${t('distance')}</span></div>
+    <div><b data-stat="pee">${w.marks.filter(m => m.type === 'pee').length}</b><span>💧 ${t('pee')}</span></div>
+    <div><b data-stat="poo">${w.marks.filter(m => m.type === 'poo').length}</b><span>💩 ${t('poo')}</span></div>
+  </div>
+  ${isProvider && live ? `
+    <div class="btn-row"><button class="btn ghost" data-act="mark" data-id="${id}" data-type="pee">💧 ${t('pee')}</button><button class="btn ghost" data-act="mark" data-id="${id}" data-type="poo">💩 ${t('poo')}</button></div>
+    <button class="btn primary block" style="margin-top:10px" data-act="finishCare" data-id="${id}">${t(b.service === 'walk' ? 'finishWalk' : 'finish')}</button>` : ''}
+  ${!isProvider && live ? `<p class="small muted">● ${t('updatingLive')}</p>` : ''}
+  <div class="note">${t('privacyNote')}</div>
+  ${w.simulated ? `<div class="note">${t('simNote')}</div>` : ''}`;
+}
+
+/* ---------- live care tracking ---------- */
+const TRACKED = new Set(['walk', 'dropin', 'sitting', 'taxi']);
+const trackers = {};   // bookingId -> {watchId, timer}
+let walkMap = null;    // the Leaflet map on the open walk screen
+let wakeLock = null;
+const booking = id => db.bookings.find(b => b.id === id);
+const km = m => (m / 1000).toFixed(2) + ' km';
+function fmtDur(ms){
+  const s = Math.floor(ms / 1000), h = Math.floor(s / 3600), m = Math.floor(s / 60) % 60, pad = n => String(n).padStart(2, '0');
+  return h ? `${h}:${pad(m)}:${pad(s % 60)}` : `${m}:${pad(s % 60)}`;
+}
+const elapsed = w => w.endedAt ? w.endedAt - w.startedAt : w.simulated ? w.clock : Date.now() - w.startedAt;
+const walkSummary = w => `${fmtDur(elapsed(w))} · ${km(w.distance)}`;
+function addPoint(w, p){
+  const last = w.points[w.points.length - 1];
+  if (last){ const d = haversine(last, p); if (d < 3) return; w.distance += d; }
+  w.points.push(p);
+}
+
+function startCare(id){
+  const b = booking(id);
+  b.walk = {startedAt: Date.now(), points: [], distance: 0, marks: [], simulated: !navigator.geolocation, clock: 0, simIdx: 0};
+  if (b.walk.simulated) toast(t('gpsFallback'));
+  runTracker(id); go('walk', id);
+}
+// Demo only: plays the other caregiver's side so the owner can watch a live walk
+function startDemoWalk(id){
+  const b = booking(id);
+  if (b.status !== 'confirmed' || b.walk) return;
+  b.walk = {startedAt: Date.now(), points: [], distance: 0, marks: [], simulated: true, clock: 0, simIdx: 0, autoFinish: true};
+  runTracker(id); render();
+  toast(t('walkStarted', {name: L(user(b.providerId).name), pet: L(db.pets.find(p => p.id === b.petId).name)}));
+}
+function runTracker(id){
+  const w = booking(id).walk, tr = trackers[id] = {};
+  if (w.simulated){ tr.timer = setInterval(() => { simStep(id); liveUpdate(id); }, 1000); return; }
+  tr.watchId = navigator.geolocation.watchPosition(pos => {
+    if (pos.coords.accuracy > 60) return;
+    addPoint(w, [pos.coords.latitude, pos.coords.longitude]); save(); liveUpdate(id);
+  }, () => { if (!w.points.length) switchToSim(id); }, {enableHighAccuracy: true, maximumAge: 5000, timeout: 20000});
+  tr.timer = setInterval(() => liveUpdate(id), 1000);
+  keepAwake();
+}
+function switchToSim(id){
+  const w = booking(id).walk;
+  stopTracker(id);
+  Object.assign(w, {simulated: true, clock: Date.now() - w.startedAt, simIdx: 0});
+  toast(t('gpsFallback')); runTracker(id);
+  if (walkMap?.id === id) render();
+}
+function simStep(id){
+  const w = booking(id).walk, route = demoRoute();
+  w.clock += SIM_SPEED * 1000;
+  if (w.simIdx >= route.length){
+    if (w.autoFinish) return finishCare(id);
+    w.simIdx = 0; // caregiver demo keeps looping until they end the walk
+  }
+  const p = route[w.simIdx++];
+  addPoint(w, p);
+  if (w.autoFinish && (w.simIdx === 25 || w.simIdx === 60)) w.marks.push({type: w.simIdx === 25 ? 'pee' : 'poo', at: p});
+  save();
+}
+function stopTracker(id){
+  const tr = trackers[id];
+  if (!tr) return;
+  clearInterval(tr.timer);
+  if (tr.watchId != null) navigator.geolocation.clearWatch(tr.watchId);
+  delete trackers[id];
+  if (!Object.keys(trackers).length && wakeLock){ wakeLock.release().catch(() => {}); wakeLock = null; }
+}
+async function keepAwake(){ try{ wakeLock = wakeLock || await navigator.wakeLock?.request('screen'); }catch(e){} }
+function finishCare(id){
+  const b = booking(id), w = b.walk;
+  stopTracker(id);
+  w.endedAt = w.startedAt + elapsed(w);
+  b.status = 'done'; render();
+  if (b.providerId === db.me) rateBooking(b, 'provider');
+  else toast(t('walkDone'));
+}
+function liveUpdate(id){
+  const w = booking(id).walk;
+  document.querySelectorAll(`[data-live="${id}"]`).forEach(el => el.textContent = walkSummary(w));
+  if (walkMap?.id !== id) return;
+  const set = (k, v) => { const el = document.querySelector(`[data-stat=${k}]`); if (el) el.textContent = v; };
+  set('time', fmtDur(elapsed(w))); set('dist', km(w.distance));
+  set('pee', w.marks.filter(m => m.type === 'pee').length); set('poo', w.marks.filter(m => m.type === 'poo').length);
+  if (w.points.length) document.querySelector('[data-stat=gps]')?.remove();
+  drawMap();
+}
+function mountMap(id){
+  const el = $('#walkmap'), Lf = window.L; // window.L is Leaflet; our L() is the translation helper
+  walkMap = {id};
+  if (!el || !Lf?.map){ if (el) el.innerHTML = empty('🗺️', ''); return; }
+  const map = Lf.map(el, {zoomControl: false});
+  Lf.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom: 19, attribution: '© OpenStreetMap'}).addTo(map);
+  Object.assign(walkMap, {
+    map,
+    line: Lf.polyline([], {color: '#F26B3A', weight: 5, opacity: .9}).addTo(map),
+    dot: Lf.circleMarker([0, 0], {radius: 8, color: '#fff', weight: 3, fillColor: '#23875A', fillOpacity: 1}),
+    marks: Lf.layerGroup().addTo(map), nMarks: -1,
+  });
+  drawMap();
+}
+function drawMap(){
+  if (!walkMap?.map) return;
+  const {map, line, dot, marks} = walkMap, w = booking(walkMap.id).walk, pts = w.points, Lf = window.L;
+  line.setLatLngs(pts);
+  if (!pts.length){ if (!walkMap.viewSet){ map.setView([37.5551, 126.8990], 15); walkMap.viewSet = true; } return; }
+  const last = pts[pts.length - 1];
+  dot.setLatLng(last); if (!map.hasLayer(dot)) dot.addTo(map);
+  if (w.marks.length !== walkMap.nMarks){
+    marks.clearLayers();
+    w.marks.forEach(m => Lf.marker(m.at, {icon: Lf.divIcon({html: m.type === 'pee' ? '💧' : '💩', className: 'mk', iconSize: [24, 24]})}).addTo(marks));
+    walkMap.nMarks = w.marks.length;
+  }
+  if (w.endedAt || !walkMap.viewSet || pts.length === 2){ map.fitBounds(line.getBounds(), {padding: [30, 30], maxZoom: 17}); walkMap.viewSet = true; }
+  else map.panTo(last);
+}
+
+/* ---------- care requests ---------- */
+const reqApps = id => db.applications.filter(a => a.requestId === id);
+const myApp = r => db.applications.find(a => a.requestId === r.id && a.providerId === db.me);
+const petName = (p, lg) => p ? (typeof p.name === 'object' ? p.name[lg] : p.name) : '';
+const both = fn => ({ko: fn('ko'), en: fn('en')}); // bilingual text for demo messages
+function requestPill(r){
+  const a = myApp(r);
+  const [cls, key] = a ? {applied:['blue','applied'], hired:['green','hired'], declined:['gray','notSelected']}[a.status]
+    : r.status === 'open' ? ['green','open'] : ['gray', r.status];
+  return `<span class="pill ${cls}">${t(key)}</span>`;
+}
+function requestCard(r){
+  const o = user(r.ownerId), pet = db.pets.find(p => p.id === r.petId), n = reqApps(r.id).length, mine = r.ownerId === db.me;
+  return `<div class="card tap" data-act="open" data-type="request" data-id="${r.id}">
+    <div class="row-between"><span class="pill">${SERVICES[r.service].icon} ${svcName(r.service)}</span>${requestPill(r)}</div>
+    <div class="req-when">📅 ${fmtDay(r.date)} · ${L(TIME_SLOTS[r.time])}</div>
+    <div class="small muted">${PET_EMOJI[pet.species]} ${esc(L(pet.name))} · 📍 ${esc(dist(r.district))} · ${r.budget ? won(r.budget) : t('negotiable')}</div>
+    <div class="meta"><span>${mine ? t('youLabel') : esc(L(o.name))} · ${ago(r.createdAt)}</span><span class="sp"></span>
+      ${mine && n && r.status === 'open' ? `<span class="count">${n}</span>` : ''}<span>🙋 ${t('applicantsN', {n})}</span></div>
+  </div>`;
+}
+function requestsView(){
+  const newest = (a, b) => b.createdAt.localeCompare(a.createdAt);
+  const mine = db.requests.filter(r => r.ownerId === db.me).sort(newest);
+  const appliedTo = db.requests.filter(r => r.ownerId !== db.me && myApp(r)).sort(newest);
+  const open = db.requests.filter(r => r.ownerId !== db.me && r.status === 'open' && !myApp(r)
+    && (ui.svc === 'all' || r.service === ui.svc) && (ui.dist === 'all' || r.district === ui.dist))
+    .sort((a, b) => a.date.localeCompare(b.date));
+  return `${findTabs()}
+  <button class="btn primary block" data-act="postRequest">${t('postRequest')}</button>
+  ${mine.length ? `<div class="section-h"><h2>${t('myRequests')}</h2></div><div class="stack">${mine.map(requestCard).join('')}</div>` : ''}
+  ${appliedTo.length ? `<div class="section-h"><h2>${t('youApplied')}</h2></div><div class="stack">${appliedTo.map(requestCard).join('')}</div>` : ''}
+  <div class="section-h"><h2>${t('openRequests')}</h2></div>
+  <div class="chips">
+    <button class="chip ${ui.svc === 'all' ? 'on' : ''}" data-act="setSvc" data-svc="all">${t('all')}</button>
+    ${Object.keys(SERVICES).map(k => `<button class="chip ${ui.svc === k ? 'on' : ''}" data-act="setSvc" data-svc="${k}">${SERVICES[k].icon} ${svcName(k)}</button>`).join('')}
+  </div>
+  <div class="filters"><select data-change="dist"><option value="all">📍 ${t('allAreas')}</option>${opts(DISTRICTS, ui.dist, dist)}</select></div>
+  <div class="stack" style="margin-top:14px">${open.length ? open.map(requestCard).join('') : empty('📣', t('noOpenRequests'))}</div>`;
+}
+function applicantCard(ap, r){
+  const p = user(ap.providerId);
+  const action = r.status === 'open' ? `<button class="btn primary sm" data-act="hire" data-id="${ap.id}">${t('choose')}</button>`
+    : ap.status === 'hired' ? `<span class="btn sm" style="background:var(--green-soft);color:var(--green)">✓ ${t('hired')}</span>` : '';
+  return `<div class="card">
+    <div class="person tap" data-act="open" data-type="user" data-id="${p.id}">${avatar(p)}
+      <div class="info"><div class="name">${esc(L(p.name))} ${p.verified ? `<span class="badge">✓ ${t('verified')}</span>` : ''}</div>
+        <div class="small muted">📍 ${esc(dist(p.district))} · ${ratingHTML(reviewsOf(p.id, 'care'))}</div></div>
+      <div class="price">${won(ap.price)}<small>${t('offered')}</small></div>
+    </div>
+    ${L(ap.msg) ? `<p class="small" style="margin:10px 0 0">“${esc(L(ap.msg))}”</p>` : ''}
+    <div class="btn-row"><button class="btn ghost sm" data-act="chatWith" data-id="${p.id}">${t('chat')}</button>${action}</div>
+  </div>`;
+}
+function requestDetail(id){
+  const r = db.requests.find(x => x.id === id), o = user(r.ownerId), pet = db.pets.find(p => p.id === r.petId);
+  const mine = r.ownerId === db.me, apps = reqApps(id), a = myApp(r);
+  const summary = `<div class="card">
+    <div class="row-between"><span class="pill">${SERVICES[r.service].icon} ${svcName(r.service)}</span>${requestPill(r)}</div>
+    <h2 style="margin:10px 0 2px;font-size:22px">📅 ${fmtDay(r.date)}</h2>
+    <div class="muted">${L(TIME_SLOTS[r.time])} · 📍 ${esc(dist(r.district))}</div>
+    <div class="svc-line" style="margin-top:10px"><span class="grow">${t('budget')}</span><b>${r.budget ? won(r.budget) : t('negotiable')}</b></div>
+    ${L(r.note) ? `<p style="margin:6px 0 0">💬 ${esc(L(r.note))}</p>` : ''}
+  </div>
+  <div class="section-h"><h2>${t('aboutPet')}</h2></div>
+  <div class="card pet"><div class="em">${PET_EMOJI[pet.species]}</div><div><b>${esc(L(pet.name))}</b>
+    <div class="small muted">${esc(L(pet.breed))} · ${t('yrs', {n: pet.age})}</div>${L(pet.notes) ? `<div class="small">${esc(L(pet.notes))}</div>` : ''}</div></div>`;
+  if (mine){
+    const order = {hired: 0, applied: 1, declined: 2};
+    const list = [...apps].sort((x, y) => order[x.status] - order[y.status] || avg(reviewsOf(user(y.providerId).id, 'care')) - avg(reviewsOf(user(x.providerId).id, 'care')));
+    return `${summary}
+    <div class="section-h"><h2>${r.status === 'hired' ? t('youHired') : t('applicantsN', {n: apps.length})}</h2></div>
+    <div class="stack">${list.length ? list.filter(ap => r.status === 'open' || ap.status === 'hired').map(ap => applicantCard(ap, r)).join('') : `<div class="card">${empty('⏳', t('waitingApplicants'))}</div>`}</div>`;
+  }
+  const cta = a ? `<div class="btn-row"><span class="btn" style="background:var(--card)">${t(a.status === 'applied' ? 'applied' : a.status === 'hired' ? 'hired' : 'notSelected')} ✓</span>
+      <button class="btn primary" data-act="chatWith" data-id="${o.id}">${t('chatWith')}</button></div>`
+    : r.status === 'open' ? `<button class="btn primary block" data-act="apply" data-id="${r.id}">🙋 ${t('apply')}</button>` : '';
+  return `${summary}
+  <div class="section-h"><h2>${t('postedBy')}</h2></div>
+  <div class="card person tap" data-act="open" data-type="user" data-id="${o.id}">${avatar(o)}
+    <div class="info"><div class="name">${esc(L(o.name))}</div><div class="small muted">${t('asOwner')} · ${ratingHTML(reviewsOf(o.id, 'owner'))}</div></div><span class="muted">›</span></div>
+  ${cta ? `<div class="sticky-cta">${cta}</div>` : ''}`;
+}
+
+/* ---------- chat ---------- */
+function getChat(otherId, create){
+  let c = db.chats.find(c => c.members.includes(db.me) && c.members.includes(otherId));
+  if (!c && create){ c = {id: uid(), members: [db.me, otherId], messages: [], read: {}}; db.chats.push(c); }
+  return c;
+}
+const unreadIn = c => c.messages.filter(m => m.from !== db.me && m.from !== 'system' && new Date(m.date).getTime() > (c.read[db.me] || 0)).length;
+const unreadCount = () => db.chats.filter(c => c.members.includes(db.me)).reduce((n, c) => n + unreadIn(c), 0);
+function msgTime(iso){
+  const d = new Date(iso);
+  if (Date.now() - d < 864e5) return d.toLocaleTimeString(lang === 'ko' ? 'ko-KR' : 'en-US', {hour:'numeric', minute:'2-digit'});
+  return ago(iso);
+}
+function pushMsg(c, from, text){ c.messages.push({from, text, date: new Date().toISOString()}); }
+function sharedRequest(otherId){
+  return db.requests.filter(r => (r.ownerId === db.me && reqApps(r.id).some(a => a.providerId === otherId)) || (r.ownerId === otherId && myApp(r)))
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt))[0];
+}
+function chatDetail(otherId){
+  const o = user(otherId), c = getChat(otherId), r = sharedRequest(otherId);
+  const ap = r && r.ownerId === db.me && r.status === 'open' && reqApps(r.id).find(a => a.providerId === otherId);
+  return `<div class="card">
+    <div class="person tap" data-act="open" data-type="user" data-id="${o.id}">${avatar(o, 'sm')}
+      <div class="info"><b>${esc(L(o.name))}</b> ${o.verified ? `<span class="badge">✓ ${t('verified')}</span>` : ''}
+        <div class="small muted">${o.services.length ? `${t('asCaregiver')} · ${ratingHTML(reviewsOf(o.id, 'care'))}` : `${t('asOwner')} · ${ratingHTML(reviewsOf(o.id, 'owner'))}`}</div></div><span class="muted">›</span></div>
+    ${r ? `<div class="ctx"><span class="grow tap" data-act="open" data-type="request" data-id="${r.id}">${SERVICES[r.service].icon} ${svcName(r.service)} · ${fmtDay(r.date)} ${requestPill(r)}</span>
+      ${ap ? `<button class="btn primary sm" data-act="hire" data-id="${ap.id}">${t('choose')} · ${won(ap.price)}</button>` : ''}</div>` : ''}
+  </div>
+  <div class="msgs">${c?.messages.length ? c.messages.map(m => m.from === 'system' ? `<div class="msg sys">✓ ${esc(L(m.text))}</div>`
+      : `<div class="msg ${m.from === db.me ? 'mine' : 'them'}${m.pending ? ' pending' : ''}${m.failed ? ' failed' : ''}">${esc(L(m.text))}<time>${m.failed ? '⚠ ' + t('sendFailed') : msgTime(m.date)}</time></div>`).join('')
+    : `<div class="empty">${t('sayHi')}</div>`}</div>`;
+}
+function composer(otherId){
+  return `<div class="composer">
+    <div class="quick">${['quick1', 'quick2', 'quick3'].map(k => `<button type="button" data-act="quick" data-text="${esc(t(k))}">${t(k)}</button>`).join('')}</div>
+    <form data-form="chat" data-id="${otherId}"><input id="chatInput" name="text" placeholder="${t('msgPh')}" autocomplete="off" aria-label="${t('msgPh')}"><button class="btn primary" aria-label="send">↑</button></form>
+  </div>`;
+}
+function chatsDetail(){
+  const list = db.chats.filter(c => c.members.includes(db.me) && c.messages.length)
+    .sort((a, b) => b.messages[b.messages.length - 1].date.localeCompare(a.messages[a.messages.length - 1].date));
+  const push = REAL && ui.push !== 'on' ? `<div style="margin-bottom:12px">${pushCard()}</div>` : '';
+  if (!list.length) return `${push}<div class="card">${empty('💬', t('noChats'))}</div>`;
+  return `${push}<div class="stack">${list.map(c => {
+    const o = user(c.members.find(id => id !== db.me)), last = c.messages[c.messages.length - 1], n = unreadIn(c);
+    return `<div class="card chat-row tap" data-act="chatWith" data-id="${o.id}">${avatar(o)}
+      <div class="info"><div class="row-between"><b>${esc(L(o.name))}</b><span class="small muted">${msgTime(last.date)}</span></div>
+        <div class="row-between"><span class="last">${last.from === db.me ? t('youLabel') + ': ' : ''}${esc(L(last.text))}</span>${n ? `<span class="count">${n}</span>` : ''}</div></div>
+    </div>`; }).join('')}</div>`;
+}
+function sendMessage(otherId, text){
+  if (isReal(otherId)) return realSend(otherId, text);
+  pushMsg(getChat(otherId, true), db.me, text); render(); botRespond(otherId);
+}
+function afterIncoming(otherId){
+  const top = ui.stack[ui.stack.length - 1];
+  render();
+  if (!(top?.type === 'chat' && top.id === otherId)) toast(t('newMessage', {name: L(user(otherId).name)}));
+}
+// Demo only: the other person answers. An owner whose request I applied to books me when I reply.
+function botRespond(otherId){
+  const c = getChat(otherId, true);
+  const r = db.requests.find(x => x.ownerId === otherId && x.status === 'open' && myApp(x)?.status === 'applied');
+  setTimeout(() => {
+    if (r && r.status === 'open'){ pushMsg(c, otherId, DEMO.ownerHires); afterIncoming(otherId); hire(myApp(r).id); }
+    else { pushMsg(c, otherId, DEMO.replies[c.messages.length % DEMO.replies.length]); afterIncoming(otherId); }
+  }, 1500);
+}
+
+/* ---------- choosing a caregiver ---------- */
+function hire(appId){
+  const ap = db.applications.find(a => a.id === appId), r = db.requests.find(x => x.id === ap.requestId);
+  reqApps(r.id).forEach(a => a.status = a.id === appId ? 'hired' : 'declined');
+  const b = {id: uid(), ownerId: r.ownerId, providerId: ap.providerId, service: r.service, price: ap.price, date: r.date, time: r.time,
+    petId: r.petId, msg: r.note, status: 'confirmed', requestId: r.id};
+  db.bookings.push(b);
+  Object.assign(r, {status: 'hired', bookingId: b.id});
+  const other = r.ownerId === db.me ? ap.providerId : r.ownerId;
+  pushMsg(getChat(other, true), 'system', both(lg => T[lg].sysHired.replace('{svc}', SERVICES[r.service][lg]).replace('{date}', r.date.slice(5).replace('-', '/'))));
+  render(); toast(t('hiredToast', {name: L(user(other).name)}));
+  if (r.ownerId === db.me && TRACKED.has(r.service)) setTimeout(() => startDemoWalk(b.id), 6000);
+}
+// Demo only: nearby caregivers who offer the service apply a few seconds apart
+function simulateApplicants(r){
+  const local = u => u.district === r.district ? 1 : 0;
+  const pool = providers().filter(u => u.services.some(s => s.type === r.service))
+    .sort((a, b) => local(b) - local(a) || avg(reviewsOf(b.id, 'care')) - avg(reviewsOf(a.id, 'care'))).slice(0, 3);
+  const pet = db.pets.find(p => p.id === r.petId);
+  pool.forEach((u, i) => setTimeout(() => {
+    if (r.status !== 'open') return;
+    db.applications.push({id: uid(), requestId: r.id, providerId: u.id, price: u.services.find(s => s.type === r.service).price,
+      msg: both(lg => DEMO.apply[i][lg].replace('{pet}', petName(pet, lg))), status: 'applied', date: new Date().toISOString()});
+    render(); toast(t('newApplicant', {name: L(u.name)}));
+  }, 2500 + i * 3000));
+}
+
+function requestSheet(){
+  const myPets = petsOf(db.me);
+  if (!myPets.length){ toast(t('needPet')); petSheet(); return; }
+  const tomorrow = new Date(Date.now() + 864e5).toISOString().slice(0, 10);
+  const radio = (name, val, label, on) => `<label class="opt"><input type="radio" name="${name}" value="${val}" ${on ? 'checked' : ''}><span>${label}</span></label>`;
+  openSheet(`<h3>${t('postRequestTitle')}</h3>
+  <form data-form="request">
+    <div class="f"><span>${t('whatService')}</span></div>
+    <div class="opts grid">${Object.keys(SERVICES).map((k, i) => radio('service', k, `<i>${SERVICES[k].icon}</i>${svcName(k)}`, !i)).join('')}</div>
+    <div class="f"><span>${t('whichPet')}</span></div>
+    <div class="opts">${myPets.map((p, i) => radio('pet', p.id, `${PET_EMOJI[p.species]} ${esc(L(p.name))}`, !i)).join('')}</div>
+    <label class="f"><span>${t('when')}</span><input type="date" name="date" id="reqDate" value="${tomorrow}" min="${tomorrow}" required></label>
+    <div class="opts" style="margin-top:8px">${Object.keys(TIME_SLOTS).map(k => radio('time', k, L(TIME_SLOTS[k]), k === 'flex')).join('')}</div>
+    <label class="f"><span>${t('budget')}</span><input type="number" name="budget" id="reqBudget" inputmode="numeric" step="1000" min="0" placeholder="${t('budgetPh')}"></label>
+    <div class="hint">${t('budgetHint')}</div>
+    <label class="f"><span>${t('noteLbl')}</span><textarea name="note" id="reqNote" placeholder="${t('notePh')}"></textarea></label>
+    <button class="btn primary block" style="margin-top:16px">${t('postReqBtn')}</button>
+  </form>`);
+}
+function applySheet(rid){
+  const r = db.requests.find(x => x.id === rid), o = user(r.ownerId);
+  if (!me().services.length){ toast(t('needCaregiver')); servicesSheet(); return; }
+  const mine = me().services.find(s => s.type === r.service);
+  openSheet(`<h3>${t('applyTitle', {name: esc(L(o.name))})}</h3>
+  <form data-form="apply" data-id="${r.id}">
+    <label class="f"><span>${t('yourPrice')}</span><input type="number" name="price" id="applyPrice" inputmode="numeric" step="1000" min="0" value="${mine ? mine.price : (r.budget || DEFAULT_PRICE[r.service])}" required></label>
+    ${r.budget ? `<div class="hint">${t('budget')}: ${won(r.budget)}</div>` : ''}
+    <label class="f"><span>${t('message')}</span><textarea name="msg" id="applyMsg" placeholder="${t('applyMsgPh')}"></textarea></label>
+    <button class="btn primary block" style="margin-top:16px">🙋 ${t('apply')}</button>
+  </form>`);
+}
+function hireSheet(appId){
+  const ap = db.applications.find(a => a.id === appId), p = user(ap.providerId);
+  openSheet(`<h3>${t('hireTitle', {name: esc(L(p.name))})}</h3>
+  <p>${t('hireBody', {price: won(ap.price)})}</p>
+  <div class="note">${t('payNote')}</div>
+  <button class="btn primary block" style="margin-top:16px" data-act="confirmHire" data-id="${ap.id}">${t('choose')}</button>`);
+}
+
+/* ---------- real backend: accounts ---------- */
+const auth = {state: REAL ? 'loading' : 'demo', session: null, step: 'start', email: '', entering: false, role: 'owner'};
+const toUser = p => ({id: p.id, name: p.name, avatar: p.avatar, district: p.district, bio: p.bio, services: p.services || [], verified: false, real: true});
+const toPet = p => ({id: p.id, ownerId: p.owner_id, name: p.name, species: p.species, breed: p.breed, age: p.age, notes: p.notes, real: true});
+
+async function boot(){
+  if (!REAL){ render(); resumeTrackers(); return; }
+  render();
+  if ('serviceWorker' in navigator){
+    navigator.serviceWorker.register('sw.js').catch(e => console.error('service worker', e));
+    navigator.serviceWorker.addEventListener('message', e => { if (e.data?.type === 'open') openFromUrl(e.data.url); });
+  }
+  sb.auth.onAuthStateChange((event, session) => {
+    // supabase-js asks that no other Supabase call runs inside this callback
+    if (event === 'SIGNED_IN' && !auth.session){ auth.session = session; setTimeout(enterApp, 0); }
+    if (event === 'SIGNED_OUT') location.reload();
+  });
+  const {data: {session}} = await sb.auth.getSession();
+  if (session){ auth.session = session; await enterApp(); }
+  else if (!auth.session){ auth.state = 'signedOut'; render(); }
+}
+async function enterApp(){
+  if (auth.entering || auth.state === 'ready') return;
+  auth.entering = true;
+  try{
+    db.me = auth.session.user.id;
+    const {data: prof, error} = await sb.from('profiles').select('*').eq('id', db.me).maybeSingle();
+    if (error) throw error;
+    if (!prof){ auth.state = 'onboarding'; render(); return; }
+    await loadReal();
+    auth.state = 'ready'; render();
+    resumeTrackers(); subscribeRealtime(); refreshPush(); openFromUrl(location.href);
+  }catch(e){
+    console.error(e); auth.state = 'signedOut'; render(); toast(t('authError', {msg: e.message || ''}));
+  }finally{ auth.entering = false; }
+}
+async function loadReal(){
+  const [profiles, pets, convs, reads] = await Promise.all([
+    sb.from('profiles').select('*').limit(1000),
+    sb.from('pets').select('*').limit(1000),
+    sb.from('conversations').select('id, user_a, user_b, last_message_at').order('last_message_at', {ascending: false}).limit(100),
+    sb.from('conversation_reads').select('conversation_id, read_at'),
+  ]);
+  for (const r of [profiles, pets, convs, reads]) if (r.error) throw r.error;
+  db.users = db.users.filter(u => !u.real).concat(profiles.data.map(toUser));
+  db.pets = db.pets.filter(p => !p.real).concat(pets.data.map(toPet));
+  const ids = convs.data.map(c => c.id);
+  let msgs = [];
+  if (ids.length){
+    const res = await sb.from('messages').select('id, conversation_id, sender_id, body, created_at')
+      .in('conversation_id', ids).order('created_at', {ascending: false}).limit(1000);
+    if (res.error) throw res.error;
+    msgs = res.data.reverse();
+  }
+  const readAt = Object.fromEntries(reads.data.map(r => [r.conversation_id, new Date(r.read_at).getTime()]));
+  db.chats = db.chats.filter(c => !c.real).concat(convs.data.map(c => ({
+    id: c.id, real: true, members: [c.user_a, c.user_b], read: {[db.me]: readAt[c.id] || 0},
+    messages: msgs.filter(m => m.conversation_id === c.id).map(m => ({id: m.id, from: m.sender_id, text: m.body, date: m.created_at})),
+  })));
+}
+async function loadProfile(id){
+  const {data} = await sb.from('profiles').select('*').eq('id', id).maybeSingle();
+  if (data && !user(id)) db.users.push(toUser(data));
+}
+function openFromUrl(url){
+  const m = String(url).match(/#chat=([\w-]+)/);
+  if (!m || !user(m[1])) return;
+  history.replaceState(null, '', location.pathname);
+  ui.stack = []; go('chat', m[1]);
+}
+async function logout(){
+  try{
+    const reg = await navigator.serviceWorker?.getRegistration();
+    const sub = await reg?.pushManager?.getSubscription();
+    if (sub){ await sb.from('push_subscriptions').delete().eq('endpoint', sub.endpoint); await sub.unsubscribe(); }
+  }catch(e){ console.error(e); }
+  await sb.auth.signOut();
+  location.reload();
+}
+
+function renderAuth(){
+  const langBtn = `<button class="lang top-lang" data-act="lang">${lang === 'ko' ? 'EN' : '한국어'}</button>`;
+  if (auth.state === 'loading'){
+    $('#app').innerHTML = `<div class="auth"><div class="logo-mark">🐾</div><p class="tagline">${t('loading')}</p></div>`;
+    return;
+  }
+  if (auth.state === 'onboarding'){
+    const AVATARS = ['🙂','😊','😎','🧑🏻','👩🏻','👨🏻','👧🏻','🧔🏻','👵🏻','🐶','🐱'];
+    const radio = (val, label, on) => `<label class="opt"><input type="radio" name="role" value="${val}" ${on ? 'checked' : ''}><span>${label}</span></label>`;
+    $('#app').innerHTML = `<div class="auth">${langBtn}
+      <h1 style="font-size:24px">${t('welcome')}</h1><p class="tagline">${t('welcomeSub')}</p>
+      <form data-form="onboard">
+        <div class="chips" style="margin:0;padding:0">${AVATARS.map((a, i) => `<label><input type="radio" name="avatar" value="${a}" ${!i ? 'checked' : ''} style="display:none"><span class="chip ${!i ? 'on' : ''}" data-act="pickAvatar" style="font-size:22px;padding:6px 10px">${a}</span></label>`).join('')}</div>
+        <label class="f"><span>${t('name')}</span><input name="name" id="obName" maxlength="40" required autocomplete="nickname"></label>
+        <label class="f"><span>${t('district')}</span><select name="district" id="obDistrict">${opts(DISTRICTS, '마포구', dist)}</select></label>
+        <div class="f"><span>${t('iAm')}</span></div>
+        <div class="opts">${radio('owner', t('roleOwner'), true)}${radio('care', t('roleCare'))}${radio('both', t('roleBoth'))}</div>
+        <button class="btn primary block" style="margin-top:12px">${t('startApp')}</button>
+      </form></div>`;
+    return;
+  }
+  $('#app').innerHTML = `<div class="auth">${langBtn}
+    <div class="logo-mark">🐾</div>
+    <h1>${t('appName')}</h1>
+    <p class="tagline">${t('authTag')}</p>
+    ${auth.step === 'code' ? `
+      <p class="small" style="text-align:center;margin:0">${t('codeSent', {email: esc(auth.email)})}</p>
+      <form data-form="emailCode">
+        <input class="code-in" name="code" id="loginCode" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" placeholder="${t('codePh')}" aria-label="${t('codePh')}" required>
+        <button class="btn primary block">${t('verify')}</button>
+      </form>
+      <button class="btn ghost block" data-act="loginBack">${t('otherEmail')}</button>`
+    : `
+      ${CFG.kakao ? `<button class="btn block kakao" data-act="loginKakao"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3C6.5 3 2 6.6 2 11c0 2.8 1.9 5.3 4.7 6.7L5.7 21l4-2.6c.7.1 1.5.2 2.3.2 5.5 0 10-3.6 10-8S17.5 3 12 3z"/></svg>${t('kakaoLogin')}</button>
+      <div class="or">${t('orEmail')}</div>` : ''}
+      <form data-form="emailLogin">
+        <input type="email" name="email" id="loginEmail" autocomplete="email" placeholder="${t('emailPh')}" aria-label="${t('emailPh')}" required>
+        <button class="btn primary block">${t('sendCode')}</button>
+      </form>`}
+    <p class="fine">${t('terms')}</p>
+  </div>`;
+}
+
+/* ---------- real backend: chat ---------- */
+const isReal = id => !!user(id)?.real;
+const readTimers = {};
+function markRead(c){
+  if (!c.real || !c.id) return;
+  clearTimeout(readTimers[c.id]);
+  readTimers[c.id] = setTimeout(() => sb.from('conversation_reads')
+    .upsert({conversation_id: c.id, user_id: db.me, read_at: new Date().toISOString()}).then(({error}) => error && console.error(error)), 800);
+}
+async function ensureConversation(otherId){
+  const [a, b] = [db.me, otherId].sort();
+  const find = () => sb.from('conversations').select('id').eq('user_a', a).eq('user_b', b).maybeSingle();
+  let {data} = await find();
+  if (data) return data.id;
+  const res = await sb.from('conversations').insert({user_a: a, user_b: b}).select('id').single();
+  if (!res.error) return res.data.id;
+  ({data} = await find()); // the other person started it at the same moment
+  if (!data) throw res.error;
+  return data.id;
+}
+async function realSend(otherId, text){
+  const c = getChat(otherId, true);
+  c.real = true;
+  const m = {from: db.me, text, date: new Date().toISOString(), pending: true};
+  c.messages.push(m); render();
+  try{
+    if (!c.id) c.id = await ensureConversation(otherId);
+    const {data, error} = await sb.from('messages').insert({conversation_id: c.id, body: text}).select('id, created_at').single();
+    if (error) throw error;
+    Object.assign(m, {id: data.id, date: data.created_at, pending: false});
+  }catch(e){
+    console.error(e); m.pending = false; m.failed = true; toast(t('sendFailed'));
+  }
+  render();
+}
+function subscribeRealtime(){
+  sb.channel('messages').on('postgres_changes', {event: 'INSERT', schema: 'public', table: 'messages'}, ({new: m}) => onRealMessage(m)).subscribe();
+}
+async function onRealMessage(m){
+  if (m.sender_id === db.me) return; // already on screen
+  let c = db.chats.find(x => x.real && x.id === m.conversation_id);
+  if (!c){
+    const {data: conv} = await sb.from('conversations').select('id, user_a, user_b').eq('id', m.conversation_id).maybeSingle();
+    if (!conv) return;
+    const other = conv.user_a === db.me ? conv.user_b : conv.user_a;
+    if (!user(other)) await loadProfile(other);
+    c = getChat(other, true);
+    Object.assign(c, {id: conv.id, real: true});
+  }
+  if (c.messages.some(x => x.id === m.id)) return;
+  c.messages.push({id: m.id, from: m.sender_id, text: m.body, date: m.created_at});
+  afterIncoming(c.members.find(id => id !== db.me));
+}
+
+/* ---------- real backend: push notifications ---------- */
+const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+const standalone = () => matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+function b64ToBytes(s){
+  const b = atob((s + '='.repeat((4 - s.length % 4) % 4)).replace(/-/g, '+').replace(/_/g, '/'));
+  return Uint8Array.from(b, ch => ch.charCodeAt(0));
+}
+async function pushStatus(){
+  if (!('serviceWorker' in navigator) || !('Notification' in window) || !('PushManager' in window)) return isIOS && !standalone() ? 'needInstall' : 'unsupported';
+  if (Notification.permission === 'denied') return 'denied';
+  if (Notification.permission !== 'granted') return 'off';
+  const reg = await navigator.serviceWorker.ready;
+  return (await reg.pushManager.getSubscription()) ? 'on' : 'off';
+}
+async function savePush(sub){
+  const j = sub.toJSON();
+  const {error} = await sb.rpc('save_push_subscription', {p_endpoint: j.endpoint, p_p256dh: j.keys.p256dh, p_auth: j.keys.auth});
+  if (error) throw error;
+}
+// a phone that already allowed notifications is re-linked to whoever is signed in now
+async function refreshPush(){
+  try{
+    ui.push = await pushStatus();
+    if (ui.push === 'on'){ const reg = await navigator.serviceWorker.ready; await savePush(await reg.pushManager.getSubscription()); }
+  }catch(e){ console.error(e); }
+  render();
+}
+async function enablePush(){
+  try{
+    const perm = await Notification.requestPermission();
+    if (perm !== 'granted'){ ui.push = 'denied'; render(); return toast(t('pushDenied')); }
+    const reg = await navigator.serviceWorker.ready;
+    const sub = await reg.pushManager.getSubscription() || await reg.pushManager.subscribe({userVisibleOnly: true, applicationServerKey: b64ToBytes(CFG.vapidPublicKey)});
+    await savePush(sub);
+    ui.push = 'on'; render(); toast(t('pushOn'));
+  }catch(e){ console.error(e); toast(t('pushFailed')); }
+}
+function pushCard(){
+  const s = ui.push || 'off';
+  const body = {off: t('pushOffBody'), needInstall: t('pushInstall'), denied: t('pushDenied'), unsupported: t('pushUnsupported')}[s];
+  return `<div class="card push-card"><span class="em">🔔</span><div class="grow"><b>${t('pushTitle')}</b>
+    <p>${body}</p>${s === 'off' ? `<button class="btn primary sm" data-act="enablePush">${t('pushEnable')}</button>` : ''}</div></div>`;
+}
+
+/* ---------- render ---------- */
+const TABS = {
+  home:     {icon:'🏠', label:'tabHome',      view: homeView},
+  find:     {icon:'🔍', label:'tabFind',      view: findView},
+  community:{icon:'💬', label:'tabCommunity', view: communityView},
+  places:   {icon:'📍', label:'tabPlaces',    view: placesView},
+  me:       {icon:'👤', label:'tabMe',        view: meView},
+};
+const DETAIL = {user: userDetail, post: postDetail, place: placeDetail, walk: walkDetail, request: requestDetail, chat: chatDetail, chats: chatsDetail};
+function render(){
+  document.documentElement.lang = lang;
+  if (REAL && auth.state !== 'ready') return renderAuth();
+  const top = ui.stack[ui.stack.length - 1];
+  // keep whatever the person is typing when new messages or applicants arrive
+  const act = document.activeElement;
+  const keep = act?.id && act.closest?.('#app') ? {id: act.id, v: act.value, s: act.selectionStart} : null;
+  walkMap?.map?.remove(); walkMap = null;
+  if (top?.type === 'chat'){ const c = getChat(top.id); if (c){ c.read[db.me] = Date.now(); markRead(c); } }
+  const unread = unreadCount();
+  const title = top?.type === 'chat' ? esc(L(user(top.id).name)) : top?.type === 'chats' ? t('messages')
+    : top ? '' : (ui.tab === 'home' ? `<span class="logo">🐾</span> ${t('appName')}` : t(TABS[ui.tab].label));
+  $('#app').innerHTML = `
+  <header class="top">
+    ${top ? `<button class="icon-btn" data-act="back" aria-label="back">←</button>` : ''}
+    <h1>${title}</h1>
+    ${top?.type === 'chats' || top?.type === 'chat' ? '' : `<button class="icon-btn" data-act="openChats" aria-label="${t('messages')}">💬${unread ? `<span class="count">${unread}</span>` : ''}</button>`}
+    <button class="lang" data-act="lang">${lang === 'ko' ? 'EN' : '한국어'}</button>
+  </header>
+  <main>${top ? DETAIL[top.type](top.id) : TABS[ui.tab].view()}</main>
+  ${top?.type === 'chat' ? composer(top.id)
+    : `<nav class="tabbar">${Object.entries(TABS).map(([k, v]) => `<button class="tab ${!top && ui.tab === k ? 'on' : ''}" data-act="tab" data-tab="${k}"><span class="em">${v.icon}</span>${t(v.label)}</button>`).join('')}</nav>`}`;
+  if (top?.type === 'walk') mountMap(top.id);
+  if (top?.type === 'chat') scrollTo(0, document.body.scrollHeight);
+  const el = keep && document.getElementById(keep.id);
+  if (el){ el.value = keep.v; el.focus(); try{ el.setSelectionRange(keep.s, keep.s); }catch(e){} }
+  save();
+}
+
+/* ---------- sheets ---------- */
+function bookingSheet(pid){
+  const p = user(pid), myPets = petsOf(db.me);
+  if (!myPets.length){ toast(t('needPet')); petSheet(); return; }
+  const tomorrow = new Date(Date.now() + 864e5).toISOString().slice(0, 10);
+  const first = p.services[0];
+  openSheet(`<h3>${t('bookTitle', {name: esc(L(p.name))})}</h3>
+  <form data-form="booking" data-id="${p.id}">
+    <label class="f"><span>${t('service')}</span><select name="service" data-change="bookSvc">${p.services.map(s => `<option value="${s.type}">${SERVICES[s.type].icon} ${svcName(s.type)} · ${won(s.price)}</option>`).join('')}</select></label>
+    <label class="f"><span>${t('date')}</span><input type="date" name="date" value="${tomorrow}" min="${tomorrow}" required></label>
+    <label class="f"><span>${t('whichPet')}</span><select name="pet">${myPets.map(pt => `<option value="${pt.id}">${PET_EMOJI[pt.species]} ${esc(L(pt.name))}</option>`).join('')}</select></label>
+    <label class="f"><span>${t('message')}</span><textarea name="msg" placeholder="${t('msgPh')}"></textarea></label>
+    <div class="svc-line" style="margin-top:12px"><span class="grow"><b>${t('total')}</b></span><b id="bookTotal" style="font-size:20px">${won(first.price)}</b></div>
+    <div class="note">${t('payNote')}</div>
+    <button class="btn primary block" style="margin-top:14px">${t('send')}</button>
+  </form>`);
+}
+function reviewSheet(title, form, id, extra = ''){
+  openSheet(`<h3>${title}</h3>
+  <form data-form="${form}" data-id="${id}" ${extra}>
+    ${starInput()}
+    <label class="f"><span>${t('message')}</span><textarea name="text" placeholder="${t('reviewPh')}"></textarea></label>
+    <button class="btn primary block" style="margin-top:14px">${t('submit')}</button>
+  </form>`);
+}
+function petSheet(id){
+  const p = id ? db.pets.find(x => x.id === id) : {name:'', species:'dog', breed:'', age:1, notes:''};
+  openSheet(`<h3>${id ? esc(L(p.name)) : t('addPet')}</h3>
+  <form data-form="pet" data-id="${id || ''}">
+    <label class="f"><span>${t('petName')}</span><input name="name" value="${esc(L(p.name))}" required></label>
+    <label class="f"><span>${t('species')}</span><select name="species">${opts(PET_EMOJI, p.species, k => PET_EMOJI[k] + ' ' + t(k))}</select></label>
+    <label class="f"><span>${t('breed')}</span><input name="breed" value="${esc(L(p.breed))}"></label>
+    <label class="f"><span>${t('age')}</span><input name="age" type="number" min="0" max="30" value="${p.age}"></label>
+    <label class="f"><span>${t('notes')}</span><textarea name="notes" placeholder="${t('notesPh')}">${esc(L(p.notes))}</textarea></label>
+    <button class="btn primary block" style="margin-top:14px">${t('save')}</button>
+  </form>`);
+}
+function profileSheet(){
+  const m = me();
+  const AVATARS = ['🙂','😊','😎','🧑🏻','👩🏻','👨🏻','👧🏻','🧔🏻','👵🏻','🐶','🐱'];
+  openSheet(`<h3>${t('editProfile')}</h3>
+  <form data-form="profile">
+    <div class="chips" style="margin:12px 0 0;padding:0">${AVATARS.map(a => `<label><input type="radio" name="avatar" value="${a}" ${a === m.avatar ? 'checked' : ''} style="display:none"><span class="chip ${a === m.avatar ? 'on' : ''}" data-act="pickAvatar" style="font-size:22px;padding:6px 10px">${a}</span></label>`).join('')}</div>
+    <label class="f"><span>${t('name')}</span><input name="name" value="${esc(L(m.name))}" required></label>
+    <label class="f"><span>${t('district')}</span><select name="district">${opts(DISTRICTS, m.district, dist)}</select></label>
+    <label class="f"><span>${t('bio')}</span><textarea name="bio" placeholder="${t('bioPh')}">${esc(L(m.bio))}</textarea></label>
+    <button class="btn primary block" style="margin-top:14px">${t('save')}</button>
+  </form>`);
+}
+const DEFAULT_PRICE = {walk:15000, dropin:20000, sitting:45000, grooming:40000, training:50000, taxi:25000};
+function servicesSheet(){
+  const m = me();
+  openSheet(`<h3>${t('editServices')}</h3>
+  <form data-form="services">
+    ${Object.keys(SERVICES).map(k => { const s = m.services.find(x => x.type === k); return `<label class="check">
+      <input type="checkbox" name="on_${k}" ${s ? 'checked' : ''}>
+      <span class="grow">${SERVICES[k].icon} ${svcName(k)}<br><span class="small muted">${t('perUnit', {u: L(SERVICES[k].unit)})}</span></span>
+      <input type="number" name="price_${k}" step="1000" min="0" value="${s ? s.price : DEFAULT_PRICE[k]}" aria-label="${t('priceLbl')}">
+    </label>`; }).join('')}
+    <button class="btn primary block" style="margin-top:14px">${t('save')}</button>
+  </form>`);
+}
+function postSheet(){
+  openSheet(`<h3>${t('writeTitle')}</h3>
+  <form data-form="post">
+    <label class="f"><span>${t('category')}</span><select name="cat">${opts(POST_CATS, ui.postCat === 'all' ? 'health' : ui.postCat, k => POST_CATS[k].icon + ' ' + POST_CATS[k][lang])}</select></label>
+    <label class="f"><span>${t('title')}</span><input name="title" placeholder="${t('titlePh')}" required></label>
+    <label class="f"><span>${t('body')}</span><textarea name="body" placeholder="${t('bodyPh')}" required></textarea></label>
+    <button class="btn primary block" style="margin-top:14px">${t('post')}</button>
+  </form>`);
+}
+function placeSheet(){
+  openSheet(`<h3>${t('addPlace')}</h3>
+  <form data-form="place">
+    <label class="f"><span>${t('placeName')}</span><input name="name" required></label>
+    <label class="f"><span>${t('category')}</span><select name="cat">${opts(PLACE_CATS, 'vet', k => PLACE_CATS[k].icon + ' ' + PLACE_CATS[k][lang])}</select></label>
+    <label class="f"><span>${t('area')}</span><select name="district">${opts(DISTRICTS, me().district, dist)}</select></label>
+    <label class="f"><span>${t('desc')}</span><textarea name="desc" placeholder="${t('descPh')}" required></textarea></label>
+    <label class="f"><span>${t('yourRating')}</span>${starInput()}</label>
+    <button class="btn primary block" style="margin-top:14px">${t('submit')}</button>
+  </form>`);
+}
+
+/* ---------- demo: the other side of a booking ---------- */
+function simulateIncoming(){
+  if (db.bookings.some(b => b.providerId === db.me)) return;
+  setTimeout(() => {
+    const svc = me().services[0];
+    if (!svc) return;
+    const date = new Date(Date.now() + 2 * 864e5).toISOString().slice(0, 10);
+    db.bookings.push({id: uid(), ownerId:'u7', providerId: db.me, service: svc.type, price: svc.price, date, petId:'pt1',
+      msg: {ko:'보리 산책 부탁드려요! 다른 강아지를 만나면 조금 긴장해요.', en:'Could you walk Bori? He gets a bit nervous around other dogs.'},
+      status:'requested'});
+    render(); toast(t('newRequest', {name: L(user('u7').name)}));
+  }, 2500);
+}
+
+/* ---------- events ---------- */
+const ACTIONS = {
+  tab: el => tab(el.dataset.tab),
+  back,
+  open: el => go(el.dataset.type, el.dataset.id),
+  lang: () => { lang = lang === 'ko' ? 'en' : 'ko'; render(); },
+  closeSheet,
+  askNow: () => { tab('community'); postSheet(); },
+  findSvc: el => { ui.svc = el.dataset.svc; tab('find'); },
+  setSvc: el => { ui.svc = el.dataset.svc; render(); },
+  setPostCat: el => { ui.postCat = el.dataset.cat; render(); },
+  setPlaceCat: el => { ui.placeCat = el.dataset.cat; render(); },
+  writePost: postSheet,
+  addPlace: placeSheet,
+  addPet: () => petSheet(),
+  editPet: el => petSheet(el.dataset.id),
+  editProfile: profileSheet,
+  editServices: servicesSheet,
+  book: el => bookingSheet(el.dataset.id),
+  ratePlace: el => reviewSheet(t('rateThis'), 'ratePlace', el.dataset.id),
+  findMode: el => { ui.findMode = el.dataset.mode; render(); },
+  postRequest: requestSheet,
+  apply: el => applySheet(el.dataset.id),
+  hire: el => hireSheet(el.dataset.id),
+  confirmHire: el => { closeSheet(); hire(el.dataset.id); },
+  chatWith: el => go('chat', el.dataset.id),
+  openChats: () => go('chats'),
+  quick: el => sendMessage(ui.stack[ui.stack.length - 1].id, el.dataset.text),
+  like: el => { const p = db.posts.find(x => x.id === el.dataset.id); p.liked = !p.liked; p.likes += p.liked ? 1 : -1; render(); },
+  star: el => {
+    const v = +el.dataset.v, form = el.closest('form');
+    form.querySelector('[name=stars]').value = v;
+    form.querySelectorAll('.stars-in button').forEach((b, i) => b.classList.toggle('on', i < v));
+  },
+  pickAvatar: el => {
+    el.closest('.chips').querySelectorAll('.chip').forEach(c => c.classList.remove('on'));
+    el.classList.add('on'); el.previousElementSibling.checked = true;
+  },
+  accept: el => { db.bookings.find(b => b.id === el.dataset.id).status = 'confirmed'; render(); },
+  decline: el => { db.bookings.find(b => b.id === el.dataset.id).status = 'declined'; render(); },
+  providerDone: el => { const b = db.bookings.find(x => x.id === el.dataset.id); b.status = 'done'; render(); rateBooking(b, 'provider'); },
+  ownerDone: el => { const b = db.bookings.find(x => x.id === el.dataset.id); b.status = 'done'; render(); rateBooking(b, 'owner'); },
+  rateBooking: el => rateBooking(db.bookings.find(b => b.id === el.dataset.id), el.dataset.as),
+  startCare: el => openSheet(`<h3>${t('startTitle')}</h3>
+    <p>${t('startBody')}</p><div class="note">💡 ${t('startWhy')}</div>
+    <button class="btn green block" style="margin-top:16px" data-act="confirmStart" data-id="${el.dataset.id}">${t('startBtn')}</button>`),
+  confirmStart: el => { closeSheet(); startCare(el.dataset.id); },
+  viewWalk: el => go('walk', el.dataset.id),
+  finishCare: el => finishCare(el.dataset.id),
+  mark: el => {
+    const w = booking(el.dataset.id).walk, last = w.points[w.points.length - 1];
+    if (!last) return toast(t('waitingGps'));
+    w.marks.push({type: el.dataset.type, at: last}); save(); liveUpdate(el.dataset.id); toast(t('logged'));
+  },
+  reset: () => openSheet(`<h3>${t('reset')}</h3><p>${t('resetConfirm')}</p>
+    <div class="btn-row"><button class="btn ghost" data-act="closeSheet">${t('cancel')}</button><button class="btn primary" data-act="confirmReset">${t('reset')}</button></div>`),
+  confirmReset: () => {
+    Object.keys(trackers).forEach(stopTracker);
+    // demo content starts over; real members, pets and chats are kept
+    const keep = {me: db.me, users: db.users.filter(u => u.real), pets: db.pets.filter(p => p.real), chats: db.chats.filter(c => c.real)};
+    db = seed();
+    if (REAL) Object.assign(db, {me: keep.me, users: db.users.concat(keep.users), pets: db.pets.concat(keep.pets), chats: db.chats.concat(keep.chats)});
+    ui.stack = []; ui.tab = 'home'; closeSheet(); render();
+  },
+  loginKakao: async () => {
+    const {error} = await sb.auth.signInWithOAuth({provider: 'kakao', options: {redirectTo: location.origin + location.pathname}});
+    if (error) toast(t('authError', {msg: error.message}));
+  },
+  loginBack: () => { auth.step = 'start'; render(); },
+  enablePush,
+  logout,
+};
+function rateBooking(b, as){
+  const other = user(as === 'owner' ? b.providerId : b.ownerId);
+  reviewSheet(t(as === 'owner' ? 'rateTitle' : 'rateOwnerTitle', {name: esc(L(other.name))}), 'rateBooking', b.id, `data-as="${as}"`);
+}
+
+const FORMS = {
+  booking(fd, f){
+    const p = user(f.dataset.id), s = p.services.find(x => x.type === fd.get('service'));
+    const b = {id: uid(), ownerId: db.me, providerId: p.id, service: s.type, price: s.price, date: fd.get('date'), petId: fd.get('pet'), msg: fd.get('msg').trim(), status:'requested'};
+    db.bookings.push(b); closeSheet(); toast(t('reqSent')); render();
+    // demo: the caregiver accepts shortly after
+    setTimeout(() => {
+      if (b.status !== 'requested') return;
+      b.status = 'confirmed'; render(); toast(t('accepted', {name: L(p.name)}));
+      if (TRACKED.has(b.service)) setTimeout(() => startDemoWalk(b.id), 4000);
+    }, 2500);
+  },
+  request(fd){
+    const r = {id: uid(), ownerId: db.me, service: fd.get('service'), date: fd.get('date'), time: fd.get('time'), petId: fd.get('pet'),
+      district: me().district, budget: +fd.get('budget') || null, note: fd.get('note').trim(), status: 'open', createdAt: new Date().toISOString()};
+    db.requests.push(r); closeSheet();
+    Object.assign(ui, {tab: 'find', findMode: 'requests', stack: []});
+    go('request', r.id); toast(t('reqPosted')); simulateApplicants(r);
+  },
+  apply(fd, f){
+    const r = db.requests.find(x => x.id === f.dataset.id), msg = fd.get('msg').trim();
+    db.applications.push({id: uid(), requestId: r.id, providerId: db.me, price: +fd.get('price') || 0, msg, status: 'applied', date: new Date().toISOString()});
+    if (msg) pushMsg(getChat(r.ownerId, true), db.me, msg);
+    closeSheet(); toast(t('applySent')); render();
+    // demo: the pet parent answers shortly after
+    setTimeout(() => { if (r.status === 'open'){ pushMsg(getChat(r.ownerId, true), r.ownerId, DEMO.ownerAsk); afterIncoming(r.ownerId); } }, 3500);
+  },
+  chat(fd, f){
+    const text = fd.get('text').trim();
+    if (!text) return;
+    f.reset(); sendMessage(f.dataset.id, text);
+  },
+  rateBooking(fd, f){
+    const stars = +fd.get('stars'); if (!stars) return toast(t('pickStars'));
+    const b = db.bookings.find(x => x.id === f.dataset.id), asOwner = f.dataset.as === 'owner';
+    db.reviews.push({id: uid(), targetId: asOwner ? b.providerId : b.ownerId, authorId: db.me, kind: asOwner ? 'care' : 'owner', stars, text: fd.get('text').trim(), date: new Date().toISOString()});
+    b[asOwner ? 'ownerReviewed' : 'providerReviewed'] = true;
+    closeSheet(); toast(t('thanksReview')); render();
+  },
+  ratePlace(fd, f){
+    const stars = +fd.get('stars'); if (!stars) return toast(t('pickStars'));
+    const pl = db.places.find(x => x.id === f.dataset.id);
+    pl.ratings.push({authorId: db.me, stars, text: fd.get('text').trim(), date: new Date().toISOString()});
+    closeSheet(); toast(t('thanksReview')); render();
+  },
+  async pet(fd, f){
+    const data = {name: fd.get('name').trim(), species: fd.get('species'), breed: fd.get('breed').trim(), age: +fd.get('age') || 0, notes: fd.get('notes').trim()};
+    if (REAL){
+      const q = f.dataset.id ? sb.from('pets').update(data).eq('id', f.dataset.id) : sb.from('pets').insert(data);
+      const {data: row, error} = await q.select().single();
+      if (error){ console.error(error); return toast(t('saveFailed')); }
+      db.pets = db.pets.filter(p => p.id !== row.id).concat(toPet(row));
+    }
+    else if (f.dataset.id) Object.assign(db.pets.find(p => p.id === f.dataset.id), data);
+    else db.pets.push({id: uid(), ownerId: db.me, ...data});
+    closeSheet(); toast(t('saved')); render();
+  },
+  async profile(fd){
+    const data = {name: fd.get('name').trim(), district: fd.get('district'), bio: fd.get('bio').trim(), avatar: fd.get('avatar') || me().avatar};
+    if (REAL){
+      const {error} = await sb.from('profiles').update(data).eq('id', db.me);
+      if (error){ console.error(error); return toast(t('saveFailed')); }
+    }
+    Object.assign(me(), data);
+    closeSheet(); toast(t('saved')); render();
+  },
+  async services(fd){
+    const list = Object.keys(SERVICES).filter(k => fd.get('on_' + k)).map(k => ({type: k, price: Math.max(0, +fd.get('price_' + k) || DEFAULT_PRICE[k])}));
+    if (!list.length) return toast(t('pickService'));
+    if (REAL){
+      const {error} = await sb.from('profiles').update({services: list}).eq('id', db.me);
+      if (error){ console.error(error); return toast(t('saveFailed')); }
+    }
+    me().services = list; closeSheet(); toast(t('servicesSaved')); render(); simulateIncoming();
+  },
+  async emailLogin(fd){
+    const email = fd.get('email').trim();
+    const {error} = await sb.auth.signInWithOtp({email, options: {emailRedirectTo: location.origin + location.pathname}});
+    if (error) return toast(t('authError', {msg: error.message}));
+    Object.assign(auth, {email, step: 'code'}); render();
+  },
+  async emailCode(fd){
+    const {data, error} = await sb.auth.verifyOtp({email: auth.email, token: fd.get('code').trim(), type: 'email'});
+    if (error) return toast(t('codeError'));
+    auth.session = data.session; await enterApp();
+  },
+  async onboard(fd){
+    const row = {id: db.me, name: fd.get('name').trim(), district: fd.get('district'), avatar: fd.get('avatar') || '🙂'};
+    const {error} = await sb.from('profiles').insert(row);
+    if (error){ console.error(error); return toast(t('saveFailed')); }
+    const role = fd.get('role');
+    await enterApp();
+    if (role === 'care') servicesSheet(); else petSheet();
+  },
+  post(fd){
+    db.posts.push({id: uid(), authorId: db.me, cat: fd.get('cat'), title: fd.get('title').trim(), body: fd.get('body').trim(), date: new Date().toISOString(), likes: 0, liked: false, comments: []});
+    closeSheet(); toast(t('posted')); ui.postSort = 'new'; ui.postCat = 'all'; render();
+  },
+  place(fd){
+    const stars = +fd.get('stars'); if (!stars) return toast(t('pickStars'));
+    db.places.push({id: uid(), cat: fd.get('cat'), district: fd.get('district'), name: fd.get('name').trim(), desc: fd.get('desc').trim(), ratings: [{authorId: db.me, stars, date: new Date().toISOString(), text:''}]});
+    closeSheet(); toast(t('placeAdded')); ui.placeCat = 'all'; ui.placeDist = 'all'; render();
+  },
+  comment(fd, f){
+    const text = fd.get('text').trim(); if (!text) return;
+    db.posts.find(p => p.id === f.dataset.id).comments.push({authorId: db.me, text, date: new Date().toISOString()});
+    render();
+  },
+};
+
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-act]');
+  if (el && ACTIONS[el.dataset.act]){ e.preventDefault(); ACTIONS[el.dataset.act](el); }
+});
+document.addEventListener('submit', async e => {
+  const f = e.target.closest('[data-form]');
+  if (!f) return;
+  e.preventDefault();
+  // forms that wait on the server can't be sent twice
+  const btns = [...f.querySelectorAll('button')];
+  btns.forEach(b => b.disabled = true);
+  try{ await FORMS[f.dataset.form](new FormData(f), f); }
+  finally{ btns.forEach(b => b.disabled = false); }
+});
+document.addEventListener('change', e => {
+  const k = e.target.dataset.change;
+  if (!k) return;
+  if (k === 'bookSvc'){
+    const p = user(e.target.closest('form').dataset.id);
+    $('#bookTotal').textContent = won(p.services.find(s => s.type === e.target.value).price);
+    return;
+  }
+  ui[k] = e.target.value; render();
+});
+document.addEventListener('input', e => {
+  if (e.target.dataset.input === 'q'){ ui.q = e.target.value; $('#results').innerHTML = findResults(); }
+});
+
+// pick up any care that was still being tracked when the page closed
+function resumeTrackers(){ db.bookings.filter(b => b.walk && !b.walk.endedAt && !trackers[b.id]).forEach(b => runTracker(b.id)); }
+boot();
+</script>
+</body>
+</html>
