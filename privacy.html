@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>개인정보처리방침 · PetNeighbor</title>
+<style>
+  :root{--bg:#FFF8F1;--card:#fff;--ink:#2B2118;--muted:#5C5148;--line:#F0E4D7;--brand:#C4471A}
+  @media (prefers-color-scheme:dark){:root{--bg:#17120F;--card:#241D18;--ink:#F5EDE6;--muted:#C4B4A6;--line:#3A3029;--brand:#FFB088}}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;line-height:1.6}
+  main{max-width:720px;margin:0 auto;padding:calc(20px + env(safe-area-inset-top)) 20px calc(32px + env(safe-area-inset-bottom))}
+  a{color:var(--brand)}
+  h1{font-size:28px;letter-spacing:-.02em;margin:8px 0}
+  h2{font-size:18px;margin:28px 0 8px}
+  p,li{font-size:16px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px}
+  .en{margin-top:40px;padding-top:8px;border-top:1px solid var(--line)}
+  .muted{color:var(--muted)}
+</style>
+</head>
+<body>
+<main>
+  <p><a href="index.html">← PetNeighbor</a></p>
+  <h1>개인정보처리방침</h1>
+  <p class="muted">시행일 2026-10-23 · 게시자 IMEX Global · 문의 <a href="mailto:hellopawfend@gmail.com">hellopawfend@gmail.com</a></p>
+  <p>멍냥이웃 PetNeighbor(이하 “앱”)는 동네 이웃 사이의 반려동물 돌봄과 대화를 위한 앱입니다. 이 문서는 앱이 <strong>실제로</strong> 다루는 정보를 적습니다. 수집하지 않는 항목은 수집하지 않는다고 적습니다.</p>
+
+  <h2>계정을 만들기 전에</h2>
+  <p>Supabase 프로젝트가 연결되지 않은 동안 앱은 데모로 동작합니다. 프로필, 글, 예약, 채팅은 그 기기의 저장 공간에만 남고 IMEX Global 서버로 전송되지 않습니다. 지도 화면을 열면 기기에서 OpenStreetMap 타일을 받아 오고, 글꼴과 지도 라이브러리는 jsDelivr와 cdnjs에서 받아 옵니다.</p>
+
+  <h2>계정을 만든 뒤 서버에 저장되는 정보</h2>
+  <p>운영자가 Supabase를 연결하고 회원이 가입하면 아래만 서버(Supabase, 설정 안내의 권장 리전은 서울)에 저장됩니다.</p>
+  <ul>
+    <li><strong>계정.</strong> 이메일 로그인 시 이메일 주소와 로그인 코드 확인 기록. 카카오 로그인을 켠 경우, 회원이 카카오에서 동의한 범위의 카카오 회원 식별자, 닉네임, 프로필 사진 주소. 카카오 이메일은 카카오 앱이 비즈 앱이고 회원이 이메일에 동의한 경우에만 받습니다.</li>
+    <li><strong>프로필.</strong> 표시 이름, 이모지 아바타, 회원이 목록에서 고른 동네(GPS로 정하지 않음), 소개 글, 돌봄 서비스 종류와 가격.</li>
+    <li><strong>반려동물.</strong> 이름, 종류(강아지/고양이/기타), 품종, 나이, 특이사항(알러지, 성격). 특이사항은 보호자에게만 보입니다. 이름, 종류, 품종, 나이는 로그인한 다른 회원에게 보입니다.</li>
+    <li><strong>채팅.</strong> 메시지 내용, 보낸 사람, 시각. 그 대화의 두 사람만 읽을 수 있습니다.</li>
+    <li><strong>알림 등록.</strong> 웹 푸시 주소와 암호화 키, 또는 iOS/Android 푸시 토큰. 계정에 연결됩니다. 새 메시지의 앞부분(120자 이내)이 알림 문구로 Apple Push Notification service, Firebase Cloud Messaging, 또는 브라우저 푸시 서비스에 전달되어 기기에 표시됩니다.</li>
+    <li><strong>내부 식별자.</strong> 계정마다 무작위 UUID.</li>
+  </ul>
+
+  <h2>서버에 올리지 않는 정보 (이 버전)</h2>
+  <ul>
+    <li>커뮤니티 글과 댓글, 장소 추천과 평점, 돌봄 요청, 지원, 예약, 후기, 산책 경로는 이 기기 안에만 저장됩니다.</li>
+    <li>산책·방문 중 GPS 위치는 그 기기의 화면에 경로를 그리기 위해서만 쓰이며, 이 버전에서는 서버로 업로드하지 않습니다. 돌봄을 시작하기 전에는 위치를 묻지 않습니다.</li>
+    <li>언어 설정은 이 기기에만 저장됩니다.</li>
+    <li>연락처, 사진, 카메라, 마이크, 광고 식별자, 결제 카드는 수집하지 않습니다. 결제 기능은 없습니다.</li>
+    <li>다른 회사의 광고·추적 SDK를 넣지 않습니다. 앱 활동 데이터를 판매하지 않습니다.</li>
+  </ul>
+
+  <h2>처리 수탁자</h2>
+  <div class="card">
+    <ul>
+      <li>Supabase — 계정, 데이터베이스, 서버 함수. 프로젝트 리전은 운영자가 고릅니다.</li>
+      <li>Apple, Google — 앱 배포와 푸시 알림 전달.</li>
+      <li>OpenStreetMap 타일 서버 — 지도를 열 때 지도 이미지 요청.</li>
+      <li>jsDelivr, cdnjs — 글꼴, 지도 라이브러리, Supabase 라이브러리.</li>
+      <li>카카오 — 카카오 로그인을 켠 경우에만.</li>
+    </ul>
+  </div>
+
+  <h2>보관과 삭제</h2>
+  <p>서버에 있는 계정 정보는 회원이 삭제할 때까지 보관합니다. 앱의 <strong>내 정보 → 계정 → 계정 삭제</strong>를 누르면 계정이 바로 삭제되고, 프로필, 반려동물, 내가 참여한 대화와 메시지, 푸시 등록이 함께 지워집니다. 상대방과의 대화도 함께 삭제됩니다. 기기에만 있던 데이터도 그 기기에서 지웁니다. 로그인할 수 없으면 <a href="mailto:hellopawfend@gmail.com">hellopawfend@gmail.com</a>으로 계정 이메일을 보내 삭제를 요청할 수 있습니다.</p>
+  <p>로그아웃하거나 알림을 끄면 그 기기의 푸시 등록을 지웁니다. 푸시 서비스가 기기를 더 이상 유효하지 않다고 알려 주면 그 등록도 지웁니다.</p>
+
+  <h2>아동</h2>
+  <p>이 앱은 13세 미만 아동을 대상으로 하지 않습니다. 거주 지역의 기준 연령에 미달하면 사용하지 말아 주세요.</p>
+
+  <h2>위치정보</h2>
+  <p>서버에 저장되는 “동네”는 회원이 고른 지역 이름입니다. GPS 경로는 이 버전에서 기기 밖으로 나가지 않습니다. 이후 버전이 위치를 서버로 보내게 되면, 그 전에 위치정보법에 따른 위치기반서비스사업자 신고가 필요한지 확인해야 합니다.</p>
+
+  <h2>문의</h2>
+  <p>IMEX Global · <a href="mailto:hellopawfend@gmail.com">hellopawfend@gmail.com</a> · <a href="support.html">고객지원</a></p>
+
+  <div class="en" lang="en">
+    <h1>Privacy Policy</h1>
+    <p class="muted">Effective 2026-10-23 · Publisher IMEX Global · Contact <a href="mailto:hellopawfend@gmail.com">hellopawfend@gmail.com</a></p>
+    <p>PetNeighbor is a neighborhood pet-care and chat app. This policy lists what this version of the app actually handles.</p>
+    <h2>Before an account exists</h2>
+    <p>Until a Supabase project is connected, the app is a demo. Profiles, posts, bookings and chats stay in storage on that device and are not sent to an IMEX Global server. Opening a map loads OpenStreetMap tiles. The font, map library and Supabase library load from jsDelivr and cdnjs.</p>
+    <h2>What is stored on the server after sign-up</h2>
+    <ul>
+      <li><strong>Account.</strong> Email address when you use email login, plus the record that a login code was checked. If Kakao login is turned on: the Kakao user id, nickname and profile-photo URL you consent to at Kakao. A Kakao email is received only when that Kakao app is a business app and you consent to email.</li>
+      <li><strong>Profile.</strong> Display name, emoji avatar, the neighborhood you pick from a list (not from GPS), bio, and caregiver services with prices.</li>
+      <li><strong>Pets.</strong> Name, species (dog, cat or other), breed, age, and notes such as allergies or personality. Notes are visible only to you. Name, species, breed and age are visible to other signed-in members.</li>
+      <li><strong>Chat.</strong> Message text, sender and time, readable only by the two people in that conversation.</li>
+      <li><strong>Push registration.</strong> A web-push endpoint and its encryption keys, or the iOS or Android push token, linked to your account. A preview of a new message (up to 120 characters) is sent through Apple Push Notification service, Firebase Cloud Messaging, or the browser push service so your phone can show it.</li>
+      <li><strong>Identifier.</strong> A random account UUID.</li>
+    </ul>
+    <h2>Not uploaded in this version</h2>
+    <ul>
+      <li>Community posts and comments, place recommendations and ratings, care requests, applications, bookings, reviews and walk routes stay on the device.</li>
+      <li>GPS during a walk or visit is used only to draw the route on that device. It is not uploaded. The app does not ask for location until you start care.</li>
+      <li>Language choice stays on the device.</li>
+      <li>The app does not collect contacts, photos, camera, microphone, advertising ID or payment cards. There is no payment feature.</li>
+      <li>There is no third-party advertising or tracking SDK. Activity data is not sold.</li>
+    </ul>
+    <h2>Processors</h2>
+    <p>Supabase (account, database, edge functions; the operator chooses the region). Apple and Google (distribution and push delivery). OpenStreetMap tile servers (map images). jsDelivr and cdnjs (font and libraries). Kakao, only if Kakao login is enabled.</p>
+    <h2>Retention and deletion</h2>
+    <p>Server data is kept until you delete the account. In the app, choose <strong>Me → Account → Delete account</strong>. That deletes the auth user and, with it, the profile, pets, conversations you were in (including the other person’s copy of that thread), messages and push registrations. Data that existed only on that device is cleared there too. If you cannot sign in, email <a href="mailto:hellopawfend@gmail.com">hellopawfend@gmail.com</a> from the account address and ask for deletion.</p>
+    <p>Logging out or turning notifications off removes that device’s push registration. Registrations are also removed when the push service says the device is gone.</p>
+    <h2>Children</h2>
+    <p>The app is not directed at children under 13. Do not use it if you are under the age required where you live.</p>
+    <h2>Location</h2>
+    <p>The neighborhood stored on the server is a name you pick. GPS tracks do not leave the device in this version. A later version that uploads location must first confirm whether Korea’s Location Information Act requires registration as a location-based service provider.</p>
+    <h2>Contact</h2>
+    <p>IMEX Global · <a href="mailto:hellopawfend@gmail.com">hellopawfend@gmail.com</a> · <a href="support.html">Support</a></p>
+  </div>
+</main>
+</body>
+</html>

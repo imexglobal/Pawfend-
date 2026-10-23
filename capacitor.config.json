@@ -1,0 +1,36 @@
+{
+  "appId": "com.imexglobalintl.petneighbor",
+  "appName": "PetNeighbor",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "allowMixedContent": false
+  },
+  "ios": {
+    "contentInset": "never"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchAutoHide": false,
+      "backgroundColor": "#FFF8F1",
+      "androidScaleType": "CENTER_CROP",
+      "showSpinner": false,
+      "splashFullScreen": true,
+      "splashImmersive": true
+    },
+    "StatusBar": {
+      "overlaysWebView": true,
+      "style": "LIGHT",
+      "backgroundColor": "#FFF8F1"
+    },
+    "Keyboard": {
+      "resize": "none",
+      "resizeOnFullScreen": true
+    },
+    "PushNotifications": {
+      "presentationOptions": ["badge", "sound", "alert"]
+    }
+  }
+}

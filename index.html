@@ -2,15 +2,19 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content">
 <title>멍냥이웃 PetNeighbor</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="icon" href="icon-192.png" type="image/png">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <!-- backend: real accounts, chat and notifications (left out of the demo artifact) -->
 <link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#F26B3A">
+<meta name="theme-color" content="#FFF8F1" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#17120F" media="(prefers-color-scheme: dark)">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="멍냥이웃">
 <link rel="apple-touch-icon" href="icon-192.png">
 <script src="config.js"></script>
@@ -18,31 +22,40 @@
 <!-- /backend -->
 <style>
 :root{
-  --bg:#FFF8F1; --card:#FFFFFF; --ink:#2B2118; --muted:#8A7B6E; --line:#F0E4D7;
-  --brand:#F26B3A; --brand-ink:#FFFFFF; --brand-soft:#FFE8DC;
-  --green:#23875A; --green-soft:#DDF4E8; --blue:#2F6FD6; --blue-soft:#E3EDFC;
-  --star:#F5A524; --danger:#D64545; --shadow:0 2px 12px rgba(90,45,10,.07);
+  --bg:#FFF8F1; --card:#FFFFFF; --ink:#2B2118; --muted:#5C5148; --line:#F0E4D7;
+  --brand:#F26B3A; --brand-ink:#1A0E08; --brand-soft:#FFE8DC; --link:#C4471A;
+  --green:#1E7A4E; --green-soft:#DDF4E8; --blue:#245FBE; --blue-soft:#E3EDFC;
+  --star:#9A6208; --danger:#C43737; --shadow:0 2px 12px rgba(90,45,10,.07);
+  --kb:0px; --safe-t:env(safe-area-inset-top,0px); --safe-b:env(safe-area-inset-bottom,0px);
 }
 @media (prefers-color-scheme:dark){
   :root{
     --bg:#17120F; --card:#241D18; --ink:#F5EDE6; --muted:#A99A8C; --line:#3A3029;
-    --brand:#FF875A; --brand-ink:#1A0E08; --brand-soft:#3E281D;
-    --green:#4CC38A; --green-soft:#1C3328; --blue:#7EA8F0; --blue-soft:#1D2A40;
-    --shadow:none;
+    --brand:#FF875A; --brand-ink:#1A0E08; --brand-soft:#3E281D; --link:#FFB088;
+    --green:#4CC38A; --green-soft:#1C3328; --blue:#9EBEFF; --blue-soft:#1D2A40;
+    --star:#F0C14A; --shadow:none;
   }
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{color-scheme:light dark}
 html,body{margin:0;background:var(--bg);color:var(--ink)}
-body{font-family:Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-size:16px;line-height:1.5}
+body{font-family:Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-size:16px;line-height:1.5;overscroll-behavior-y:contain}
+:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
+.skip{position:absolute;left:-999px;top:8px;background:var(--card);color:var(--ink);padding:8px 12px;border-radius:10px;z-index:80}
+.skip:focus{left:8px}
+a.text-link{color:var(--link);font-weight:700}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none !important;transition:none !important}
+}
 button,input,select,textarea{font:inherit;color:inherit}
 button{cursor:pointer;border:0;background:none;padding:0}
-#app{max-width:480px;margin:0 auto;min-height:100vh;padding-bottom:96px;position:relative}
+#app{max-width:480px;margin:0 auto;min-height:100dvh;padding-bottom:calc(96px + var(--safe-b));position:relative}
 
 /* header */
-.top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:8px;padding:14px 16px;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(10px)}
+.top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:8px;padding:calc(10px + var(--safe-t)) 12px 10px;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(10px)}
 .top h1{font-size:20px;margin:0;flex:1;font-weight:800;letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .top .logo{color:var(--brand)}
-.icon-btn{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-size:20px}
+.icon-btn{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-size:20px}
 .icon-btn:active{background:var(--line)}
 .lang{border:1.5px solid var(--line);border-radius:999px;padding:6px 12px;font-size:13px;font-weight:700;background:var(--card)}
 
@@ -61,7 +74,7 @@ main{padding:4px 16px 16px}
 /* hero */
 .hero{background:var(--brand);color:var(--brand-ink);border-radius:22px;padding:20px;margin-top:6px}
 .hero h2{margin:0;font-size:22px;letter-spacing:-.02em}
-.hero p{margin:4px 0 0;opacity:.9}
+.hero p{margin:4px 0 0}
 .tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
 .tile{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;text-align:left;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:2px;min-height:112px}
 .tile .em{font-size:30px;line-height:1;margin-bottom:8px}
@@ -90,6 +103,7 @@ label.f>span{display:block;font-size:14px;font-weight:700;margin-bottom:6px}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:12px 18px;border-radius:14px;font-weight:700;font-size:15px;background:var(--line)}
 .btn.primary{background:var(--brand);color:var(--brand-ink)}
 .btn.green{background:var(--green);color:#fff}
+@media (prefers-color-scheme:dark){.btn.green{color:#062117}}
 .btn.ghost{background:transparent;border:1.5px solid var(--line)}
 .btn.block{width:100%;padding:15px}
 .btn.sm{padding:8px 12px;font-size:14px;border-radius:10px}
@@ -134,7 +148,7 @@ label.f>span{display:block;font-size:14px;font-weight:700;margin-bottom:6px}
 .review{padding:12px 0;border-top:1px solid var(--line)}
 .review:first-child{border-top:0;padding-top:0}
 .review p{margin:6px 0 0}
-.sticky-cta{position:sticky;bottom:84px;margin-top:18px;z-index:5}
+.sticky-cta{position:sticky;bottom:calc(84px + var(--safe-b) + var(--kb));margin-top:18px;z-index:5}
 
 /* posts */
 .post h3{margin:6px 0 4px;font-size:16px;letter-spacing:-.01em}
@@ -149,14 +163,15 @@ label.f>span{display:block;font-size:14px;font-weight:700;margin-bottom:6px}
 .comment-box{display:flex;gap:8px;margin-top:12px}
 .comment-box input{flex:1}
 
-.fab{position:fixed;right:max(16px,calc(50% - 224px));bottom:96px;z-index:15;background:var(--brand);color:var(--brand-ink);border-radius:999px;padding:14px 20px;font-weight:800;box-shadow:0 6px 20px rgba(242,107,58,.35)}
+.fab{position:fixed;right:max(16px,calc(50% - 224px));bottom:calc(96px + var(--safe-b) + var(--kb));z-index:15;background:var(--brand);color:var(--brand-ink);border-radius:999px;padding:14px 20px;font-weight:800;box-shadow:0 6px 20px rgba(242,107,58,.35)}
 
+.end-space{height:72px}
 .empty{text-align:center;padding:28px 16px;color:var(--muted)}
 .empty .em{font-size:36px;display:block;margin-bottom:6px}
 
 /* tab bar */
-.tabbar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;z-index:30;display:grid;grid-template-columns:repeat(5,1fr);background:var(--card);border-top:1px solid var(--line);padding:6px 4px calc(8px + env(safe-area-inset-bottom))}
-.tab{display:flex;flex-direction:column;align-items:center;gap:1px;font-size:11px;font-weight:600;color:var(--muted);padding:4px 0}
+.tabbar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;z-index:30;display:grid;grid-template-columns:repeat(5,1fr);background:var(--card);border-top:1px solid var(--line);padding:6px 4px calc(8px + var(--safe-b))}
+.tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;font-size:11px;font-weight:600;color:var(--muted);padding:4px 0;min-height:44px}
 .tab .em{font-size:22px;filter:grayscale(1);opacity:.6}
 .tab.on{color:var(--ink)}
 .tab.on .em{filter:none;opacity:1}
@@ -164,9 +179,10 @@ label.f>span{display:block;font-size:14px;font-weight:700;margin-bottom:6px}
 /* sheet */
 .backdrop{position:fixed;inset:0;background:rgba(20,10,5,.45);z-index:40;opacity:0;pointer-events:none;transition:opacity .2s}
 .backdrop.open{opacity:1;pointer-events:auto}
-.sheet{position:fixed;left:50%;bottom:0;transform:translate(-50%,105%);width:100%;max-width:480px;max-height:90vh;overflow-y:auto;z-index:50;background:var(--card);border-radius:24px 24px 0 0;padding:10px 20px calc(24px + env(safe-area-inset-bottom));transition:transform .25s ease}
+.sheet{position:fixed;left:50%;bottom:var(--kb);transform:translate(-50%,105%);width:100%;max-width:480px;max-height:calc(92dvh - var(--kb));overflow-y:auto;z-index:50;background:var(--card);border-radius:24px 24px 0 0;padding:10px 20px calc(24px + var(--safe-b));transition:transform .25s ease}
 .sheet.open{transform:translate(-50%,0)}
-.sheet .grab{width:40px;height:5px;border-radius:9px;background:var(--line);margin:0 auto 14px}
+.sheet-top{position:sticky;top:0;z-index:2;background:var(--card);display:flex;align-items:center;justify-content:flex-end;min-height:44px;margin:-4px 0 4px}
+.sheet .grab{position:absolute;left:50%;top:8px;transform:translateX(-50%);width:40px;height:5px;border-radius:9px;background:var(--line)}
 .sheet h3{margin:0 0 4px;font-size:20px}
 .stars-in{display:flex;gap:6px;margin-top:6px}
 .stars-in button{font-size:34px;line-height:1;color:var(--line)}
@@ -177,7 +193,7 @@ label.f>span{display:block;font-size:14px;font-weight:700;margin-bottom:6px}
 .check input[type=number]{width:120px}
 .note{font-size:13px;color:var(--muted);background:var(--bg);border-radius:12px;padding:10px 12px;margin-top:14px}
 
-.toast{position:fixed;left:50%;bottom:100px;transform:translate(-50%,20px);background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:14px;font-weight:600;font-size:14px;z-index:60;opacity:0;transition:.25s;pointer-events:none;max-width:calc(100% - 32px);text-align:center}
+.toast{position:fixed;left:50%;bottom:calc(100px + var(--safe-b) + var(--kb));transform:translate(-50%,20px);background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:14px;font-weight:600;font-size:14px;z-index:60;opacity:0;transition:.25s;pointer-events:none;max-width:calc(100% - 32px);text-align:center}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 
 /* live care tracking */
@@ -227,7 +243,7 @@ div.f>span{display:block;font-size:14px;font-weight:700;margin-bottom:6px}
 .msg.mine{align-self:flex-end;background:var(--brand);color:var(--brand-ink);border-bottom-right-radius:6px}
 .msg time{display:block;font-size:11px;opacity:.65;margin-top:2px}
 .msg.sys{align-self:center;max-width:90%;background:var(--green-soft);color:var(--green);font-size:13px;font-weight:700;border-radius:999px;padding:6px 14px;text-align:center}
-.composer{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;z-index:30;background:var(--card);border-top:1px solid var(--line);padding:8px 12px calc(10px + env(safe-area-inset-bottom))}
+.composer{position:fixed;bottom:var(--kb);left:50%;transform:translateX(-50%);width:100%;max-width:480px;z-index:30;background:var(--card);border-top:1px solid var(--line);padding:8px 12px calc(10px + var(--safe-b))}
 .composer form{display:flex;gap:8px}
 .composer input{flex:1;border-radius:999px}
 .composer .btn{border-radius:999px;padding:0 18px}
@@ -243,7 +259,7 @@ div.f>span{display:block;font-size:14px;font-weight:700;margin-bottom:6px}
 .msg.failed{background:var(--danger);color:#fff}
 
 /* login */
-.auth{min-height:100vh;display:flex;flex-direction:column;justify-content:center;gap:12px;padding:32px 24px calc(32px + env(safe-area-inset-bottom))}
+.auth{min-height:100dvh;display:flex;flex-direction:column;justify-content:center;gap:12px;padding:calc(32px + var(--safe-t)) 24px calc(32px + var(--safe-b));position:relative}
 .auth .logo-mark{width:84px;height:84px;border-radius:26px;background:var(--brand);display:grid;place-items:center;font-size:44px;margin:0 auto 4px}
 .auth h1{margin:0;text-align:center;font-size:30px;letter-spacing:-.02em}
 .auth .tagline{margin:0 0 18px;text-align:center;color:var(--muted)}
@@ -253,6 +269,7 @@ div.f>span{display:block;font-size:14px;font-weight:700;margin-bottom:6px}
 .or::before,.or::after{content:"";flex:1;height:1px;background:var(--line)}
 .code-in{text-align:center;font-size:24px;letter-spacing:.4em;font-variant-numeric:tabular-nums}
 .auth .fine{text-align:center;font-size:12px;color:var(--muted);margin:6px 0 0}
+.auth .fine a{color:var(--link);font-weight:700}
 .auth .top-lang{position:absolute;top:calc(14px + env(safe-area-inset-top,0px));right:16px}
 .push-card{display:flex;gap:12px;align-items:flex-start}
 .push-card .em{font-size:28px}
@@ -263,8 +280,8 @@ div.f>span{display:block;font-size:14px;font-weight:700;margin-bottom:6px}
 <body>
 <div id="app"></div>
 <div class="backdrop" id="backdrop" data-act="closeSheet"></div>
-<div class="sheet" id="sheet"></div>
-<div class="toast" id="toast"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="sheetTitle"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
 /* ---------- constants ---------- */
@@ -393,7 +410,21 @@ ko:{
   pushDenied:'알림이 차단되어 있어요. 휴대폰 설정 → 알림에서 허용해 주세요.',
   pushInstall:'iPhone은 홈 화면에 추가한 앱에서만 알림을 받을 수 있어요. Safari 공유 버튼 → "홈 화면에 추가"를 누른 뒤, 홈 화면 아이콘으로 열어 주세요.',
   pushUnsupported:'이 브라우저에서는 알림을 받을 수 없어요.', pushFailed:'알림을 켜지 못했어요. 잠시 후 다시 시도해 주세요.',
-  account:'계정', logout:'로그아웃', cancel:'취소',
+  account:'계정', logout:'로그아웃', cancel:'취소', close:'닫기',
+  back:'뒤로', sendMsg:'보내기', tabs:'주요 메뉴', noPosts:'아직 글이 없어요', removed:'알 수 없음',
+  demoBanner:'데모 모드예요. 이 기기에만 저장되고, 이웃은 예시예요.',
+  localOnly:'이 화면은 아직 이 기기에만 저장돼요. 계정, 프로필, 반려동물, 채팅만 서버에 올라가요.',
+  examples:'예시 돌봄이', noRealCare:'아직 이 동네에 등록된 돌봄이가 없어요',
+  configBroken:'계정 서버에 연결하지 못했어요. 인터넷과 config.js를 확인해 주세요.',
+  resetConfirmReal:'예시 데이터만 처음 상태로 돌려요. 계정, 프로필, 반려동물, 채팅은 그대로예요.',
+  privacy:'개인정보처리방침', termsLink:'이용약관', support:'고객지원', legal:'안내',
+  termsBefore:'계속하면 ', termsMid:'과 ', privacyLink:'개인정보처리방침', termsAfter:'에 동의하게 돼요.',
+  deleteAccount:'계정 삭제', deleteTitle:'계정을 삭제할까요?',
+  deleteBody:'프로필, 반려동물, 대화, 메시지가 삭제되고 되돌릴 수 없어요. 이 기기의 앱 데이터도 지워집니다.',
+  deleteConfirm:'삭제', deleteFailed:'계정을 삭제하지 못했어요. 연결을 확인하고 다시 시도해 주세요.',
+  bothHint:'반려동물과 돌봄 서비스를 차례로 등록해요.',
+  exampleBooking:'예시 돌봄이예요. 예약은 이 기기에만 남고 실제 이웃에게 전달되지 않아요.',
+  retry:'다시 보내기', starsN:'별 {n}개', closed:'이미 마감된 요청이에요', careReport:'돌봄 리포트',
 },
 en:{
   appName:'PetNeighbor', tabHome:'Home', tabFind:'Find care', tabCommunity:'Community', tabPlaces:'Places', tabMe:'Me',
@@ -470,15 +501,33 @@ en:{
   pushDenied:'Notifications are blocked. Allow them in your phone’s Settings → Notifications.',
   pushInstall:'On iPhone, notifications only work in the Home Screen app. In Safari tap Share → "Add to Home Screen", then open the app from its icon.',
   pushUnsupported:'This browser can’t receive notifications.', pushFailed:'Couldn’t turn on notifications. Try again in a moment.',
-  account:'Account', logout:'Log out', cancel:'Cancel',
+  account:'Account', logout:'Log out', cancel:'Cancel', close:'Close',
+  back:'Back', sendMsg:'Send', tabs:'Main', noPosts:'No posts yet', removed:'Unknown',
+  demoBanner:'Demo mode. Everything stays on this device, and the neighbors are examples.',
+  localOnly:'This screen is saved on this device only. Accounts, profiles, pets and chat are what reach the server.',
+  examples:'Example caregivers', noRealCare:'No caregivers in this neighborhood yet',
+  configBroken:'Couldn’t reach the account server. Check your connection and config.js.',
+  resetConfirmReal:'This restores example data only. Your account, profile, pets and chats stay.',
+  privacy:'Privacy Policy', termsLink:'Terms', support:'Support', legal:'Info',
+  termsBefore:'By continuing you agree to the ', termsMid:' and ', privacyLink:'Privacy Policy', termsAfter:'.',
+  deleteAccount:'Delete account', deleteTitle:'Delete your account?',
+  deleteBody:'Your profile, pets, conversations and messages are deleted and cannot be restored. App data on this device is cleared too.',
+  deleteConfirm:'Delete', deleteFailed:'Couldn’t delete the account. Check your connection and try again.',
+  bothHint:'You’ll add a pet, then the services you offer.',
+  exampleBooking:'This is an example caregiver. The booking stays on this device and is not sent to a real neighbor.',
+  retry:'Retry', starsN:'{n} stars', closed:'That request is already closed', careReport:'Care report',
 },
 };
 
 /* ---------- helpers ---------- */
 const CFG = window.PN_CONFIG || {};
 // Real mode needs a configured Supabase project; otherwise the app runs as a local demo.
-const REAL = !!(CFG.supabaseUrl && CFG.supabaseAnonKey && window.supabase);
-const sb = REAL ? window.supabase.createClient(CFG.supabaseUrl, CFG.supabaseAnonKey) : null;
+const CONFIGURED = !!(CFG.supabaseUrl && CFG.supabaseAnonKey);
+let sb = null, REAL = false, CONFIG_BROKEN = false;
+if (CONFIGURED && window.supabase){
+  try{ sb = window.supabase.createClient(CFG.supabaseUrl, CFG.supabaseAnonKey); REAL = true; }
+  catch(e){ console.error(e); CONFIG_BROKEN = true; }
+}else if (CFG.supabaseUrl || CFG.supabaseAnonKey) CONFIG_BROKEN = true;
 let lang = 'ko';
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -488,6 +537,19 @@ const won = n => '₩' + Number(n).toLocaleString('ko-KR');
 const dist = d => lang === 'en' ? (DISTRICTS[d] || d) : d;
 const svcName = k => SERVICES[k][lang];
 const uid = () => Math.random().toString(36).slice(2, 9);
+function ymd(d){
+  const dt = d instanceof Date ? d : new Date(d);
+  const p = n => String(n).padStart(2, '0');
+  return `${dt.getFullYear()}-${p(dt.getMonth() + 1)}-${p(dt.getDate())}`;
+}
+function tomorrowYMD(){ const d = new Date(); d.setDate(d.getDate() + 1); return ymd(d); }
+function svcOk(s){ return !!(s && SERVICES[s.type] && Number.isFinite(+s.price)); }
+function safeServices(u){ return (Array.isArray(u?.services) ? u.services : []).filter(svcOk); }
+function hay(u){
+  const name = u?.name;
+  const parts = name && typeof name === 'object' ? [name.ko, name.en] : [name];
+  return parts.concat([typeof u?.bio === 'object' ? (u.bio.ko || '') + ' ' + (u.bio.en || '') : u?.bio, u?.district]).filter(Boolean).join(' ').toLowerCase();
+}
 const avg = rs => rs.length ? rs.reduce((a, r) => a + r.stars, 0) / rs.length : 0;
 function ago(iso){
   const m = Math.max(0, (Date.now() - new Date(iso)) / 6e4);
@@ -502,11 +564,12 @@ function fmtDay(ymd){
 }
 const COLORS = ['#FFE1D2','#DDF0E4','#E2E9FB','#FBE6F1','#FFF1C9','#E6E0FA'];
 function avatar(u, size=''){
-  const c = COLORS[[...u.id].reduce((a, ch) => a + ch.charCodeAt(0), 0) % COLORS.length];
-  return `<div class="avatar ${size}" style="background:${c}">${u.avatar}</div>`;
+  const id = String(u?.id || '');
+  const c = COLORS[[...id].reduce((a, ch) => a + ch.charCodeAt(0), 0) % COLORS.length];
+  return `<div class="avatar ${size}" style="background:${c}" aria-hidden="true">${esc(u?.avatar || '🐾')}</div>`;
 }
 function ratingHTML(rs){
-  if (!rs.length) return `<span class="rating"><span class="c">${t('noReviews')}</span></span>`;
+  if (!Array.isArray(rs) || !rs.length) return `<span class="rating"><span class="c">${t('noReviews')}</span></span>`;
   return `<span class="rating"><span class="s">★</span>${avg(rs).toFixed(1)} <span class="c">(${rs.length})</span></span>`;
 }
 const starStr = n => '★'.repeat(n) + '☆'.repeat(5 - n);
@@ -541,7 +604,7 @@ function seed(){
   const now = Date.now();
   const d = n => new Date(now - n * 864e5).toISOString();
   const h = n => new Date(now - n * 36e5).toISOString();
-  const ahead = n => new Date(now + n * 864e5).toISOString().slice(0, 10);
+  const ahead = n => ymd(new Date(now + n * 864e5));
   return {
     me:'u0',
     users:[
@@ -592,7 +655,7 @@ function seed(){
       {id:'r12', targetId:'u7', authorId:'u1', kind:'owner', stars:5, date:d(20), text:{ko:'준비물을 꼼꼼히 챙겨주셨어요.',en:'Had everything ready for us.'}},
     ],
     bookings:[
-      {id:'b1', ownerId:'u0', providerId:'u1', service:'walk', price:15000, date:d(10).slice(0,10), petId:'pt0', msg:'', status:'done', ownerReviewed:true, providerReviewed:true,
+      {id:'b1', ownerId:'u0', providerId:'u1', service:'walk', price:15000, date:ymd(new Date(now - 10 * 864e5)), petId:'pt0', msg:'', status:'done', ownerReviewed:true, providerReviewed:true,
        walk:(() => { const pts = demoRoute(), start = now - 10 * 864e5; return {startedAt:start, endedAt:start + pts.length * SIM_SPEED * 1000, points:pts, distance:routeLength(pts), marks:[{type:'pee', at:pts[25]}, {type:'poo', at:pts[60]}]}; })()},
     ],
     requests:[
@@ -675,10 +738,13 @@ function seed(){
 }
 function load(){
   try{
-    const s = JSON.parse(localStorage.getItem(KEY));
-    if (s && s.db){ lang = s.lang || 'ko'; return s.db; }
-  }catch(e){}
-  return null;
+    const s = JSON.parse(localStorage.getItem(KEY) || 'null');
+    if (!s?.db || !Array.isArray(s.db.users) || !Array.isArray(s.db.pets)) return null;
+    lang = s.lang === 'en' ? 'en' : 'ko';
+    const base = seed();
+    for (const k of Object.keys(base)) if (!(k in s.db)) s.db[k] = base[k];
+    return s.db;
+  }catch(e){ return null; }
 }
 let db = load() || seed();
 // Real members, pets and chats live in Supabase, so only the demo content is cached here.
@@ -687,37 +753,74 @@ function save(){
   try{ localStorage.setItem(KEY, JSON.stringify({db: local, lang})); }catch(e){}
 }
 
+const GHOST = {missing:true, verified:false, real:false, services:[], district:'', bio:'', avatar:'🐾', name:{ko:'탈퇴한 이웃', en:'Former member'}};
+const user = id => db.users.find(u => u.id === id) || {...GHOST, id: id || ''};
 const me = () => user(db.me);
-const user = id => db.users.find(u => u.id === id);
 const petsOf = id => db.pets.filter(p => p.ownerId === id);
 const reviewsOf = (id, kind) => db.reviews.filter(r => r.targetId === id && r.kind === kind).sort((a, b) => b.date.localeCompare(a.date));
-const providers = () => db.users.filter(u => u.services.length && u.id !== db.me);
-const minPrice = u => Math.min(...u.services.map(s => s.price));
+const providers = () => db.users.filter(u => safeServices(u).length && u.id !== db.me && !u.missing);
+const minPrice = u => Math.min(...safeServices(u).map(s => +s.price));
 
 /* ---------- ui state ---------- */
 const ui = {tab:'home', stack:[], findMode:'people', svc:'all', dist:'all', sort:'rating', q:'', postCat:'all', postSort:'new', placeCat:'all', placeDist:'all'};
-function go(type, id){ ui.stack.push({type, id}); render(); if (type !== 'chat') scrollTo(0, 0); }
-function back(){ ui.stack.pop(); render(); }
-function tab(name){ ui.tab = name; ui.stack = []; render(); scrollTo(0, 0); }
+function navState(){ return {tab: ui.tab, findMode: ui.findMode, stack: ui.stack.map(s => ({type: s.type, id: s.id}))}; }
+function go(type, id){
+  if (type === 'chat' && (id === db.me || user(id).missing)) return;
+  ui.stack.push({type, id});
+  history.pushState(navState(), '');
+  render();
+  if (type !== 'chat') scrollTo(0, 0);
+}
+function back(){
+  if (ui.stack.length) history.back();
+  else { ui.stack.pop(); render(); }
+}
+function tab(name){ ui.tab = name; ui.stack = []; history.pushState(navState(), ''); render(); scrollTo(0, 0); }
+function setupHistory(){
+  if (!history.state || !Array.isArray(history.state.stack)) history.replaceState(navState(), '');
+  window.addEventListener('popstate', e => {
+    const s = e.state;
+    if (!s || !Array.isArray(s.stack)) return;
+    ui.tab = s.tab || 'home';
+    if (s.findMode) ui.findMode = s.findMode;
+    ui.stack = s.stack.slice();
+    render();
+  });
+}
 
 let toastTimer;
 function toast(msg){
   const el = $('#toast'); el.textContent = msg; el.classList.add('show');
   clearTimeout(toastTimer); toastTimer = setTimeout(() => el.classList.remove('show'), 2400);
 }
+let sheetReturn = null;
 function openSheet(html){
-  $('#sheet').innerHTML = `<div class="grab"></div>${html}`;
-  $('#sheet').classList.add('open'); $('#backdrop').classList.add('open');
+  sheetReturn = document.activeElement;
+  const sheet = $('#sheet');
+  sheet.innerHTML = `<div class="sheet-top"><div class="grab" aria-hidden="true"></div><button type="button" class="icon-btn" data-act="closeSheet" aria-label="${esc(t('close'))}">×</button></div>${html}`;
+  const h = sheet.querySelector('h3');
+  if (h) h.id = 'sheetTitle';
+  sheet.classList.add('open'); sheet.setAttribute('aria-hidden', 'false'); $('#backdrop').classList.add('open');
+  const focus = sheet.querySelector('input, textarea, select, button');
+  focus?.focus();
 }
-function closeSheet(){ $('#sheet').classList.remove('open'); $('#backdrop').classList.remove('open'); }
+function closeSheet(){
+  const sheet = $('#sheet');
+  const nudge = auth.afterOnboard === 'both' && sheet.querySelector('[data-form="pet"]');
+  sheet.classList.remove('open'); sheet.setAttribute('aria-hidden', 'true'); $('#backdrop').classList.remove('open');
+  if (nudge){ auth.afterOnboard = ''; toast(t('bothHint')); }
+  const backTo = sheetReturn; sheetReturn = null;
+  if (backTo && document.contains(backTo)) backTo.focus();
+}
 
 /* ---------- components ---------- */
 function providerCard(u){
   const rs = reviewsOf(u.id, 'care');
-  const shown = ui.svc !== 'all' && u.services.find(s => s.type === ui.svc);
+  const svcs = safeServices(u);
+  const shown = ui.svc !== 'all' && svcs.find(s => s.type === ui.svc);
   const price = shown ? won(shown.price) : t('priceFrom', {p: won(minPrice(u))});
   const unit = shown ? `<small>${t('perUnit', {u: L(SERVICES[shown.type].unit)})}</small>` : '';
-  return `<div class="card tap" data-act="open" data-type="user" data-id="${u.id}">
+  return `<div class="card tap" data-act="open" data-type="user" data-id="${esc(u.id)}">
     <div class="person">${avatar(u)}
       <div class="info">
         <div class="name">${esc(L(u.name))} ${u.verified ? `<span class="badge">✓ ${t('verified')}</span>` : ''} ${REAL && !u.real ? `<span class="pill gray">${t('example')}</span>` : ''}</div>
@@ -725,11 +828,12 @@ function providerCard(u){
       </div>
       <div class="price">${price}${unit}</div>
     </div>
-    <div class="tags">${u.services.map(s => `<span class="tag">${SERVICES[s.type].icon} ${svcName(s.type)}</span>`).join('')}</div>
+    <div class="tags">${svcs.map(s => `<span class="tag">${SERVICES[s.type].icon} ${svcName(s.type)}</span>`).join('')}</div>
   </div>`;
 }
 function postCard(p){
   const a = user(p.authorId), c = POST_CATS[p.cat];
+  if (!c) return '';
   return `<div class="card post tap" data-act="open" data-type="post" data-id="${p.id}">
     <span class="pill">${c.icon} ${c[lang]}</span>
     <h3>${esc(L(p.title))}</h3>
@@ -754,6 +858,8 @@ function placeCard(pl){
 }
 const STATUS_PILL = {requested:'blue', confirmed:'green', done:'gray', declined:'gray'};
 function bookingCard(b, asProvider){
+  const svc = SERVICES[b.service];
+  if (!svc) return '';
   const other = user(asProvider ? b.ownerId : b.providerId), pet = db.pets.find(p => p.id === b.petId);
   let action = '';
   if (asProvider){
@@ -776,7 +882,7 @@ function bookingCard(b, asProvider){
       <div class="tap" data-act="open" data-type="user" data-id="${other.id}">${avatar(other)}</div>
       <div class="info">
         <div class="name">${esc(L(other.name))}</div>
-        <div class="small muted">${SERVICES[b.service].icon} ${t('bookingFor', {pet: esc(L(pet?.name)), svc: svcName(b.service)})}</div>
+        <div class="small muted">${svc.icon} ${t('bookingFor', {pet: pet ? esc(L(pet.name)) : t('removed'), svc: svcName(b.service)})}</div>
         <div class="small muted">📅 ${fmtDay(b.date)}${b.time ? ' · ' + L(TIME_SLOTS[b.time]) : ''} · ${won(b.price)}${doneTag}</div>
       </div>
       <span class="pill ${STATUS_PILL[b.status]}">${t(b.status)}</span>
@@ -787,14 +893,14 @@ function bookingCard(b, asProvider){
 }
 const empty = (icon, msg) => `<div class="empty"><span class="em">${icon}</span>${msg}</div>`;
 function reviewList(rs){
-  if (!rs.length) return empty('📝', t('noReviews'));
+  if (!Array.isArray(rs) || !rs.length) return empty('📝', t('noReviews'));
   return rs.map(r => { const a = user(r.authorId); return `<div class="review">
     <div class="person">${avatar(a, 'sm')}<div class="info"><b class="small">${esc(L(a.name))}</b> <span class="small muted">· ${ago(r.date)}</span></div><span class="rating"><span class="s">${starStr(r.stars)}</span></span></div>
     ${L(r.text) ? `<p>${esc(L(r.text))}</p>` : ''}
   </div>`; }).join('');
 }
 function starInput(){
-  return `<input type="hidden" name="stars" value="0"><div class="stars-in">${[1,2,3,4,5].map(n => `<button type="button" data-act="star" data-v="${n}" aria-label="${n}">★</button>`).join('')}</div>`;
+  return `<div class="f"><span id="starLabel">${t('yourRating')}</span><input type="hidden" name="stars" value="0"><div class="stars-in" role="radiogroup" aria-labelledby="starLabel">${[1,2,3,4,5].map(n => `<button type="button" data-act="star" data-v="${n}" role="radio" aria-checked="false" aria-label="${t('starsN', {n})}">★</button>`).join('')}</div></div>`;
 }
 const opts = (obj, sel, label = v => v) => Object.keys(obj).map(k => `<option value="${k}" ${k === sel ? 'selected' : ''}>${esc(label(k))}</option>`).join('');
 
@@ -802,11 +908,15 @@ const opts = (obj, sel, label = v => v) => Object.keys(obj).map(k => `<option va
 function homeView(){
   const m = me(), myPets = petsOf(m.id);
   const upcoming = db.bookings.filter(b => (b.ownerId === m.id || b.providerId === m.id) && ['requested','confirmed'].includes(b.status));
-  const local = providers().filter(u => u.district === m.district);
-  const top = (local.length ? local : providers()).sort((a, b) => avg(reviewsOf(b.id,'care')) - avg(reviewsOf(a.id,'care'))).slice(0, 3);
   const hot = [...db.posts].sort((a, b) => b.likes - a.likes).slice(0, 3);
   const myOpen = db.requests.filter(r => r.ownerId === m.id && r.status === 'open');
+  const realPool = REAL ? providers().filter(u => u.real) : providers();
+  const pool = realPool.length ? realPool : providers();
+  const local = pool.filter(u => u.district === m.district);
+  const top = (local.length ? local : pool).sort((a, b) => avg(reviewsOf(b.id,'care')) - avg(reviewsOf(a.id,'care'))).slice(0, 3);
   return `
+  ${CONFIG_BROKEN ? `<div class="note">${t('configBroken')}</div>` : ''}
+  ${REAL ? '' : `<div class="note">${t('demoBanner')}</div>`}
   <div class="hero"><h2>${t('hello', {name: esc(L(m.name))})}</h2><p>${t('helloSub')}</p></div>
   <button class="banner tap" data-act="postRequest"><span class="em">📣</span><span class="txt"><b>${t('bannerTitle')}</b><small>${t('bannerSub')}</small></span><span class="go">${t('bannerGo')}</span></button>
   ${myOpen.length ? `<div class="section-h"><h2>${t('myRequests')}</h2></div><div class="stack">${myOpen.map(requestCard).join('')}</div>` : ''}
@@ -828,17 +938,21 @@ function homeView(){
 function findResults(){
   const q = ui.q.trim().toLowerCase();
   let list = providers().filter(u =>
-    (ui.svc === 'all' || u.services.some(s => s.type === ui.svc)) &&
+    (ui.svc === 'all' || safeServices(u).some(s => s.type === ui.svc)) &&
     (ui.dist === 'all' || u.district === ui.dist) &&
-    (!q || [u.name.ko, u.name.en, L(u.bio)].join(' ').toLowerCase().includes(q)));
-  const priceOf = u => ui.svc === 'all' ? minPrice(u) : u.services.find(s => s.type === ui.svc).price;
+    (!q || hay(u).includes(q)));
+  const priceOf = u => ui.svc === 'all' ? minPrice(u) : +safeServices(u).find(s => s.type === ui.svc).price;
   const sorters = {
     rating:  (a, b) => avg(reviewsOf(b.id,'care')) - avg(reviewsOf(a.id,'care')),
     price:   (a, b) => priceOf(a) - priceOf(b),
     reviews: (a, b) => reviewsOf(b.id,'care').length - reviewsOf(a.id,'care').length,
   };
-  list.sort(sorters[ui.sort]);
-  return list.length ? list.map(providerCard).join('') : empty('🔍', t('noResults'));
+  list.sort(sorters[ui.sort] || sorters.rating);
+  if (!REAL) return list.length ? list.map(providerCard).join('') : empty('🔍', t('noResults'));
+  const real = list.filter(u => u.real);
+  const examples = list.filter(u => !u.real);
+  return `${real.length ? real.map(providerCard).join('') : empty('🐾', t('noRealCare'))}
+    ${examples.length ? `<div class="section-h"><h2>${t('examples')}</h2></div>${examples.map(providerCard).join('')}` : ''}`;
 }
 const findTabs = () => `<div class="seg">
   <button class="${ui.findMode === 'people' ? 'on' : ''}" data-act="findMode" data-mode="people">${t('modePeople')}</button>
@@ -847,14 +961,14 @@ const findTabs = () => `<div class="seg">
 function findView(){
   if (ui.findMode === 'requests') return requestsView();
   return `${findTabs()}
-  <input class="search" id="findSearch" type="search" placeholder="${t('searchPh')}" value="${esc(ui.q)}" data-input="q">
+  <input class="search" id="findSearch" type="search" placeholder="${t('searchPh')}" aria-label="${t('searchPh')}" value="${esc(ui.q)}" data-input="q">
   <div class="chips">
     <button class="chip ${ui.svc === 'all' ? 'on' : ''}" data-act="setSvc" data-svc="all">${t('all')}</button>
     ${Object.keys(SERVICES).map(k => `<button class="chip ${ui.svc === k ? 'on' : ''}" data-act="setSvc" data-svc="${k}">${SERVICES[k].icon} ${svcName(k)}</button>`).join('')}
   </div>
   <div class="filters">
-    <select data-change="dist"><option value="all">📍 ${t('allAreas')}</option>${opts(DISTRICTS, ui.dist, dist)}</select>
-    <select data-change="sort">${opts({rating:1, price:1, reviews:1}, ui.sort, k => t('sort' + k[0].toUpperCase() + k.slice(1)))}</select>
+    <select data-change="dist" aria-label="${t('allAreas')}"><option value="all">📍 ${t('allAreas')}</option>${opts(DISTRICTS, ui.dist, dist)}</select>
+    <select data-change="sort" aria-label="${t('sortRating')}" >${opts({rating:1, price:1, reviews:1}, ui.sort, k => t('sort' + k[0].toUpperCase() + k.slice(1)))}</select>
   </div>
   <div class="stack" id="results" style="margin-top:14px">${findResults()}</div>`;
 }
@@ -863,12 +977,14 @@ function communityView(){
   let list = db.posts.filter(p => ui.postCat === 'all' || p.cat === ui.postCat);
   list.sort(ui.postSort === 'new' ? (a, b) => b.date.localeCompare(a.date) : (a, b) => b.likes - a.likes);
   return `
+  <p class="note">${t('localOnly')}</p>
   <div class="chips">
     <button class="chip ${ui.postCat === 'all' ? 'on' : ''}" data-act="setPostCat" data-cat="all">${t('all')}</button>
     ${Object.keys(POST_CATS).map(k => `<button class="chip ${ui.postCat === k ? 'on' : ''}" data-act="setPostCat" data-cat="${k}">${POST_CATS[k].icon} ${POST_CATS[k][lang]}</button>`).join('')}
   </div>
   <div class="filters"><select data-change="postSort">${opts({new:1, pop:1}, ui.postSort, k => t(k === 'new' ? 'newest' : 'popular'))}</select></div>
-  <div class="stack" style="margin-top:14px">${list.length ? list.map(postCard).join('') : empty('💬', t('noComments'))}</div>
+  <div class="stack" style="margin-top:14px">${list.length ? list.map(postCard).join('') : empty('💬', t('noPosts'))}</div>
+  <div class="end-space"></div>
   <button class="fab" data-act="writePost">${t('write')}</button>`;
 }
 
@@ -877,12 +993,14 @@ function placesView(){
     .filter(p => (ui.placeCat === 'all' || p.cat === ui.placeCat) && (ui.placeDist === 'all' || p.district === ui.placeDist))
     .sort((a, b) => (avg(b.ratings) * Math.log2(b.ratings.length + 1)) - (avg(a.ratings) * Math.log2(a.ratings.length + 1)));
   return `
+  <p class="note">${t('localOnly')}</p>
   <div class="chips">
     <button class="chip ${ui.placeCat === 'all' ? 'on' : ''}" data-act="setPlaceCat" data-cat="all">${t('all')}</button>
     ${Object.keys(PLACE_CATS).map(k => `<button class="chip ${ui.placeCat === k ? 'on' : ''}" data-act="setPlaceCat" data-cat="${k}">${PLACE_CATS[k].icon} ${PLACE_CATS[k][lang]}</button>`).join('')}
   </div>
   <div class="filters"><select data-change="placeDist"><option value="all">📍 ${t('allAreas')}</option>${opts(DISTRICTS, ui.placeDist, dist)}</select></div>
   <div class="stack" style="margin-top:14px">${list.length ? list.map(placeCard).join('') : empty('📍', t('noPlaces'))}</div>
+  <div class="end-space"></div>
   <button class="fab" data-act="addPlace">${t('addPlace')}</button>`;
 }
 
@@ -909,25 +1027,35 @@ function meView(){
     </div>`).join('') : `<div class="card">${empty('🐾', t('noPets'))}</div>`}</div>
 
   <div class="section-h"><h2>${t('myBookings')}</h2></div>
+  <p class="note">${t('localOnly')}</p>
   <div class="stack">${mine.length ? mine.map(b => bookingCard(b, false)).join('') : `<div class="card">${empty('📅', t('noBookings'))}</div>`}</div>
 
-  <div class="section-h"><h2>${t('caregiver')}</h2>${m.services.length ? `<button data-act="editServices">${t('editServices')}</button>` : ''}</div>
-  ${m.services.length ? `
-    <div class="card">${m.services.map(s => `<div class="svc-line"><span class="em">${SERVICES[s.type].icon}</span><span class="grow">${svcName(s.type)}</span><b>${won(s.price)}</b><span class="small muted">${t('perUnit', {u: L(SERVICES[s.type].unit)})}</span></div>`).join('')}</div>
+  <div class="section-h"><h2>${t('caregiver')}</h2>${safeServices(m).length ? `<button data-act="editServices">${t('editServices')}</button>` : ''}</div>
+  ${safeServices(m).length ? `
+    <div class="card">${safeServices(m).map(s => `<div class="svc-line"><span class="em">${SERVICES[s.type].icon}</span><span class="grow">${svcName(s.type)}</span><b>${won(s.price)}</b><span class="small muted">${t('perUnit', {u: L(SERVICES[s.type].unit)})}</span></div>`).join('')}</div>
     <div class="section-h"><h2>${t('requestsForMe')}</h2></div>
     <div class="stack">${forMe.length ? forMe.map(b => bookingCard(b, true)).join('') : `<div class="card">${empty('🔔', t('noRequests'))}</div>`}</div>`
   : `<div class="card" style="text-align:center"><div style="font-size:40px">🤝</div><h3 style="margin:6px 0">${t('becomeTitle')}</h3><p class="muted small" style="margin:0 0 14px">${t('becomeSub')}</p><button class="btn primary block" data-act="editServices">${t('becomeBtn')}</button></div>`}
 
   <div class="section-h"><h2>${t('settings')}</h2></div>
   <div class="card">
-    <div class="svc-line"><span class="grow">${t('language')}</span><button class="lang" data-act="lang">${lang === 'ko' ? 'English' : '한국어'}</button></div>
-    <div class="svc-line"><span class="grow">${t('reset')}</span><button class="btn ghost sm" data-act="reset">↺</button></div>
+    <div class="svc-line"><span class="grow">${t('language')}</span><button class="lang" data-act="lang" aria-label="${t('language')}">${lang === 'ko' ? 'English' : '한국어'}</button></div>
+    <div class="svc-line"><span class="grow">${t('reset')}</span><button class="btn ghost sm" data-act="reset" aria-label="${t('reset')}">↺</button></div>
+  </div>
+  <div class="section-h"><h2>${t('legal')}</h2></div>
+  <div class="card">
+    <div class="svc-line"><a class="text-link" href="privacy.html">${t('privacy')}</a></div>
+    <div class="svc-line"><a class="text-link" href="terms.html">${t('termsLink')}</a></div>
+    <div class="svc-line"><a class="text-link" href="support.html">${t('support')}</a></div>
   </div>
   ${REAL ? `
   <div class="section-h"><h2>${t('pushTitle')}</h2></div>
   ${ui.push === 'on' ? `<div class="card svc-line"><span class="grow">🔔 ${t('pushTitle')}</span><span class="pill green">${t('pushOnShort')}</span></div>` : pushCard()}
   <div class="section-h"><h2>${t('account')}</h2></div>
-  <div class="card svc-line"><span class="grow small">${esc(auth.session?.user?.email || '')}</span><button class="btn ghost sm" data-act="logout">${t('logout')}</button></div>` : ''}`;
+  <div class="card">
+    <div class="svc-line"><span class="grow small">${esc(auth.session?.user?.email || t('account'))}</span><button class="btn ghost sm" data-act="logout">${t('logout')}</button></div>
+    <div class="svc-line"><span class="grow">${t('deleteAccount')}</span><button class="btn ghost sm" data-act="deleteAccount">${t('deleteAccount')}</button></div>
+  </div>` : ''}`;
 }
 
 function userDetail(id){
@@ -944,18 +1072,20 @@ function userDetail(id){
     </div>
   </div>
   ${L(u.bio) ? `<div class="section-h"><h2>${t('about')}</h2></div><div class="card">${esc(L(u.bio))}</div>` : ''}
-  ${u.services.length ? `<div class="section-h"><h2>${t('svcPrices')}</h2></div>
-    <div class="card">${u.services.map(s => `<div class="svc-line"><span class="em">${SERVICES[s.type].icon}</span><span class="grow">${svcName(s.type)}</span><b>${won(s.price)}</b><span class="small muted">${t('perUnit', {u: L(SERVICES[s.type].unit)})}</span></div>`).join('')}</div>` : ''}
+  ${safeServices(u).length ? `<div class="section-h"><h2>${t('svcPrices')}</h2></div>
+    <div class="card">${safeServices(u).map(s => `<div class="svc-line"><span class="em">${SERVICES[s.type].icon}</span><span class="grow">${svcName(s.type)}</span><b>${won(s.price)}</b><span class="small muted">${t('perUnit', {u: L(SERVICES[s.type].unit)})}</span></div>`).join('')}</div>` : ''}
   ${pets.length ? `<div class="section-h"><h2>${t('pets')}</h2></div>
     <div class="stack">${pets.map(p => `<div class="card pet"><div class="em">${PET_EMOJI[p.species]}</div><div><b>${esc(L(p.name))}</b><div class="small muted">${esc(L(p.breed))} · ${t('yrs', {n: p.age})}</div></div></div>`).join('')}</div>` : ''}
-  ${u.services.length ? `<div class="section-h"><h2>${t('reviewsCare')}</h2></div><div class="card">${reviewList(care)}</div>` : ''}
+  ${safeServices(u).length ? `<div class="section-h"><h2>${t('reviewsCare')}</h2></div><div class="card">${reviewList(care)}</div>` : ''}
   <div class="section-h"><h2>${t('reviewsOwner')}</h2></div><div class="card">${reviewList(own)}</div>
-  ${!isMe ? `<div class="sticky-cta btn-row"><button class="btn ghost" style="background:var(--card)" data-act="chatWith" data-id="${u.id}">${t('chatWith')}</button>
-    ${u.services.length && !u.real ? `<button class="btn primary" style="flex:2" data-act="book" data-id="${u.id}">${t('book')}</button>` : ''}</div>` : ''}`;
+  ${!isMe && !u.missing ? `<div class="sticky-cta btn-row"><button class="btn ghost" style="background:var(--card)" data-act="chatWith" data-id="${u.id}">${t('chatWith')}</button>
+    ${safeServices(u).length && !u.real ? `<button class="btn primary" style="flex:2" data-act="book" data-id="${u.id}">${t('book')}</button>` : ''}</div>` : ''}`;
 }
 
 function postDetail(id){
-  const p = db.posts.find(x => x.id === id), a = user(p.authorId), c = POST_CATS[p.cat];
+  const p = db.posts.find(x => x.id === id);
+  if (!p || !POST_CATS[p.cat]) return empty('💬', t('noPosts'));
+  const a = user(p.authorId), c = POST_CATS[p.cat];
   return `<div class="card">
     <span class="pill">${c.icon} ${c[lang]}</span>
     <h2 style="margin:10px 0 12px;font-size:20px">${esc(L(p.title))}</h2>
@@ -963,22 +1093,25 @@ function postDetail(id){
     <div class="post-body">${esc(L(p.body))}</div>
     <button class="like ${p.liked ? 'on' : ''}" data-act="like" data-id="${p.id}">${p.liked ? '🧡' : '🤍'} ${t('like')} ${p.likes}</button>
   </div>
-  <div class="section-h"><h2>${t('comments', {n: p.comments.length})}</h2></div>
+  <div class="section-h"><h2>${t('comments', {n: (p.comments || []).length})}</h2></div>
   <div class="card">
-    ${p.comments.length ? p.comments.map(cm => { const ca = user(cm.authorId); return `<div class="comment">${avatar(ca, 'sm')}<div><b class="small">${esc(L(ca.name))}</b> <span class="small muted">· ${ago(cm.date)}</span><p>${esc(L(cm.text))}</p></div></div>`; }).join('') : `<div class="muted small">${t('noComments')}</div>`}
-    <form class="comment-box" data-form="comment" data-id="${p.id}"><input name="text" placeholder="${t('commentPh')}" required autocomplete="off"><button class="btn primary">↑</button></form>
+    ${(p.comments || []).length ? (p.comments || []).map(cm => { const ca = user(cm.authorId); return `<div class="comment">${avatar(ca, 'sm')}<div><b class="small">${esc(L(ca.name))}</b> <span class="small muted">· ${ago(cm.date)}</span><p>${esc(L(cm.text))}</p></div></div>`; }).join('') : `<div class="muted small">${t('noComments')}</div>`}
+    <form class="comment-box" data-form="comment" data-id="${p.id}"><input name="text" maxlength="2000" placeholder="${t('commentPh')}" aria-label="${t('commentPh')}" required autocomplete="off"><button class="btn primary" aria-label="${esc(t('sendMsg'))}">↑</button></form>
   </div>`;
 }
 
 function placeDetail(id){
-  const pl = db.places.find(x => x.id === id), c = PLACE_CATS[pl.cat];
-  const rs = pl.ratings.map((r, i) => ({...r, id: i, date: r.date || new Date(Date.now() - (i + 2) * 864e5).toISOString()})).reverse();
+  const pl = db.places.find(x => x.id === id);
+  if (!pl || !PLACE_CATS[pl.cat]) return empty('📍', t('noPlaces'));
+  const c = PLACE_CATS[pl.cat];
+  const ratings = Array.isArray(pl.ratings) ? pl.ratings : [];
+  const rs = ratings.map((r, i) => ({...r, id: i, date: r.date || new Date(Date.now() - (i + 2) * 864e5).toISOString()})).reverse();
   return `<div class="card" style="text-align:center">
     <div style="font-size:48px">${c.icon}</div>
     <h2 style="margin:6px 0 2px;font-size:20px">${esc(L(pl.name))}</h2>
     <div class="small muted">${c[lang]} · 📍 ${esc(dist(pl.district))}</div>
     <div style="margin-top:10px;font-size:20px">${ratingHTML(pl.ratings)}</div>
-    <div class="small muted">${t('recBy', {n: pl.ratings.length})}</div>
+    <div class="small muted">${t('recBy', {n: ratings.length})}</div>
     <p style="margin:14px 0 0">“${esc(L(pl.desc))}”</p>
   </div>
   <div class="section-h"><h2>${t('reviewsN', {n: rs.length})}</h2></div>
@@ -987,7 +1120,9 @@ function placeDetail(id){
 }
 
 function walkDetail(id){
-  const b = booking(id), w = b.walk, prov = user(b.providerId), pet = db.pets.find(p => p.id === b.petId);
+  const b = booking(id), w = b?.walk;
+  if (!b || !w || !SERVICES[b.service]) return empty('📍', t('careReport'));
+  const prov = user(b.providerId), pet = db.pets.find(p => p.id === b.petId);
   const isProvider = b.providerId === db.me, live = !w.endedAt;
   const clock = ms => new Date(ms).toLocaleTimeString(lang === 'ko' ? 'ko-KR' : 'en-US', {hour:'2-digit', minute:'2-digit'});
   return `<div class="card">
@@ -1035,6 +1170,7 @@ function addPoint(w, p){
 
 function startCare(id){
   const b = booking(id);
+  if (!b || b.status !== 'confirmed' || b.walk || trackers[id]) return;
   b.walk = {startedAt: Date.now(), points: [], distance: 0, marks: [], simulated: !navigator.geolocation, clock: 0, simIdx: 0};
   if (b.walk.simulated) toast(t('gpsFallback'));
   runTracker(id); go('walk', id);
@@ -1086,7 +1222,8 @@ function stopTracker(id){
 }
 async function keepAwake(){ try{ wakeLock = wakeLock || await navigator.wakeLock?.request('screen'); }catch(e){} }
 function finishCare(id){
-  const b = booking(id), w = b.walk;
+  const b = booking(id), w = b?.walk;
+  if (!b || !w || w.endedAt) return;
   stopTracker(id);
   w.endedAt = w.startedAt + elapsed(w);
   b.status = 'done'; render();
@@ -1094,7 +1231,8 @@ function finishCare(id){
   else toast(t('walkDone'));
 }
 function liveUpdate(id){
-  const w = booking(id).walk;
+  const w = booking(id)?.walk;
+  if (!w) return;
   document.querySelectorAll(`[data-live="${id}"]`).forEach(el => el.textContent = walkSummary(w));
   if (walkMap?.id !== id) return;
   const set = (k, v) => { const el = document.querySelector(`[data-stat=${k}]`); if (el) el.textContent = v; };
@@ -1116,10 +1254,13 @@ function mountMap(id){
     marks: Lf.layerGroup().addTo(map), nMarks: -1,
   });
   drawMap();
+  setTimeout(() => walkMap?.map?.invalidateSize(), 60);
 }
 function drawMap(){
   if (!walkMap?.map) return;
-  const {map, line, dot, marks} = walkMap, w = booking(walkMap.id).walk, pts = w.points, Lf = window.L;
+  const b = booking(walkMap.id);
+  if (!b?.walk) return;
+  const {map, line, dot, marks} = walkMap, w = b.walk, pts = w.points, Lf = window.L;
   line.setLatLngs(pts);
   if (!pts.length){ if (!walkMap.viewSet){ map.setView([37.5551, 126.8990], 15); walkMap.viewSet = true; } return; }
   const last = pts[pts.length - 1];
@@ -1145,11 +1286,13 @@ function requestPill(r){
   return `<span class="pill ${cls}">${t(key)}</span>`;
 }
 function requestCard(r){
-  const o = user(r.ownerId), pet = db.pets.find(p => p.id === r.petId), n = reqApps(r.id).length, mine = r.ownerId === db.me;
+  const svc = SERVICES[r.service], pet = db.pets.find(p => p.id === r.petId);
+  if (!svc || !pet) return '';
+  const o = user(r.ownerId), n = reqApps(r.id).length, mine = r.ownerId === db.me;
   return `<div class="card tap" data-act="open" data-type="request" data-id="${r.id}">
-    <div class="row-between"><span class="pill">${SERVICES[r.service].icon} ${svcName(r.service)}</span>${requestPill(r)}</div>
-    <div class="req-when">📅 ${fmtDay(r.date)} · ${L(TIME_SLOTS[r.time])}</div>
-    <div class="small muted">${PET_EMOJI[pet.species]} ${esc(L(pet.name))} · 📍 ${esc(dist(r.district))} · ${r.budget ? won(r.budget) : t('negotiable')}</div>
+    <div class="row-between"><span class="pill">${svc.icon} ${svcName(r.service)}</span>${requestPill(r)}</div>
+    <div class="req-when">📅 ${fmtDay(r.date)} · ${L(TIME_SLOTS[r.time] || '')}</div>
+    <div class="small muted">${PET_EMOJI[pet.species] || '🐾'} ${esc(L(pet.name))} · 📍 ${esc(dist(r.district))} · ${r.budget ? won(r.budget) : t('negotiable')}</div>
     <div class="meta"><span>${mine ? t('youLabel') : esc(L(o.name))} · ${ago(r.createdAt)}</span><span class="sp"></span>
       ${mine && n && r.status === 'open' ? `<span class="count">${n}</span>` : ''}<span>🙋 ${t('applicantsN', {n})}</span></div>
   </div>`;
@@ -1162,6 +1305,7 @@ function requestsView(){
     && (ui.svc === 'all' || r.service === ui.svc) && (ui.dist === 'all' || r.district === ui.dist))
     .sort((a, b) => a.date.localeCompare(b.date));
   return `${findTabs()}
+  <p class="note">${t('localOnly')}</p>
   <button class="btn primary block" data-act="postRequest">${t('postRequest')}</button>
   ${mine.length ? `<div class="section-h"><h2>${t('myRequests')}</h2></div><div class="stack">${mine.map(requestCard).join('')}</div>` : ''}
   ${appliedTo.length ? `<div class="section-h"><h2>${t('youApplied')}</h2></div><div class="stack">${appliedTo.map(requestCard).join('')}</div>` : ''}
@@ -1188,7 +1332,10 @@ function applicantCard(ap, r){
   </div>`;
 }
 function requestDetail(id){
-  const r = db.requests.find(x => x.id === id), o = user(r.ownerId), pet = db.pets.find(p => p.id === r.petId);
+  const r = db.requests.find(x => x.id === id);
+  if (!r || !SERVICES[r.service]) return empty('📣', t('noOpenRequests'));
+  const o = user(r.ownerId), pet = db.pets.find(p => p.id === r.petId);
+  if (!pet) return empty('🐾', t('removed'));
   const mine = r.ownerId === db.me, apps = reqApps(id), a = myApp(r);
   const summary = `<div class="card">
     <div class="row-between"><span class="pill">${SERVICES[r.service].icon} ${svcName(r.service)}</span>${requestPill(r)}</div>
@@ -1246,13 +1393,13 @@ function chatDetail(otherId){
       ${ap ? `<button class="btn primary sm" data-act="hire" data-id="${ap.id}">${t('choose')} · ${won(ap.price)}</button>` : ''}</div>` : ''}
   </div>
   <div class="msgs">${c?.messages.length ? c.messages.map(m => m.from === 'system' ? `<div class="msg sys">✓ ${esc(L(m.text))}</div>`
-      : `<div class="msg ${m.from === db.me ? 'mine' : 'them'}${m.pending ? ' pending' : ''}${m.failed ? ' failed' : ''}">${esc(L(m.text))}<time>${m.failed ? '⚠ ' + t('sendFailed') : msgTime(m.date)}</time></div>`).join('')
+      : `<div class="msg ${m.from === db.me ? 'mine' : 'them'}${m.pending ? ' pending' : ''}${m.failed ? ' failed' : ''}">${esc(L(m.text))}<time>${m.failed ? '⚠ ' + t('sendFailed') : msgTime(m.date)}</time>${m.failed ? `<button type="button" data-act="retry" data-id="${esc(otherId)}" data-text="${esc(L(m.text))}">${t('retry')}</button>` : ''}</div>`).join('')
     : `<div class="empty">${t('sayHi')}</div>`}</div>`;
 }
 function composer(otherId){
   return `<div class="composer">
     <div class="quick">${['quick1', 'quick2', 'quick3'].map(k => `<button type="button" data-act="quick" data-text="${esc(t(k))}">${t(k)}</button>`).join('')}</div>
-    <form data-form="chat" data-id="${otherId}"><input id="chatInput" name="text" placeholder="${t('msgPh')}" autocomplete="off" aria-label="${t('msgPh')}"><button class="btn primary" aria-label="send">↑</button></form>
+    <form data-form="chat" data-id="${otherId}"><input id="chatInput" name="text" maxlength="2000" placeholder="${t('msgPh')}" autocomplete="off" aria-label="${t('msgPh')}"><button class="btn primary" aria-label="${esc(t('sendMsg'))}">↑</button></form>
   </div>`;
 }
 function chatsDetail(){
@@ -1268,6 +1415,10 @@ function chatsDetail(){
     </div>`; }).join('')}</div>`;
 }
 function sendMessage(otherId, text){
+  text = String(text || '').trim();
+  if (!text || text.length > 2000) return;
+  const other = user(otherId);
+  if (!other || other.missing || otherId === db.me) return;
   if (isReal(otherId)) return realSend(otherId, text);
   pushMsg(getChat(otherId, true), db.me, text); render(); botRespond(otherId);
 }
@@ -1288,7 +1439,10 @@ function botRespond(otherId){
 
 /* ---------- choosing a caregiver ---------- */
 function hire(appId){
-  const ap = db.applications.find(a => a.id === appId), r = db.requests.find(x => x.id === ap.requestId);
+  const ap = db.applications.find(a => a.id === appId);
+  if (!ap) return;
+  const r = db.requests.find(x => x.id === ap.requestId);
+  if (!r || r.status !== 'open') return toast(t('closed'));
   reqApps(r.id).forEach(a => a.status = a.id === appId ? 'hired' : 'declined');
   const b = {id: uid(), ownerId: r.ownerId, providerId: ap.providerId, service: r.service, price: ap.price, date: r.date, time: r.time,
     petId: r.petId, msg: r.note, status: 'confirmed', requestId: r.id};
@@ -1297,17 +1451,18 @@ function hire(appId){
   const other = r.ownerId === db.me ? ap.providerId : r.ownerId;
   pushMsg(getChat(other, true), 'system', both(lg => T[lg].sysHired.replace('{svc}', SERVICES[r.service][lg]).replace('{date}', r.date.slice(5).replace('-', '/'))));
   render(); toast(t('hiredToast', {name: L(user(other).name)}));
-  if (r.ownerId === db.me && TRACKED.has(r.service)) setTimeout(() => startDemoWalk(b.id), 6000);
+  if (r.ownerId === db.me && TRACKED.has(r.service) && !isReal(ap.providerId)) setTimeout(() => startDemoWalk(b.id), 6000);
 }
 // Demo only: nearby caregivers who offer the service apply a few seconds apart
 function simulateApplicants(r){
+  if (REAL) return;
   const local = u => u.district === r.district ? 1 : 0;
-  const pool = providers().filter(u => u.services.some(s => s.type === r.service))
+  const pool = providers().filter(u => safeServices(u).some(s => s.type === r.service))
     .sort((a, b) => local(b) - local(a) || avg(reviewsOf(b.id, 'care')) - avg(reviewsOf(a.id, 'care'))).slice(0, 3);
   const pet = db.pets.find(p => p.id === r.petId);
   pool.forEach((u, i) => setTimeout(() => {
     if (r.status !== 'open') return;
-    db.applications.push({id: uid(), requestId: r.id, providerId: u.id, price: u.services.find(s => s.type === r.service).price,
+    db.applications.push({id: uid(), requestId: r.id, providerId: u.id, price: safeServices(u).find(s => s.type === r.service).price,
       msg: both(lg => DEMO.apply[i][lg].replace('{pet}', petName(pet, lg))), status: 'applied', date: new Date().toISOString()});
     render(); toast(t('newApplicant', {name: L(u.name)}));
   }, 2500 + i * 3000));
@@ -1316,7 +1471,7 @@ function simulateApplicants(r){
 function requestSheet(){
   const myPets = petsOf(db.me);
   if (!myPets.length){ toast(t('needPet')); petSheet(); return; }
-  const tomorrow = new Date(Date.now() + 864e5).toISOString().slice(0, 10);
+  const tomorrow = tomorrowYMD();
   const radio = (name, val, label, on) => `<label class="opt"><input type="radio" name="${name}" value="${val}" ${on ? 'checked' : ''}><span>${label}</span></label>`;
   openSheet(`<h3>${t('postRequestTitle')}</h3>
   <form data-form="request">
@@ -1353,17 +1508,63 @@ function hireSheet(appId){
 }
 
 /* ---------- real backend: accounts ---------- */
-const auth = {state: REAL ? 'loading' : 'demo', session: null, step: 'start', email: '', entering: false, role: 'owner'};
-const toUser = p => ({id: p.id, name: p.name, avatar: p.avatar, district: p.district, bio: p.bio, services: p.services || [], verified: false, real: true});
+const auth = {state: REAL ? 'loading' : 'demo', session: null, step: 'start', email: '', entering: false, role: 'owner', afterOnboard: '', pushEndpoint: ''};
+const toUser = p => ({id: p.id, name: p.name, avatar: p.avatar, district: p.district, bio: p.bio, services: safeServices({services: p.services}), verified: false, real: true});
 const toPet = p => ({id: p.id, ownerId: p.owner_id, name: p.name, species: p.species, breed: p.breed, age: p.age, notes: p.notes, real: true});
 
+function registerSW(){
+  if (!('serviceWorker' in navigator) || location.protocol === 'file:') return;
+  navigator.serviceWorker.register('sw.js').catch(e => console.error('service worker', e));
+  navigator.serviceWorker.addEventListener('message', e => { if (e.data?.type === 'open') openFromUrl(e.data.url); });
+  let had = !!navigator.serviceWorker.controller;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (!had){ had = true; return; }
+    location.reload();
+  });
+}
+async function setupNative(){
+  const c = window.Capacitor;
+  if (!c?.isNativePlatform?.()) return;
+  document.documentElement.classList.add('native');
+  const dark = matchMedia('(prefers-color-scheme: dark)').matches;
+  try{
+    const bar = c.Plugins?.StatusBar;
+    await bar?.setOverlaysWebView?.({overlay: true});
+    await bar?.setStyle?.({style: dark ? 'DARK' : 'LIGHT'});
+    await bar?.setBackgroundColor?.({color: dark ? '#17120F' : '#FFF8F1'});
+  }catch(e){ console.error(e); }
+  try{ await c.Plugins?.SplashScreen?.hide?.(); }catch(e){}
+  c.Plugins?.App?.addListener?.('backButton', () => {
+    if ($('#sheet')?.classList.contains('open')){ closeSheet(); return; }
+    if (ui.stack.length){ history.back(); return; }
+    c.Plugins.App.exitApp();
+  });
+  c.Plugins?.Keyboard?.addListener?.('keyboardWillShow', info => {
+    document.documentElement.style.setProperty('--kb', (info.keyboardHeight || 0) + 'px');
+  });
+  c.Plugins?.Keyboard?.addListener?.('keyboardWillHide', () => {
+    document.documentElement.style.setProperty('--kb', '0px');
+  });
+  listenNativePush();
+}
+function bindViewport(){
+  if (window.Capacitor?.getPlatform?.() === 'ios') return;
+  const vv = window.visualViewport;
+  if (!vv) return;
+  const apply = () => {
+    const overlap = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
+    document.documentElement.style.setProperty('--kb', overlap + 'px');
+  };
+  vv.addEventListener('resize', apply);
+  vv.addEventListener('scroll', apply);
+}
 async function boot(){
-  if (!REAL){ render(); resumeTrackers(); return; }
+  registerSW();
+  setupHistory();
+  bindViewport();
+  setupNative();
+  if (!REAL){ render(); resumeTrackers(); openFromUrl(location.href); return; }
   render();
-  if ('serviceWorker' in navigator){
-    navigator.serviceWorker.register('sw.js').catch(e => console.error('service worker', e));
-    navigator.serviceWorker.addEventListener('message', e => { if (e.data?.type === 'open') openFromUrl(e.data.url); });
-  }
   sb.auth.onAuthStateChange((event, session) => {
     // supabase-js asks that no other Supabase call runs inside this callback
     if (event === 'SIGNED_IN' && !auth.session){ auth.session = session; setTimeout(enterApp, 0); }
@@ -1388,45 +1589,71 @@ async function enterApp(){
     console.error(e); auth.state = 'signedOut'; render(); toast(t('authError', {msg: e.message || ''}));
   }finally{ auth.entering = false; }
 }
+async function fetchPages(make){
+  const page = 1000, all = [];
+  for (let from = 0; all.length < 5000; from += page){
+    const {data, error} = await make().range(from, from + page - 1);
+    if (error) throw error;
+    all.push(...(data || []));
+    if (!data || data.length < page) break;
+  }
+  return all;
+}
+async function loadMessages(ids){
+  const out = [];
+  for (let i = 0; i < ids.length; i += 20){
+    const part = ids.slice(i, i + 20);
+    const results = await Promise.all(part.map(id =>
+      sb.from('messages').select('id, conversation_id, sender_id, body, created_at')
+        .eq('conversation_id', id).order('created_at', {ascending: false}).limit(200)));
+    for (const res of results){
+      if (res.error) throw res.error;
+      out.push(...res.data);
+    }
+  }
+  return out;
+}
 async function loadReal(){
-  const [profiles, pets, convs, reads] = await Promise.all([
-    sb.from('profiles').select('*').limit(1000),
-    sb.from('pets').select('*').limit(1000),
+  const [profiles, ownPets, directory, convs, reads] = await Promise.all([
+    fetchPages(() => sb.from('profiles').select('*')),
+    sb.from('pets').select('*').eq('owner_id', db.me),
+    sb.rpc('pet_directory'),
     sb.from('conversations').select('id, user_a, user_b, last_message_at').order('last_message_at', {ascending: false}).limit(100),
     sb.from('conversation_reads').select('conversation_id, read_at'),
   ]);
-  for (const r of [profiles, pets, convs, reads]) if (r.error) throw r.error;
-  db.users = db.users.filter(u => !u.real).concat(profiles.data.map(toUser));
-  db.pets = db.pets.filter(p => !p.real).concat(pets.data.map(toPet));
+  for (const r of [ownPets, directory, convs, reads]) if (r.error) throw r.error;
+  db.users = db.users.filter(u => !u.real).concat(profiles.map(toUser));
+  const pets = new Map((directory.data || []).map(p => [p.id, toPet({...p, notes: ''})]));
+  for (const p of ownPets.data || []) pets.set(p.id, toPet(p));
+  db.pets = db.pets.filter(p => !p.real).concat([...pets.values()]);
   const ids = convs.data.map(c => c.id);
-  let msgs = [];
-  if (ids.length){
-    const res = await sb.from('messages').select('id, conversation_id, sender_id, body, created_at')
-      .in('conversation_id', ids).order('created_at', {ascending: false}).limit(1000);
-    if (res.error) throw res.error;
-    msgs = res.data.reverse();
-  }
+  const msgs = ids.length ? await loadMessages(ids) : [];
   const readAt = Object.fromEntries(reads.data.map(r => [r.conversation_id, new Date(r.read_at).getTime()]));
   db.chats = db.chats.filter(c => !c.real).concat(convs.data.map(c => ({
     id: c.id, real: true, members: [c.user_a, c.user_b], read: {[db.me]: readAt[c.id] || 0},
-    messages: msgs.filter(m => m.conversation_id === c.id).map(m => ({id: m.id, from: m.sender_id, text: m.body, date: m.created_at})),
+    messages: msgs.filter(m => m.conversation_id === c.id)
+      .sort((a, b) => a.created_at.localeCompare(b.created_at))
+      .map(m => ({id: m.id, from: m.sender_id, text: m.body, date: m.created_at})),
   })));
 }
 async function loadProfile(id){
   const {data} = await sb.from('profiles').select('*').eq('id', id).maybeSingle();
-  if (data && !user(id)) db.users.push(toUser(data));
+  if (data && user(id).missing) db.users.push(toUser(data));
 }
 function openFromUrl(url){
-  const m = String(url).match(/#chat=([\w-]+)/);
-  if (!m || !user(m[1])) return;
-  history.replaceState(null, '', location.pathname);
-  ui.stack = []; go('chat', m[1]);
+  const m = String(url).match(/#chat=([\w-]{1,80})/);
+  if (!m || user(m[1]).missing) return;
+  if (location.hash) history.replaceState(navState(), '', location.pathname + location.search);
+  const top = ui.stack[ui.stack.length - 1];
+  if (top?.type === 'chat' && top.id === m[1]) return;
+  go('chat', m[1]);
 }
 async function logout(){
   try{
     const reg = await navigator.serviceWorker?.getRegistration();
     const sub = await reg?.pushManager?.getSubscription();
     if (sub){ await sb.from('push_subscriptions').delete().eq('endpoint', sub.endpoint); await sub.unsubscribe(); }
+    if (auth.pushEndpoint) await sb.from('push_subscriptions').delete().eq('endpoint', auth.pushEndpoint);
   }catch(e){ console.error(e); }
   await sb.auth.signOut();
   location.reload();
@@ -1449,8 +1676,10 @@ function renderAuth(){
         <label class="f"><span>${t('district')}</span><select name="district" id="obDistrict">${opts(DISTRICTS, '마포구', dist)}</select></label>
         <div class="f"><span>${t('iAm')}</span></div>
         <div class="opts">${radio('owner', t('roleOwner'), true)}${radio('care', t('roleCare'))}${radio('both', t('roleBoth'))}</div>
+        <p class="hint">${t('bothHint')}</p>
         <button class="btn primary block" style="margin-top:12px">${t('startApp')}</button>
       </form></div>`;
+    decorateActions($('#app'));
     return;
   }
   $('#app').innerHTML = `<div class="auth">${langBtn}
@@ -1471,8 +1700,9 @@ function renderAuth(){
         <input type="email" name="email" id="loginEmail" autocomplete="email" placeholder="${t('emailPh')}" aria-label="${t('emailPh')}" required>
         <button class="btn primary block">${t('sendCode')}</button>
       </form>`}
-    <p class="fine">${t('terms')}</p>
+    <p class="fine">${t('termsBefore')}<a href="terms.html">${t('termsLink')}</a>${t('termsMid')}<a href="privacy.html">${t('privacyLink')}</a>${t('termsAfter')}</p>
   </div>`;
+  decorateActions($('#app'));
 }
 
 /* ---------- real backend: chat ---------- */
@@ -1510,21 +1740,33 @@ async function realSend(otherId, text){
   }
   render();
 }
+let realtime = null;
 function subscribeRealtime(){
-  sb.channel('messages').on('postgres_changes', {event: 'INSERT', schema: 'public', table: 'messages'}, ({new: m}) => onRealMessage(m)).subscribe();
+  if (realtime) sb.removeChannel(realtime);
+  realtime = sb.channel('messages-' + db.me)
+    .on('postgres_changes', {event: 'INSERT', schema: 'public', table: 'messages'}, ({new: m}) => onRealMessage(m))
+    .subscribe(status => {
+      if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') setTimeout(subscribeRealtime, 4000);
+    });
 }
 async function onRealMessage(m){
-  if (m.sender_id === db.me) return; // already on screen
   let c = db.chats.find(x => x.real && x.id === m.conversation_id);
   if (!c){
     const {data: conv} = await sb.from('conversations').select('id, user_a, user_b').eq('id', m.conversation_id).maybeSingle();
     if (!conv) return;
     const other = conv.user_a === db.me ? conv.user_b : conv.user_a;
-    if (!user(other)) await loadProfile(other);
+    if (user(other).missing) await loadProfile(other);
     c = getChat(other, true);
     Object.assign(c, {id: conv.id, real: true});
   }
   if (c.messages.some(x => x.id === m.id)) return;
+  if (m.sender_id === db.me){
+    const pending = [...c.messages].reverse().find(x => x.pending && x.text === m.body && !x.id);
+    if (pending){ Object.assign(pending, {id: m.id, date: m.created_at, pending: false}); render(); return; }
+    c.messages.push({id: m.id, from: m.sender_id, text: m.body, date: m.created_at});
+    render();
+    return;
+  }
   c.messages.push({id: m.id, from: m.sender_id, text: m.body, date: m.created_at});
   afterIncoming(c.members.find(id => id !== db.me));
 }
@@ -1536,7 +1778,36 @@ function b64ToBytes(s){
   const b = atob((s + '='.repeat((4 - s.length % 4) % 4)).replace(/-/g, '+').replace(/_/g, '/'));
   return Uint8Array.from(b, ch => ch.charCodeAt(0));
 }
+let pushListening = false;
+function listenNativePush(){
+  const PN = window.Capacitor?.Plugins?.PushNotifications;
+  if (!PN || pushListening) return;
+  pushListening = true;
+  PN.addListener('registration', async ({value}) => {
+    auth.pushEndpoint = value;
+    try{
+      if (REAL && sb){
+        const platform = window.Capacitor.getPlatform();
+        const {error} = await sb.rpc('save_push_subscription', {p_endpoint: value, p_p256dh: '', p_auth: '', p_platform: platform});
+        if (error) throw error;
+      }
+      ui.push = 'on'; render();
+    }catch(e){ console.error(e); toast(t('pushFailed')); }
+  });
+  PN.addListener('registrationError', () => toast(t('pushFailed')));
+  PN.addListener('pushNotificationActionPerformed', ev => {
+    const url = ev.notification?.data?.url;
+    if (url) openFromUrl(url);
+  });
+}
 async function pushStatus(){
+  const PN = window.Capacitor?.isNativePlatform?.() ? window.Capacitor.Plugins?.PushNotifications : null;
+  if (PN){
+    const perm = await PN.checkPermissions();
+    if (perm.receive === 'denied') return 'denied';
+    if (perm.receive !== 'granted') return 'off';
+    return auth.pushEndpoint ? 'on' : 'off';
+  }
   if (!('serviceWorker' in navigator) || !('Notification' in window) || !('PushManager' in window)) return isIOS && !standalone() ? 'needInstall' : 'unsupported';
   if (Notification.permission === 'denied') return 'denied';
   if (Notification.permission !== 'granted') return 'off';
@@ -1545,19 +1816,36 @@ async function pushStatus(){
 }
 async function savePush(sub){
   const j = sub.toJSON();
-  const {error} = await sb.rpc('save_push_subscription', {p_endpoint: j.endpoint, p_p256dh: j.keys.p256dh, p_auth: j.keys.auth});
+  auth.pushEndpoint = j.endpoint;
+  const {error} = await sb.rpc('save_push_subscription', {p_endpoint: j.endpoint, p_p256dh: j.keys.p256dh, p_auth: j.keys.auth, p_platform: 'web'});
   if (error) throw error;
 }
 // a phone that already allowed notifications is re-linked to whoever is signed in now
 async function refreshPush(){
   try{
-    ui.push = await pushStatus();
-    if (ui.push === 'on'){ const reg = await navigator.serviceWorker.ready; await savePush(await reg.pushManager.getSubscription()); }
+    const PN = window.Capacitor?.isNativePlatform?.() ? window.Capacitor.Plugins?.PushNotifications : null;
+    if (PN){
+      listenNativePush();
+      const perm = await PN.checkPermissions();
+      ui.push = perm.receive === 'granted' ? (auth.pushEndpoint ? 'on' : 'off') : perm.receive === 'denied' ? 'denied' : 'off';
+      if (perm.receive === 'granted') await PN.register();
+    }else{
+      ui.push = await pushStatus();
+      if (ui.push === 'on'){ const reg = await navigator.serviceWorker.ready; await savePush(await reg.pushManager.getSubscription()); }
+    }
   }catch(e){ console.error(e); }
   render();
 }
 async function enablePush(){
   try{
+    const PN = window.Capacitor?.isNativePlatform?.() ? window.Capacitor.Plugins?.PushNotifications : null;
+    if (PN){
+      listenNativePush();
+      const perm = await PN.requestPermissions();
+      if (perm.receive !== 'granted'){ ui.push = 'denied'; render(); return toast(t('pushDenied')); }
+      await PN.register();
+      return;
+    }
     const perm = await Notification.requestPermission();
     if (perm !== 'granted'){ ui.push = 'denied'; render(); return toast(t('pushDenied')); }
     const reg = await navigator.serviceWorker.ready;
@@ -1582,6 +1870,30 @@ const TABS = {
   me:       {icon:'👤', label:'tabMe',        view: meView},
 };
 const DETAIL = {user: userDetail, post: postDetail, place: placeDetail, walk: walkDetail, request: requestDetail, chat: chatDetail, chats: chatsDetail};
+function plainTitle(top){
+  if (!top) return ui.tab === 'home' ? t('appName') : t(TABS[ui.tab].label);
+  if (top.type === 'chat' || top.type === 'user') return L(user(top.id).name) || t('appName');
+  if (top.type === 'chats') return t('messages');
+  if (top.type === 'post') return t('tabCommunity');
+  if (top.type === 'place') return t('tabPlaces');
+  if (top.type === 'request') return t('postRequestTitle');
+  if (top.type === 'walk') return t(booking(top.id)?.walk?.endedAt ? 'careReport' : 'viewLive');
+  return t('appName');
+}
+function decorateActions(root){
+  root.querySelectorAll('[data-act]').forEach(el => {
+    const tag = el.tagName;
+    if (['BUTTON','A','INPUT','SELECT','TEXTAREA','LABEL'].includes(tag)) return;
+    if (el.dataset.act === 'pickAvatar'){
+      el.setAttribute('role', 'radio');
+      el.tabIndex = 0;
+      el.setAttribute('aria-checked', el.classList.contains('on') ? 'true' : 'false');
+      return;
+    }
+    el.setAttribute('role', 'button');
+    if (!el.hasAttribute('tabindex')) el.tabIndex = 0;
+  });
+}
 function render(){
   document.documentElement.lang = lang;
   if (REAL && auth.state !== 'ready') return renderAuth();
@@ -1592,18 +1904,21 @@ function render(){
   walkMap?.map?.remove(); walkMap = null;
   if (top?.type === 'chat'){ const c = getChat(top.id); if (c){ c.read[db.me] = Date.now(); markRead(c); } }
   const unread = unreadCount();
-  const title = top?.type === 'chat' ? esc(L(user(top.id).name)) : top?.type === 'chats' ? t('messages')
-    : top ? '' : (ui.tab === 'home' ? `<span class="logo">🐾</span> ${t('appName')}` : t(TABS[ui.tab].label));
+  const plain = plainTitle(top);
+  document.title = plain + ' · PetNeighbor';
+  const title = !top && ui.tab === 'home' ? `<span class="logo">🐾</span> ${t('appName')}` : esc(plain);
   $('#app').innerHTML = `
+  <a class="skip" href="#main">${lang === 'ko' ? '본문으로' : 'Skip to content'}</a>
   <header class="top">
-    ${top ? `<button class="icon-btn" data-act="back" aria-label="back">←</button>` : ''}
+    ${top ? `<button class="icon-btn" data-act="back" aria-label="${esc(t('back'))}">←</button>` : ''}
     <h1>${title}</h1>
-    ${top?.type === 'chats' || top?.type === 'chat' ? '' : `<button class="icon-btn" data-act="openChats" aria-label="${t('messages')}">💬${unread ? `<span class="count">${unread}</span>` : ''}</button>`}
-    <button class="lang" data-act="lang">${lang === 'ko' ? 'EN' : '한국어'}</button>
+    ${top?.type === 'chats' || top?.type === 'chat' ? '' : `<button class="icon-btn" data-act="openChats" aria-label="${esc(t('messages'))}">💬${unread ? `<span class="count">${unread}</span>` : ''}</button>`}
+    <button class="lang" data-act="lang" aria-label="${esc(t('language'))}">${lang === 'ko' ? 'EN' : '한국어'}</button>
   </header>
-  <main>${top ? DETAIL[top.type](top.id) : TABS[ui.tab].view()}</main>
+  <main id="main">${top ? DETAIL[top.type](top.id) : TABS[ui.tab].view()}</main>
   ${top?.type === 'chat' ? composer(top.id)
-    : `<nav class="tabbar">${Object.entries(TABS).map(([k, v]) => `<button class="tab ${!top && ui.tab === k ? 'on' : ''}" data-act="tab" data-tab="${k}"><span class="em">${v.icon}</span>${t(v.label)}</button>`).join('')}</nav>`}`;
+    : `<nav class="tabbar" aria-label="${esc(t('tabs'))}">${Object.entries(TABS).map(([k, v]) => `<button class="tab ${!top && ui.tab === k ? 'on' : ''}" data-act="tab" data-tab="${k}" aria-current="${!top && ui.tab === k ? 'page' : 'false'}"><span class="em" aria-hidden="true">${v.icon}</span>${t(v.label)}</button>`).join('')}</nav>`}`;
+  decorateActions($('#app'));
   if (top?.type === 'walk') mountMap(top.id);
   if (top?.type === 'chat') scrollTo(0, document.body.scrollHeight);
   const el = keep && document.getElementById(keep.id);
@@ -1613,17 +1928,19 @@ function render(){
 
 /* ---------- sheets ---------- */
 function bookingSheet(pid){
-  const p = user(pid), myPets = petsOf(db.me);
+  const p = user(pid), myPets = petsOf(db.me), svcs = safeServices(p);
+  if (!svcs.length || p.missing) return;
   if (!myPets.length){ toast(t('needPet')); petSheet(); return; }
-  const tomorrow = new Date(Date.now() + 864e5).toISOString().slice(0, 10);
-  const first = p.services[0];
+  const tomorrow = tomorrowYMD();
+  const first = svcs[0];
   openSheet(`<h3>${t('bookTitle', {name: esc(L(p.name))})}</h3>
   <form data-form="booking" data-id="${p.id}">
-    <label class="f"><span>${t('service')}</span><select name="service" data-change="bookSvc">${p.services.map(s => `<option value="${s.type}">${SERVICES[s.type].icon} ${svcName(s.type)} · ${won(s.price)}</option>`).join('')}</select></label>
+    <label class="f"><span>${t('service')}</span><select name="service" data-change="bookSvc">${svcs.map(s => `<option value="${s.type}">${SERVICES[s.type].icon} ${svcName(s.type)} · ${won(s.price)}</option>`).join('')}</select></label>
     <label class="f"><span>${t('date')}</span><input type="date" name="date" value="${tomorrow}" min="${tomorrow}" required></label>
     <label class="f"><span>${t('whichPet')}</span><select name="pet">${myPets.map(pt => `<option value="${pt.id}">${PET_EMOJI[pt.species]} ${esc(L(pt.name))}</option>`).join('')}</select></label>
-    <label class="f"><span>${t('message')}</span><textarea name="msg" placeholder="${t('msgPh')}"></textarea></label>
+    <label class="f"><span>${t('message')}</span><textarea name="msg" maxlength="500" placeholder="${t('msgPh')}"></textarea></label>
     <div class="svc-line" style="margin-top:12px"><span class="grow"><b>${t('total')}</b></span><b id="bookTotal" style="font-size:20px">${won(first.price)}</b></div>
+    ${REAL && !p.real ? `<div class="note">${t('exampleBooking')}</div>` : ''}
     <div class="note">${t('payNote')}</div>
     <button class="btn primary block" style="margin-top:14px">${t('send')}</button>
   </form>`);
@@ -1640,11 +1957,11 @@ function petSheet(id){
   const p = id ? db.pets.find(x => x.id === id) : {name:'', species:'dog', breed:'', age:1, notes:''};
   openSheet(`<h3>${id ? esc(L(p.name)) : t('addPet')}</h3>
   <form data-form="pet" data-id="${id || ''}">
-    <label class="f"><span>${t('petName')}</span><input name="name" value="${esc(L(p.name))}" required></label>
+    <label class="f"><span>${t('petName')}</span><input name="name" maxlength="40" value="${esc(L(p.name))}" required></label>
     <label class="f"><span>${t('species')}</span><select name="species">${opts(PET_EMOJI, p.species, k => PET_EMOJI[k] + ' ' + t(k))}</select></label>
-    <label class="f"><span>${t('breed')}</span><input name="breed" value="${esc(L(p.breed))}"></label>
-    <label class="f"><span>${t('age')}</span><input name="age" type="number" min="0" max="30" value="${p.age}"></label>
-    <label class="f"><span>${t('notes')}</span><textarea name="notes" placeholder="${t('notesPh')}">${esc(L(p.notes))}</textarea></label>
+    <label class="f"><span>${t('breed')}</span><input name="breed" maxlength="60" value="${esc(L(p.breed))}"></label>
+    <label class="f"><span>${t('age')}</span><input name="age" type="number" min="0" max="40" value="${p.age}"></label>
+    <label class="f"><span>${t('notes')}</span><textarea name="notes" maxlength="500" placeholder="${t('notesPh')}">${esc(L(p.notes))}</textarea></label>
     <button class="btn primary block" style="margin-top:14px">${t('save')}</button>
   </form>`);
 }
@@ -1654,9 +1971,9 @@ function profileSheet(){
   openSheet(`<h3>${t('editProfile')}</h3>
   <form data-form="profile">
     <div class="chips" style="margin:12px 0 0;padding:0">${AVATARS.map(a => `<label><input type="radio" name="avatar" value="${a}" ${a === m.avatar ? 'checked' : ''} style="display:none"><span class="chip ${a === m.avatar ? 'on' : ''}" data-act="pickAvatar" style="font-size:22px;padding:6px 10px">${a}</span></label>`).join('')}</div>
-    <label class="f"><span>${t('name')}</span><input name="name" value="${esc(L(m.name))}" required></label>
+    <label class="f"><span>${t('name')}</span><input name="name" maxlength="40" value="${esc(L(m.name))}" required></label>
     <label class="f"><span>${t('district')}</span><select name="district">${opts(DISTRICTS, m.district, dist)}</select></label>
-    <label class="f"><span>${t('bio')}</span><textarea name="bio" placeholder="${t('bioPh')}">${esc(L(m.bio))}</textarea></label>
+    <label class="f"><span>${t('bio')}</span><textarea name="bio" maxlength="500" placeholder="${t('bioPh')}">${esc(L(m.bio))}</textarea></label>
     <button class="btn primary block" style="margin-top:14px">${t('save')}</button>
   </form>`);
 }
@@ -1665,7 +1982,7 @@ function servicesSheet(){
   const m = me();
   openSheet(`<h3>${t('editServices')}</h3>
   <form data-form="services">
-    ${Object.keys(SERVICES).map(k => { const s = m.services.find(x => x.type === k); return `<label class="check">
+    ${Object.keys(SERVICES).map(k => { const s = safeServices(m).find(x => x.type === k); return `<label class="check">
       <input type="checkbox" name="on_${k}" ${s ? 'checked' : ''}>
       <span class="grow">${SERVICES[k].icon} ${svcName(k)}<br><span class="small muted">${t('perUnit', {u: L(SERVICES[k].unit)})}</span></span>
       <input type="number" name="price_${k}" step="1000" min="0" value="${s ? s.price : DEFAULT_PRICE[k]}" aria-label="${t('priceLbl')}">
@@ -1677,30 +1994,31 @@ function postSheet(){
   openSheet(`<h3>${t('writeTitle')}</h3>
   <form data-form="post">
     <label class="f"><span>${t('category')}</span><select name="cat">${opts(POST_CATS, ui.postCat === 'all' ? 'health' : ui.postCat, k => POST_CATS[k].icon + ' ' + POST_CATS[k][lang])}</select></label>
-    <label class="f"><span>${t('title')}</span><input name="title" placeholder="${t('titlePh')}" required></label>
-    <label class="f"><span>${t('body')}</span><textarea name="body" placeholder="${t('bodyPh')}" required></textarea></label>
+    <label class="f"><span>${t('title')}</span><input name="title" maxlength="80" placeholder="${t('titlePh')}" required></label>
+    <label class="f"><span>${t('body')}</span><textarea name="body" maxlength="2000" placeholder="${t('bodyPh')}" required></textarea></label>
     <button class="btn primary block" style="margin-top:14px">${t('post')}</button>
   </form>`);
 }
 function placeSheet(){
   openSheet(`<h3>${t('addPlace')}</h3>
   <form data-form="place">
-    <label class="f"><span>${t('placeName')}</span><input name="name" required></label>
+    <label class="f"><span>${t('placeName')}</span><input name="name" maxlength="80" required></label>
     <label class="f"><span>${t('category')}</span><select name="cat">${opts(PLACE_CATS, 'vet', k => PLACE_CATS[k].icon + ' ' + PLACE_CATS[k][lang])}</select></label>
     <label class="f"><span>${t('area')}</span><select name="district">${opts(DISTRICTS, me().district, dist)}</select></label>
-    <label class="f"><span>${t('desc')}</span><textarea name="desc" placeholder="${t('descPh')}" required></textarea></label>
-    <label class="f"><span>${t('yourRating')}</span>${starInput()}</label>
+    <label class="f"><span>${t('desc')}</span><textarea name="desc" maxlength="500" placeholder="${t('descPh')}" required></textarea></label>
+    ${starInput()}
     <button class="btn primary block" style="margin-top:14px">${t('submit')}</button>
   </form>`);
 }
 
 /* ---------- demo: the other side of a booking ---------- */
 function simulateIncoming(){
+  if (REAL) return;
   if (db.bookings.some(b => b.providerId === db.me)) return;
   setTimeout(() => {
     const svc = me().services[0];
     if (!svc) return;
-    const date = new Date(Date.now() + 2 * 864e5).toISOString().slice(0, 10);
+    const date = ymd(new Date(Date.now() + 2 * 864e5));
     db.bookings.push({id: uid(), ownerId:'u7', providerId: db.me, service: svc.type, price: svc.price, date, petId:'pt1',
       msg: {ko:'보리 산책 부탁드려요! 다른 강아지를 만나면 조금 긴장해요.', en:'Could you walk Bori? He gets a bit nervous around other dogs.'},
       status:'requested'});
@@ -1740,14 +2058,17 @@ const ACTIONS = {
   star: el => {
     const v = +el.dataset.v, form = el.closest('form');
     form.querySelector('[name=stars]').value = v;
-    form.querySelectorAll('.stars-in button').forEach((b, i) => b.classList.toggle('on', i < v));
+    form.querySelectorAll('.stars-in button').forEach((b, i) => {
+      b.classList.toggle('on', i < v);
+      b.setAttribute('aria-checked', String(i + 1 === v));
+    });
   },
   pickAvatar: el => {
     el.closest('.chips').querySelectorAll('.chip').forEach(c => c.classList.remove('on'));
     el.classList.add('on'); el.previousElementSibling.checked = true;
   },
-  accept: el => { db.bookings.find(b => b.id === el.dataset.id).status = 'confirmed'; render(); },
-  decline: el => { db.bookings.find(b => b.id === el.dataset.id).status = 'declined'; render(); },
+  accept: el => { const b = db.bookings.find(b => b.id === el.dataset.id); if (!b || b.status !== 'requested') return; b.status = 'confirmed'; render(); },
+  decline: el => { const b = db.bookings.find(b => b.id === el.dataset.id); if (!b || b.status !== 'requested') return; b.status = 'declined'; render(); },
   providerDone: el => { const b = db.bookings.find(x => x.id === el.dataset.id); b.status = 'done'; render(); rateBooking(b, 'provider'); },
   ownerDone: el => { const b = db.bookings.find(x => x.id === el.dataset.id); b.status = 'done'; render(); rateBooking(b, 'owner'); },
   rateBooking: el => rateBooking(db.bookings.find(b => b.id === el.dataset.id), el.dataset.as),
@@ -1762,7 +2083,7 @@ const ACTIONS = {
     if (!last) return toast(t('waitingGps'));
     w.marks.push({type: el.dataset.type, at: last}); save(); liveUpdate(el.dataset.id); toast(t('logged'));
   },
-  reset: () => openSheet(`<h3>${t('reset')}</h3><p>${t('resetConfirm')}</p>
+  reset: () => openSheet(`<h3>${t('reset')}</h3><p>${REAL ? t('resetConfirmReal') : t('resetConfirm')}</p>
     <div class="btn-row"><button class="btn ghost" data-act="closeSheet">${t('cancel')}</button><button class="btn primary" data-act="confirmReset">${t('reset')}</button></div>`),
   confirmReset: () => {
     Object.keys(trackers).forEach(stopTracker);
@@ -1770,7 +2091,27 @@ const ACTIONS = {
     const keep = {me: db.me, users: db.users.filter(u => u.real), pets: db.pets.filter(p => p.real), chats: db.chats.filter(c => c.real)};
     db = seed();
     if (REAL) Object.assign(db, {me: keep.me, users: db.users.concat(keep.users), pets: db.pets.concat(keep.pets), chats: db.chats.concat(keep.chats)});
-    ui.stack = []; ui.tab = 'home'; closeSheet(); render();
+    ui.stack = []; ui.tab = 'home'; history.pushState(navState(), ''); closeSheet(); render();
+  },
+  retry: el => {
+    const text = el.dataset.text;
+    const c = getChat(el.dataset.id);
+    if (c) c.messages = c.messages.filter(m => !(m.failed && L(m.text) === text));
+    sendMessage(el.dataset.id, text);
+  },
+  deleteAccount: () => openSheet(`<h3>${t('deleteTitle')}</h3><p>${t('deleteBody')}</p>
+    <div class="btn-row"><button class="btn ghost" data-act="closeSheet">${t('cancel')}</button><button class="btn primary" data-act="confirmDelete">${t('deleteConfirm')}</button></div>`),
+  confirmDelete: async el => {
+    el.disabled = true;
+    try{
+      const {error} = await sb.functions.invoke('delete-account');
+      if (error) throw error;
+      localStorage.removeItem(KEY);
+      try{ await sb.auth.signOut(); }catch(e){}
+      location.href = 'index.html';
+    }catch(e){
+      console.error(e); el.disabled = false; toast(t('deleteFailed'));
+    }
   },
   loginKakao: async () => {
     const {error} = await sb.auth.signInWithOAuth({provider: 'kakao', options: {redirectTo: location.origin + location.pathname}});
@@ -1787,7 +2128,8 @@ function rateBooking(b, as){
 
 const FORMS = {
   booking(fd, f){
-    const p = user(f.dataset.id), s = p.services.find(x => x.type === fd.get('service'));
+    const p = user(f.dataset.id), s = safeServices(p).find(x => x.type === fd.get('service'));
+    if (!s) return;
     const b = {id: uid(), ownerId: db.me, providerId: p.id, service: s.type, price: s.price, date: fd.get('date'), petId: fd.get('pet'), msg: fd.get('msg').trim(), status:'requested'};
     db.bookings.push(b); closeSheet(); toast(t('reqSent')); render();
     // demo: the caregiver accepts shortly after
@@ -1840,7 +2182,10 @@ const FORMS = {
     }
     else if (f.dataset.id) Object.assign(db.pets.find(p => p.id === f.dataset.id), data);
     else db.pets.push({id: uid(), ownerId: db.me, ...data});
+    const follow = auth.afterOnboard === 'both';
+    auth.afterOnboard = '';
     closeSheet(); toast(t('saved')); render();
+    if (follow) servicesSheet();
   },
   async profile(fd){
     const data = {name: fd.get('name').trim(), district: fd.get('district'), bio: fd.get('bio').trim(), avatar: fd.get('avatar') || me().avatar};
@@ -1876,6 +2221,7 @@ const FORMS = {
     const {error} = await sb.from('profiles').insert(row);
     if (error){ console.error(error); return toast(t('saveFailed')); }
     const role = fd.get('role');
+    auth.afterOnboard = role;
     await enterApp();
     if (role === 'care') servicesSheet(); else petSheet();
   },
@@ -1914,7 +2260,8 @@ document.addEventListener('change', e => {
   if (!k) return;
   if (k === 'bookSvc'){
     const p = user(e.target.closest('form').dataset.id);
-    $('#bookTotal').textContent = won(p.services.find(s => s.type === e.target.value).price);
+    const picked = safeServices(p).find(s => s.type === e.target.value);
+    if (picked) $('#bookTotal').textContent = won(picked.price);
     return;
   }
   ui[k] = e.target.value; render();
@@ -1924,7 +2271,16 @@ document.addEventListener('input', e => {
 });
 
 // pick up any care that was still being tracked when the page closed
-function resumeTrackers(){ db.bookings.filter(b => b.walk && !b.walk.endedAt && !trackers[b.id]).forEach(b => runTracker(b.id)); }
+function resumeTrackers(){ db.bookings.filter(b => b.walk && !b.walk.endedAt && Array.isArray(b.walk.points) && !trackers[b.id]).forEach(b => runTracker(b.id)); }
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && $('#sheet')?.classList.contains('open')){ e.preventDefault(); closeSheet(); return; }
+  if (e.key !== 'Enter' && e.key !== ' ') return;
+  const el = e.target.closest?.('[data-act]');
+  if (!el || ['BUTTON','A','INPUT','SELECT','TEXTAREA'].includes(el.tagName)) return;
+  e.preventDefault();
+  ACTIONS[el.dataset.act]?.(el);
+});
+window.addEventListener('hashchange', () => openFromUrl(location.href));
 boot();
 </script>
 </body>
