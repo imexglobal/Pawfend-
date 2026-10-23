@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>고객지원 · PetNeighbor</title>
+<style>
+  :root{--bg:#FFF8F1;--card:#fff;--ink:#2B2118;--muted:#5C5148;--line:#F0E4D7;--brand:#C4471A}
+  @media (prefers-color-scheme:dark){:root{--bg:#17120F;--card:#241D18;--ink:#F5EDE6;--muted:#C4B4A6;--line:#3A3029;--brand:#FFB088}}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;line-height:1.6}
+  main{max-width:720px;margin:0 auto;padding:calc(20px + env(safe-area-inset-top)) 20px calc(32px + env(safe-area-inset-bottom))}
+  a{color:var(--brand)}
+  h1{font-size:28px;letter-spacing:-.02em;margin:8px 0}
+  h2{font-size:18px;margin:28px 0 8px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px;margin:10px 0}
+  .en{margin-top:40px;padding-top:8px;border-top:1px solid var(--line)}
+  .muted{color:var(--muted)}
+</style>
+</head>
+<body>
+<main>
+  <p><a href="index.html">← PetNeighbor</a></p>
+  <h1>고객지원</h1>
+  <p>게시자 IMEX Global<br>이메일 <a href="mailto:hellopawfend@gmail.com">hellopawfend@gmail.com</a></p>
+  <p class="muted">앱 이름: PetNeighbor (멍냥이웃). 꾸러미 이름: Pawfend.</p>
+
+  <h2>무엇이 저장되나요?</h2>
+  <div class="card">
+    <p>서버에 올라가는 것은 계정(이메일 또는 카카오 동의 항목), 프로필, 반려동물, 채팅, 푸시 토큰입니다. 반려동물 특이사항은 본인만 봅니다.</p>
+    <p>커뮤니티, 추천 장소, 돌봄 요청, 예약, 후기, 산책 GPS는 이 버전에선 그 기기에만 있습니다. 연락처, 사진, 카메라, 마이크, 결제 정보는 받지 않습니다.</p>
+    <p>자세한 내용은 <a href="privacy.html">개인정보처리방침</a>에 있습니다.</p>
+  </div>
+
+  <h2>로그인 코드가 안 와요</h2>
+  <p>스팸함을 확인해 주세요. Supabase 기본 메일은 시간당 발송 수가 적습니다. 몇 분 뒤 다시 요청하거나, 운영자가 SMTP를 연결해야 합니다.</p>
+
+  <h2>알림이 안 와요</h2>
+  <p>내 정보에서 알림을 켜고 시스템 권한을 허용해 주세요. iPhone 웹 앱은 홈 화면에 추가한 아이콘으로 열어야 알림이 됩니다. App Store / Play 스토어 앱은 앱이 묻는 알림 권한을 허용하면 됩니다. 상대도 같은 방법으로 알림을 켠 뒤에 메시지를 보내야 합니다.</p>
+
+  <h2>계정 삭제</h2>
+  <div class="card">
+    <p><strong>앱에서:</strong> 내 정보 → 계정 → 계정 삭제. 확인을 누르면 계정, 프로필, 반려동물, 대화, 메시지가 삭제됩니다. 되돌릴 수 없습니다.</p>
+    <p><strong>로그인할 수 없을 때:</strong> <a href="mailto:hellopawfend@gmail.com">hellopawfend@gmail.com</a>으로 가입 이메일을 보내고 삭제를 요청해 주세요.</p>
+  </div>
+
+  <h2>데모와 실제 이웃</h2>
+  <p>“예시”가 붙은 돌봄이, 글, 장소는 샘플입니다. 그들과의 예약과 대화는 기기를 벗어나지 않습니다. 실제 회원과의 채팅만 서버를 통합니다.</p>
+
+  <div class="en" lang="en">
+    <h1>Support</h1>
+    <p>Publisher IMEX Global<br>Email <a href="mailto:hellopawfend@gmail.com">hellopawfend@gmail.com</a></p>
+    <p class="muted">App name: PetNeighbor. Package name: Pawfend.</p>
+    <h2>What is stored?</h2>
+    <div class="card">
+      <p>The server receives your account (email, or the Kakao fields you consent to), profile, pets, chat and push token. Pet notes are visible only to you.</p>
+      <p>Community, places, care requests, bookings, reviews and walk GPS stay on the device in this version. Contacts, photos, camera, microphone and payment details are not collected.</p>
+      <p>Details are in the <a href="privacy.html">Privacy Policy</a>.</p>
+    </div>
+    <h2>The login code never arrives</h2>
+    <p>Check spam. Supabase’s built-in mail is rate limited. Wait a few minutes, or the operator needs to connect SMTP.</p>
+    <h2>Notifications do not arrive</h2>
+    <p>Turn notifications on under Me and allow the system permission. The iPhone website only notifies the Home Screen app. The App Store and Play Store apps ask for notification permission in the app. The other person has to turn notifications on before a message can reach their phone.</p>
+    <h2>Delete your account</h2>
+    <div class="card">
+      <p><strong>In the app:</strong> Me → Account → Delete account. Confirming deletes the account, profile, pets, conversations and messages. This cannot be undone.</p>
+      <p><strong>If you cannot sign in:</strong> email <a href="mailto:hellopawfend@gmail.com">hellopawfend@gmail.com</a> from the account address and ask for deletion.</p>
+    </div>
+    <h2>Demo and real neighbors</h2>
+    <p>Caregivers, posts and places marked “Example” are samples. Bookings and chats with them stay on the device. Chat with a real member goes through the server.</p>
+  </div>
+</main>
+</body>
+</html>

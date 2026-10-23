@@ -70,19 +70,22 @@ Supabase's built-in email only sends a few messages per hour. That's fine for te
 
 ## 5. Notifications (10 min)
 
-The push keys are already generated:
+The public key in `config.js` has no private key in this repository. That file was never committed. Generate a new pair and replace the public key:
 
-- The public key is in `config.js`.
-- The private key and a webhook secret are in `petneighbor-secrets.local.txt`, next to the app folder. Keep that file private.
+```bash
+npx web-push generate-vapid-keys
+```
+
+Put the public key in `config.js` as `vapidPublicKey`. Keep the private key for the secret below. Do not commit it.
 
 1. **Edge Functions → Deploy a new function → Via editor**. Name it **`send-push`**.
 2. Replace the sample code with all of `supabase/functions/send-push/index.ts` and deploy.
 3. Open the function's **Details / Settings** and turn **Verify JWT** (Enforce JWT verification) **off**. The function checks its own secret instead.
-4. **Edge Functions → Secrets**: add the four lines from `petneighbor-secrets.local.txt`:
-   - `VAPID_PUBLIC_KEY`
-   - `VAPID_PRIVATE_KEY`
-   - `VAPID_SUBJECT`: change it to `mailto:` plus a contact email of yours. Push services use it to reach you if something goes wrong.
-   - `WEBHOOK_SECRET`
+4. **Edge Functions → Secrets**:
+   - `VAPID_PUBLIC_KEY` — the public key you just generated
+   - `VAPID_PRIVATE_KEY` — the private key (never put this in the app)
+   - `VAPID_SUBJECT` — `mailto:hellopawfend@gmail.com` (or another mailbox you read)
+   - `WEBHOOK_SECRET` — a long random string you invent, for example `openssl rand -hex 32`
 5. **Database → Webhooks → Create a new hook**:
    - Name: `new-message-push`
    - Table: `messages`, Events: **Insert**
@@ -95,7 +98,7 @@ Phones only allow notifications and GPS for sites served over **https**.
 The simplest option is **Netlify**:
 
 1. Sign up at **netlify.com** and choose **Add new site → Deploy manually**.
-2. Drag the whole `petneighbor` folder onto the page. The secrets file sits outside it on purpose, so it never gets uploaded.
+2. Drag the site files (`index.html`, `config.js`, `sw.js`, `manifest.webmanifest`, the icons, `privacy.html`, `terms.html`, `support.html`). Do not upload a keystore or a secrets file. There is no secrets file in this repo.
 3. You get an address like `https://petneighbor-123.netlify.app`. Use it in steps 3 and 4.
 
 To update the app later, drag the folder in again on the site's **Deploys** page.
@@ -119,8 +122,20 @@ To update the app later, drag the folder in again on the site's **Deploys** page
   - `sent: 0` means the other phone hasn't turned notifications on yet.
 - **iPhone shows no "Turn on" button:** the app must be opened from the Home Screen icon, not from Safari.
 
+## 8. Account deletion (required for the App Store)
+
+1. **Edge Functions → Deploy a new function → Via editor**. Name it **`delete-account`**.
+2. Paste `supabase/functions/delete-account/index.ts` and deploy.
+3. Leave **Verify JWT ON** for this function. It deletes only the user in the bearer token. Profile, pets, chats, messages and push rows are removed by foreign keys.
+
+In the app this is **내 정보 → 계정 → 계정 삭제**.
+
+## 9. iOS and Android
+
+Store builds, signing, native push (APNs and FCM), and the store listing text are in **LAUNCH.md**. Dragging the folder to Netlify is still the web path above.
+
 ## Before a public launch
 
-- **Location data:** walk tracking is location data. Under Korea's 위치정보법, confirm with a lawyer whether you must register as a 위치기반서비스사업자 with the Korea Communications Commission (방송통신위원회).
-- **Terms and privacy:** write a real 이용약관 and 개인정보처리방침. The login screen already refers to them.
+- **Location data:** a neighborhood name is chosen by the member. GPS during a walk stays on the device in this version and is not uploaded. If a later version uploads location, confirm with a lawyer whether Korea's 위치정보법 requires registration as a 위치기반서비스사업자 with the Korea Communications Commission (방송통신위원회).
+- **Terms and privacy:** `terms.html` and `privacy.html` describe this version. Have a lawyer review them before a public launch.
 - **Email sender:** set up custom SMTP (step 3).
